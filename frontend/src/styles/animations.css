@@ -1,0 +1,68 @@
+/* ═══════════════════════════════════════
+   KEYFRAME ANIMATIONS
+═══════════════════════════════════════ */
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wordReveal {
+  from { opacity: 0; transform: translateY(100%) rotate(3deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(0); }
+}
+
+@keyframes meshShift {
+  0% {
+    background: radial-gradient(ellipse 80% 60% at 20% 50%, rgba(232,184,75,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 30%, rgba(155,127,245,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 50% 80%, rgba(62,212,196,0.05) 0%, transparent 60%);
+  }
+  100% {
+    background: radial-gradient(ellipse 80% 60% at 80% 50%, rgba(232,184,75,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 20% 70%, rgba(155,127,245,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 50% 20%, rgba(62,212,196,0.05) 0%, transparent 60%);
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes pulseGold {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--gold); }
+  50%       { opacity: 0.4; box-shadow: 0 0 2px var(--gold); }
+}
+
+@keyframes micPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(155,127,245,0.4); }
+  50%  { box-shadow: 0 0 0 8px rgba(155,127,245,0); }
+  100% { box-shadow: 0 0 0 0 rgba(155,127,245,0); }
+}
+
+@keyframes barGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%           { transform: translateY(-6px); opacity: 1; }
+}
+
+/* Parallax card */
+.parallax-card { transform-style: preserve-3d; transition: transform 0.3s ease; }
+
+/* Counter number */
+.counter-num { display: inline-block; }

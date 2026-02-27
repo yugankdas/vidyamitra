@@ -1,0 +1,301 @@
+/* ═══════════════════════════════════════
+   LEARNING JOURNEY — CSS
+   Injected into the Career section
+═══════════════════════════════════════ */
+
+/* Setup form */
+.lj-setup {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 48px;
+  margin-top: 56px;
+  position: relative;
+  overflow: hidden;
+}
+.lj-setup::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--violet), var(--teal));
+}
+.lj-setup-title {
+  font-family: var(--ff-display);
+  font-size: 28px; font-weight: 900;
+  color: var(--text); margin-bottom: 8px; letter-spacing: -0.03em;
+}
+.lj-setup-sub {
+  font-size: 14px; color: var(--muted); margin-bottom: 32px; line-height: 1.6;
+}
+.lj-form-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;
+}
+.lj-field label {
+  display: block; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 8px; font-family: var(--ff-mono);
+}
+.lj-input, .lj-select {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 16px;
+  font-family: var(--ff-body); font-size: 14px; color: var(--text);
+  outline: none; transition: border-color 0.2s;
+  appearance: none;
+}
+.lj-input:focus, .lj-select:focus { border-color: var(--gold); }
+.lj-input::placeholder { color: var(--dim); }
+
+/* Quiz score chips */
+.lj-scores-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: 12px; font-family: var(--ff-mono);
+}
+.lj-score-chips {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px;
+}
+.lj-score-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 14px;
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: all 0.2s;
+}
+.lj-score-chip:hover { border-color: var(--gold); color: var(--gold); }
+.lj-score-chip.active { border-color: var(--gold); background: rgba(232,184,75,0.1); color: var(--gold); }
+.lj-score-chip .chip-score {
+  font-family: var(--ff-mono); font-size: 11px;
+  padding: 2px 7px; border-radius: 5px;
+  background: var(--border);
+}
+.lj-score-chip.active .chip-score { background: rgba(232,184,75,0.2); }
+
+.lj-score-slider-wrap { display: none; margin-top: 12px; }
+.lj-score-slider-wrap.visible { display: block; }
+.lj-slider { width: 100%; accent-color: var(--gold); cursor: pointer; }
+.lj-slider-labels {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--dim); font-family: var(--ff-mono); margin-top: 4px;
+}
+
+.lj-generate-btn {
+  width: 100%; background: var(--gold); color: var(--bg);
+  font-family: var(--ff-body); font-size: 15px; font-weight: 700;
+  padding: 16px; border-radius: 12px; border: none; cursor: pointer;
+  letter-spacing: 0.02em; transition: all 0.25s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.lj-generate-btn:hover { background: var(--gold2); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(232,184,75,0.35); }
+.lj-generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.lj-generate-btn .spinner {
+  width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: var(--bg); border-radius: 50%;
+  animation: spin 0.7s linear infinite; display: none;
+}
+.lj-generate-btn.loading .spinner { display: block; }
+.lj-generate-btn.loading .btn-label { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Learning Path Display ── */
+.lj-path { margin-top: 48px; display: none; }
+.lj-path.visible { display: block; }
+
+/* Header bar */
+.lj-path-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px 28px;
+  margin-bottom: 28px;
+}
+.lj-readiness {
+  display: flex; align-items: center; gap: 20px;
+}
+.lj-readiness-ring {
+  position: relative; width: 72px; height: 72px; flex-shrink: 0;
+}
+.lj-readiness-ring svg { transform: rotate(-90deg); }
+.lj-readiness-ring .ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+.lj-readiness-ring .ring-fill {
+  fill: none; stroke: var(--gold); stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 188;
+  stroke-dashoffset: 188;
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.16,1,0.3,1);
+}
+.lj-readiness-ring .ring-text {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ff-display); font-size: 16px; font-weight: 900;
+  color: var(--gold);
+}
+.lj-readiness-info .lj-readiness-label {
+  font-size: 11px; color: var(--dim); font-family: var(--ff-mono);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;
+}
+.lj-readiness-info .lj-readiness-role {
+  font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px;
+}
+.lj-readiness-info .lj-readiness-weeks {
+  font-size: 13px; color: var(--muted);
+}
+.lj-next-action {
+  background: rgba(232,184,75,0.08); border: 1px solid rgba(232,184,75,0.2);
+  border-radius: 12px; padding: 16px 20px; max-width: 340px;
+}
+.lj-next-action-label {
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  letter-spacing: 0.12em; text-transform: uppercase; font-family: var(--ff-mono);
+  margin-bottom: 6px;
+}
+.lj-next-action-text { font-size: 13px; color: var(--text); line-height: 1.5; font-weight: 600; }
+
+.lj-motive {
+  font-size: 13px; color: var(--teal); font-style: italic;
+  border-left: 2px solid var(--teal); padding-left: 12px;
+  margin-bottom: 28px; line-height: 1.6;
+}
+
+/* Module cards */
+.lj-modules { display: flex; flex-direction: column; gap: 16px; }
+
+.lj-module {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.lj-module:hover { border-color: var(--border2); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.lj-module.priority-critical { border-left: 3px solid var(--coral); }
+.lj-module.priority-high     { border-left: 3px solid var(--gold); }
+.lj-module.priority-medium   { border-left: 3px solid var(--teal); }
+
+.lj-module-header {
+  padding: 22px 24px; display: flex; align-items: center;
+  gap: 16px; cursor: pointer; user-select: none;
+}
+.lj-module-priority-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.priority-critical .lj-module-priority-dot { background: var(--coral); box-shadow: 0 0 8px var(--coral); }
+.priority-high     .lj-module-priority-dot { background: var(--gold);  box-shadow: 0 0 8px var(--gold); }
+.priority-medium   .lj-module-priority-dot { background: var(--teal);  box-shadow: 0 0 8px var(--teal); }
+
+.lj-module-info { flex: 1; }
+.lj-module-domain {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--dim); font-family: var(--ff-mono);
+  margin-bottom: 4px;
+}
+.lj-module-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.lj-module-why { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+.lj-module-meta {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0;
+}
+.lj-score-bar-wrap { width: 100px; }
+.lj-score-bar-label {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--dim); font-family: var(--ff-mono); margin-bottom: 4px;
+}
+.lj-score-track { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.lj-score-fill { height: 100%; border-radius: 4px; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+.priority-critical .lj-score-fill { background: var(--coral); }
+.priority-high     .lj-score-fill { background: var(--gold); }
+.priority-medium   .lj-score-fill { background: var(--teal); }
+
+.lj-weeks-badge {
+  font-size: 10px; font-weight: 700; padding: 3px 10px;
+  border-radius: 6px; font-family: var(--ff-mono);
+  background: var(--surface); color: var(--muted); border: 1px solid var(--border);
+}
+.lj-expand-icon {
+  color: var(--dim); font-size: 14px; transition: transform 0.3s; flex-shrink: 0;
+}
+.lj-module.expanded .lj-expand-icon { transform: rotate(180deg); }
+
+/* Module body */
+.lj-module-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0.16,1,0.3,1);
+  border-top: 0px solid var(--border);
+}
+.lj-module.expanded .lj-module-body {
+  max-height: 800px;
+  border-top-width: 1px;
+}
+.lj-module-body-inner { padding: 24px; }
+
+.lj-milestone {
+  background: rgba(93,219,146,0.07); border: 1px solid rgba(93,219,146,0.2);
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 13px; color: var(--green); font-weight: 600;
+  margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+
+.lj-resources-title {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--dim); font-family: var(--ff-mono);
+  margin-bottom: 12px;
+}
+.lj-resources-list { display: flex; flex-direction: column; gap: 10px; }
+
+.lj-resource {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+  text-decoration: none; transition: all 0.2s;
+  cursor: pointer;
+}
+.lj-resource:hover { border-color: var(--gold); background: rgba(232,184,75,0.05); }
+
+.lj-resource-icon {
+  width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.type-youtube  .lj-resource-icon { background: rgba(255,107,107,0.12); }
+.type-coursera .lj-resource-icon { background: rgba(155,127,245,0.12); }
+.type-article  .lj-resource-icon { background: rgba(62,212,196,0.12); }
+.type-practice .lj-resource-icon { background: rgba(93,219,146,0.12); }
+
+.lj-resource-info { flex: 1; min-width: 0; }
+.lj-resource-title {
+  font-size: 13px; font-weight: 700; color: var(--text);
+  margin-bottom: 3px; line-height: 1.35;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.lj-resource-why { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.lj-resource-meta {
+  display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;
+}
+.lj-resource-tag {
+  font-size: 10px; font-weight: 600; padding: 2px 8px;
+  border-radius: 5px; font-family: var(--ff-mono);
+  background: var(--border); color: var(--dim);
+}
+
+.lj-resource-arrow {
+  color: var(--dim); font-size: 14px; flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s;
+}
+.lj-resource:hover .lj-resource-arrow { transform: translateX(4px); color: var(--gold); }
+
+/* Adapt alert */
+.lj-adapt-banner {
+  display: none; align-items: center; gap: 14px;
+  background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.25);
+  border-radius: 12px; padding: 16px 20px; margin-top: 24px;
+  font-size: 13px; color: var(--text);
+}
+.lj-adapt-banner.visible { display: flex; }
+.lj-adapt-banner button {
+  margin-left: auto; background: var(--gold); color: var(--bg);
+  border: none; border-radius: 8px; padding: 7px 14px;
+  font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  font-family: var(--ff-body);
+}
+
+@media(max-width:900px){
+  .lj-form-row { grid-template-columns: 1fr; }
+  .lj-path-header { flex-direction: column; }
+  .lj-next-action { max-width: 100%; }
+  .lj-setup { padding: 28px 20px; }
+}

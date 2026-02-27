@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VidyaMitra - The Renaissance Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="src/styles/main.css"/>
+<link rel="stylesheet" href="src/styles/components.css"/>
+<link rel="stylesheet" href="src/styles/animations.css"/>
+<link rel="stylesheet" href="src/styles/learn.css"/>
+<style>
+.ra-wrap,.il-wrap,.ql-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px;margin-top:48px;position:relative;overflow:hidden}
+.ra-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--violet))}
+.il-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--teal))}
+.ql-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--gold))}
+.txt-area{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:var(--ff-mono);font-size:12px;color:var(--text);resize:vertical;min-height:130px;outline:none;transition:border-color .2s;line-height:1.7}
+.txt-area:focus{border-color:var(--gold)}
+.txt-area::placeholder{color:var(--dim)}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.fld-input,.fld-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:var(--ff-body);font-size:13px;color:var(--text);outline:none;transition:border-color .2s;appearance:none}
+.fld-input:focus,.fld-select:focus{border-color:var(--gold)}
+.fld-input::placeholder{color:var(--dim)}
+.action-btn{width:100%;background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:14px;font-weight:700;padding:14px;border-radius:10px;border:none;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+.action-btn:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,184,75,.35)}
+.action-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.action-btn.violet-btn{background:var(--violet)}
+.action-btn.violet-btn:hover{background:var(--violet2);color:var(--bg)}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
+.score-num{font-family:var(--ff-display);font-size:40px;font-weight:900;line-height:1}
+.score-lbl{font-size:11px;color:var(--dim);margin-top:4px;font-family:var(--ff-mono);text-transform:uppercase;letter-spacing:.08em}
+.kw-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.kw-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+.kw-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:var(--ff-mono);margin-bottom:10px}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px}
+.ktag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;font-family:var(--ff-mono)}
+.ktag-g{background:rgba(93,219,146,.12);color:var(--green)}
+.ktag-r{background:rgba(255,107,107,.12);color:var(--coral)}
+.suggestion{background:rgba(232,184,75,.07);border:1px solid rgba(232,184,75,.15);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:8px;border-left:3px solid var(--gold)}
+.hidden{display:none}
+.setup-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
+.q-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px}
+.q-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);font-family:var(--ff-mono);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:600;color:var(--text);line-height:1.55}
+.tips-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tip{font-size:11px;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 9px}
+.ans-area{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;font-family:var(--ff-body);font-size:13px;color:var(--text);resize:vertical;min-height:110px;outline:none;transition:border-color .2s;line-height:1.65}
+.ans-area:focus{border-color:var(--violet)}
+.ans-area::placeholder{color:var(--dim)}
+.sm-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--ff-body);font-size:13px;font-weight:600;padding:10px 18px;border-radius:10px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;margin-top:10px}
+.sm-btn:hover{border-color:var(--violet);color:var(--violet)}
+.fb-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.fb-big{font-family:var(--ff-display);font-size:52px;font-weight:900;line-height:1}
+.fb-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;font-size:13px;line-height:1.6}
+.fb-str{border-left:3px solid var(--green)}
+.fb-imp{border-left:3px solid var(--coral)}
+.fb-hint{border-left:3px solid var(--gold)}
+.ql-pbar{height:3px;background:var(--border);border-radius:3px;margin-bottom:20px;overflow:hidden}
+.ql-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .4s ease}
+.ql-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.ql-timer{font-family:var(--ff-mono);font-size:13px;color:var(--dim)}
+.ql-timer.urgent{color:var(--coral);animation:urgblink 1s infinite}
+@keyframes urgblink{0%,100%{opacity:1}50%{opacity:.3}}
+.ql-q{font-size:16px;font-weight:700;color:var(--text);line-height:1.55;margin-bottom:18px;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+.ql-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.ql-opt{padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .18s;text-align:left;font-family:var(--ff-body);width:100%}
+.ql-opt:hover:not(:disabled){border-color:var(--gold);color:var(--gold);background:rgba(232,184,75,.06)}
+.ql-opt.correct{border-color:var(--green);color:var(--green);background:rgba(93,219,146,.1)}
+.ql-opt.wrong{border-color:var(--coral);color:var(--coral);background:rgba(255,107,107,.1)}
+.ql-opt:disabled{cursor:default}
+.ql-exp{background:rgba(62,212,196,.07);border:1px solid rgba(62,212,196,.2);border-radius:10px;padding:14px;font-size:13px;color:var(--teal2);line-height:1.6;margin-bottom:14px}
+.ql-next{background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:13px;font-weight:700;padding:10px 22px;border-radius:10px;border:none;cursor:pointer;transition:all .2s}
+.ql-next:hover{background:var(--gold2)}
+.ql-result-score{font-family:var(--ff-display);font-size:72px;font-weight:900;letter-spacing:-.05em;line-height:1}
+.ql-rg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.ql-rc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;font-size:13px;line-height:1.65}
+.jobs-search{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;margin-bottom:28px}
+.jobs-input{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-family:var(--ff-body);font-size:13px;color:var(--text);outline:none;width:100%;transition:border-color .2s}
+.jobs-input:focus{border-color:var(--gold)}
+.jobs-input::placeholder{color:var(--dim)}
+.jobs-btn{background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:13px;font-weight:700;padding:12px 20px;border-radius:10px;border:none;cursor:pointer;white-space:nowrap;transition:all .2s}
+.jobs-btn:hover{background:var(--gold2)}
+.jobs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border-radius:20px;overflow:hidden;min-height:80px}
+.jcard{background:var(--bg2);padding:28px 24px;position:relative;overflow:hidden;transition:background .3s}
+.jcard:hover{background:var(--bg3)}
+.jcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.jcard:hover::before{opacity:1}
+.jco{font-size:11px;color:var(--dim);font-family:var(--ff-mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.jti{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3}
+.jsal{font-family:var(--ff-mono);font-size:12px;color:var(--gold);font-weight:600;margin-bottom:10px}
+.jskills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.jsk{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;font-family:var(--ff-mono);background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+.jme{font-size:11px;color:var(--dim)}
+.trends-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;margin-top:28px}
+.trend-title{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-family:var(--ff-mono);margin-bottom:14px}
+.trend-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.trend-chip{font-size:12px;font-weight:600;padding:5px 12px;border-radius:8px;font-family:var(--ff-mono)}
+.prog-live{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;margin-top:28px}
+.pb-row{margin-bottom:18px}
+.pb-hd{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;color:var(--muted)}
+.pb-track{height:6px;background:var(--border);border-radius:6px;overflow:hidden}
+.pb-fill{height:100%;border-radius:6px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.spin{display:inline-block;animation:spn .7s linear infinite}
+@keyframes spn{to{transform:rotate(360deg)}}
+@media(max-width:900px){.fld-row,.score-grid,.kw-grid,.setup-row,.ql-rg,.jobs-search{grid-template-columns:1fr}.jobs-grid{grid-template-columns:1fr}}
+
+/* ══ AUTH MODAL ══ */
+.auth-overlay{position:fixed;inset:0;background:rgba(8,8,9,.85);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.auth-overlay.open{opacity:1;visibility:visible}
+.auth-modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:48px 44px;width:100%;max-width:420px;position:relative;overflow:hidden;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.auth-overlay.open .auth-modal{transform:none}
+.auth-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--violet),var(--teal))}
+.auth-close{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--dim);font-size:20px;cursor:pointer;line-height:1;transition:color .2s}
+.auth-close:hover{color:var(--text)}
+.auth-logo{font-family:var(--ff-display);font-size:22px;font-weight:900;color:var(--text);margin-bottom:6px;letter-spacing:-.03em}
+.auth-logo em{color:var(--gold)}
+.auth-tagline{font-size:13px;color:var(--muted);margin-bottom:32px;line-height:1.5}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;gap:4px;margin-bottom:28px}
+.auth-tab{padding:9px;border-radius:9px;font-family:var(--ff-body);font-size:13px;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .2s}
+.auth-tab.active{background:var(--bg2);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.auth-field{margin-bottom:14px}
+.auth-field label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:7px;font-family:var(--ff-mono)}
+.auth-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:var(--ff-body);font-size:14px;color:var(--text);outline:none;transition:border-color .2s}
+.auth-input:focus{border-color:var(--gold)}
+.auth-input::placeholder{color:var(--dim)}
+.auth-input.err{border-color:var(--coral)}
+.auth-error{font-size:12px;color:var(--coral);margin-bottom:14px;padding:10px 14px;background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.2);border-radius:8px;display:none}
+.auth-error.visible{display:block}
+.auth-submit{width:100%;background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:15px;font-weight:700;padding:14px;border-radius:12px;border:none;cursor:pointer;letter-spacing:.02em;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px}
+.auth-submit:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,184,75,.35)}
+.auth-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.auth-footer{font-size:12px;color:var(--dim);text-align:center;margin-top:18px}
+.auth-footer a{color:var(--gold);cursor:pointer;text-decoration:none}
+.auth-footer a:hover{text-decoration:underline}
+
+/* Nav auth button & user pill */
+.nav-auth-btn{background:transparent;border:1px solid var(--border);color:var(--text);font-family:var(--ff-body);font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .2s;margin-left:8px}
+.nav-auth-btn:hover{border-color:var(--gold);color:var(--gold)}
+.nav-user-pill{display:none;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 5px;margin-left:8px}
+.nav-user-pill.visible{display:flex}
+.nav-avatar{width:26px;height:26px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--ff-body);flex-shrink:0}
+.nav-username{font-size:12px;font-weight:600;color:var(--text);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-logout{background:none;border:none;color:var(--dim);font-size:11px;cursor:pointer;transition:color .2s;padding-left:4px}
+.nav-logout:hover{color:var(--coral)}
+
+/* Auth gating — lock overlay on sections */
+.auth-gate{position:relative}
+.auth-gate-lock{display:none;position:absolute;inset:0;background:linear-gradient(transparent 0%,rgba(8,8,9,.95) 30%);border-radius:20px;z-index:10;align-items:flex-end;justify-content:center;padding-bottom:48px;flex-direction:column;align-items:center;text-align:center}
+.auth-gate.locked .auth-gate-lock{display:flex}
+.gate-icon{font-size:32px;margin-bottom:12px}
+.gate-msg{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.gate-btn{background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:13px;font-weight:700;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;transition:all .2s}
+.gate-btn:hover{background:var(--gold2)}
+
+</style>
+</head>
+<body>
+
+<nav class="nav" id="mainNav">
+  <a href="#" class="nav-logo">Vidya<em>Mitra</em></a>
+  <div class="nav-pills" id="navPills">
+    <a class="nav-pill active" onclick="scrollToSection('agent')">AI Agent</a>
+    <a class="nav-pill" onclick="scrollToSection('resume')">Resume</a>
+    <a class="nav-pill" onclick="scrollToSection('interview')">Interview</a>
+    <a class="nav-pill" onclick="scrollToSection('quiz')">Quiz</a>
+    <a class="nav-pill" onclick="scrollToSection('career')">Career</a>
+    <a class="nav-pill" onclick="scrollToSection('progress')">Progress</a>
+    <a class="nav-pill" onclick="scrollToSection('jobs')">Jobs</a>
+    <a class="nav-pill" onclick="scrollToSection('tech')">Stack</a>
+  </div>
+  <button class="nav-cta" onclick="scrollToSection('agent')">Start Free</button>
+  <button class="nav-auth-btn" id="navAuthBtn" onclick="openAuth('login')">Sign In</button>
+  <div class="nav-user-pill" id="navUserPill"><div class="nav-avatar" id="navAvatarLetter">U</div><span class="nav-username" id="navUserName">User</span><button class="nav-logout" onclick="doLogout()">Sign out</button></div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-tag">The Renaissance Edition - 2026</div>
+  <div class="hero-edition">150+ AI-Powered Career Features</div>
+  <h1 class="hero-title">
+    <span class="line"><span class="word">The</span> <span class="word"><em>Renaissance</em></span></span>
+    <span class="line"><span class="word">of Your</span> <span class="word">Career</span></span>
+  </h1>
+  <p class="hero-subtitle">Resume analysis, skill assessment, mock interviews, personalized learning paths powered by Groq AI.</p>
+  <div class="hero-actions">
+    <a href="#agent" class="btn-hero-primary" onclick="scrollToSection('agent')">Start Career Journey</a>
+    <a href="#resume" class="btn-hero-secondary" onclick="scrollToSection('resume')">Try Resume Analyzer</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="hero-stat-num counter" data-target="150" data-suffix="+">0</span><div class="hero-stat-label">AI Features</div></div>
+    <div class="hero-stat"><span class="hero-stat-num counter" data-target="8" data-suffix=" APIs">0</span><div class="hero-stat-label">Integrations</div></div>
+    <div class="hero-stat"><span class="hero-stat-num counter" data-target="94" data-suffix="%">0</span><div class="hero-stat-label">Resume Improvement</div></div>
+  </div>
+</section>
+
+<div class="section-nav" id="sectionNav">
+  <div class="section-nav-inner">
+    <a class="snav-link active" onclick="scrollToSection('agent')"><span class="snav-dot"></span>AI Agent</a>
+    <a class="snav-link" onclick="scrollToSection('resume')"><span class="snav-dot"></span>Resume</a>
+    <a class="snav-link" onclick="scrollToSection('interview')"><span class="snav-dot"></span>Interview</a>
+    <a class="snav-link" onclick="scrollToSection('quiz')"><span class="snav-dot"></span>Quiz</a>
+    <a class="snav-link" onclick="scrollToSection('career')"><span class="snav-dot"></span>Career</a>
+    <a class="snav-link" onclick="scrollToSection('progress')"><span class="snav-dot"></span>Progress</a>
+    <a class="snav-link" onclick="scrollToSection('jobs')"><span class="snav-dot"></span>Jobs</a>
+    <a class="snav-link" onclick="scrollToSection('tech')"><span class="snav-dot"></span>Stack</a>
+  </div>
+</div>
+
+<!-- AI AGENT -->
+<div id="agent">
+<div class="section-wrap">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">AI Agent</div>
+    <h2 class="section-title">Your personal career<br><em>advisor, always on.</em></h2>
+    <p class="section-desc">Powered by Groq LLaMA-3 — proactive insights, trajectory analysis, and complex career tasks on demand.</p>
+  </div>
+  <div class="marquee-wrap" style="margin-bottom:12px;">
+    <div class="marquee-track">
+      <div class="marquee-card" onclick="injectPrompt('Analyze my resume and give ATS score with improvements')"><div class="mcard-cmd">/resume-score</div><div class="mcard-text">Analyze my resume and give a detailed ATS score with improvements.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Detect skill gaps for Senior ML Engineer at Google')"><div class="mcard-cmd">/skill-gap</div><div class="mcard-text">Detect skill gaps for a Senior ML Engineer role at Google.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Simulate a behavioral interview for Product Manager')"><div class="mcard-cmd">/mock-interview</div><div class="mcard-text">Simulate a behavioral interview for a Product Manager role.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Generate 3-month path to become full-stack developer')"><div class="mcard-cmd">/learn-path</div><div class="mcard-text">Generate a 3-month path to become a full-stack developer.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('What should I negotiate as fresher in FinTech in Bangalore?')"><div class="mcard-cmd">/salary-check</div><div class="mcard-text">What should I negotiate as a fresher in FinTech in Bangalore?</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Write a personalized cover letter for Backend Developer at Razorpay')"><div class="mcard-cmd">/cover-letter</div><div class="mcard-text">Write a personalized cover letter for this job description.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Create 60-day DSA study plan for FAANG interviews')"><div class="mcard-cmd">/dsa-plan</div><div class="mcard-text">Create a 60-day DSA study plan for FAANG interviews.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Walk me through designing a URL shortener at scale')"><div class="mcard-cmd">/system-design</div><div class="mcard-text">Walk me through designing a URL shortener at scale.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Analyze my resume and give ATS score with improvements')"><div class="mcard-cmd">/resume-score</div><div class="mcard-text">Analyze my resume and give a detailed ATS score with improvements.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Detect skill gaps for Senior ML Engineer at Google')"><div class="mcard-cmd">/skill-gap</div><div class="mcard-text">Detect skill gaps for a Senior ML Engineer role at Google.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+    </div>
+  </div>
+  <div class="marquee-wrap" style="margin-bottom:64px;">
+    <div class="marquee-track reverse">
+      <div class="marquee-card" onclick="injectPrompt('Compare Backend vs Full Stack vs DevOps for my profile')"><div class="mcard-cmd">/compare-roles</div><div class="mcard-text">Compare Backend vs Full Stack vs DevOps for my profile.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Fastest path to become Data Scientist in 6 months')"><div class="mcard-cmd">/upskill-fast</div><div class="mcard-text">What is the fastest path to become a Data Scientist in 6 months?</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('I got offers from Razorpay and Swiggy, help me decide')"><div class="mcard-cmd">/offer-letter</div><div class="mcard-text">I got two offers - help me decide which to pick.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('I bombed my interview, what should I do differently?')"><div class="mcard-cmd">/interview-post</div><div class="mcard-text">I bombed my interview - what should I do differently next time?</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Optimize my LinkedIn headline for recruiter searches')"><div class="mcard-cmd">/linkedin-opt</div><div class="mcard-text">Optimize my LinkedIn headline and summary for recruiter searches.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Compare Backend vs Full Stack vs DevOps for my profile')"><div class="mcard-cmd">/compare-roles</div><div class="mcard-text">Compare Backend vs Full Stack vs DevOps for my profile.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('Fastest path to become Data Scientist in 6 months')"><div class="mcard-cmd">/upskill-fast</div><div class="mcard-text">What is the fastest path to become a Data Scientist in 6 months?</div><div class="mcard-action">Try with VidyaMitra</div></div>
+      <div class="marquee-card" onclick="injectPrompt('I got offers from Razorpay and Swiggy, help me decide')"><div class="mcard-cmd">/offer-letter</div><div class="mcard-text">I got two offers - help me decide which to pick.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+    </div>
+  </div>
+  <div class="reveal">
+    <div class="chat-demo">
+      <div class="cdemo-header">
+        <div class="cdemo-avatar">V</div>
+        <div>
+          <div class="cdemo-name">VidyaMitra AI</div>
+          <div class="cdemo-status">Online - Groq LLaMA-3</div>
+        </div>
+      </div>
+      <div class="cdemo-messages" id="chatMessages">
+        <div class="cmsg ai">
+          <div class="cmsg-av ai">V</div>
+          <div class="cmsg-bubble ai">Namaste! I am VidyaMitra. I can help with <strong>resume analysis</strong>, <strong>interview prep</strong>, <strong>skill gap detection</strong>, and career roadmaps for Indian tech roles. What is your goal today?</div>
+        </div>
+      </div>
+      <div class="cdemo-quick" id="chatQuickBtns">
+        <button class="cquick-btn" onclick="injectPrompt('Analyze my resume and tell me what to improve for a Senior SDE role')">Analyze my resume</button>
+        <button class="cquick-btn" onclick="injectPrompt('What are the skill gaps for SDE-2 at Flipkart?')">Skill gap for SDE-2</button>
+        <button class="cquick-btn" onclick="injectPrompt('Give me a mock behavioral interview question and tips')">Mock interview prep</button>
+        <button class="cquick-btn" onclick="injectPrompt('Build me a 3-month career roadmap for Full Stack developer')">Career roadmap</button>
+      </div>
+      <div class="cdemo-input-area">
+        <textarea id="chatInput" class="cdemo-textarea" placeholder="Ask VidyaMitra anything about your career..." rows="1" onkeydown="chatKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="cdemo-send" id="chatSendBtn" onclick="sendChat()">&#8593;</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- RESUME ANALYZER -->
+<div id="resume">
+<div class="section-wrap">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;">
+    <div class="reveal">
+      <div class="section-eyebrow">ATS Resume Analysis</div>
+      <h2 class="section-title">Know your<br><em>resume score.</em></h2>
+      <p class="section-desc">Paste your resume and get an instant AI-powered ATS score, keyword gaps, and actionable suggestions for Indian tech companies.</p>
+      <div class="chip-list">
+        <div class="chip">ATS Score</div>
+        <div class="chip">Keyword Analysis</div>
+        <div class="chip">Section Ratings</div>
+        <div class="chip">AI Suggestions</div>
+        <div class="chip">Company Match</div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="ra-wrap">
+        <label class="section-eyebrow" style="margin-bottom:8px">Resume Text</label>
+        <textarea class="txt-area" id="resumeText" placeholder="Paste your resume here...&#10;&#10;Example: Arjun Sharma | Full Stack Developer&#10;Skills: React, Node.js, MongoDB, AWS&#10;Experience: 3 years at TCS building microservices..."></textarea>
+        <div class="fld-row">
+          <input class="fld-input" id="resumeRole" placeholder="Target role (e.g. Senior SDE)"/>
+          <button class="action-btn" id="raBtn" onclick="analyzeResume()"><span id="raBtnTxt">Analyze Resume</span></button>
+        </div>
+        <div id="raResults" class="hidden">
+          <div class="score-grid">
+            <div class="score-card"><div class="score-num" id="raAts" style="color:var(--gold)">--</div><div class="score-lbl">ATS Score</div></div>
+            <div class="score-card"><div class="score-num" id="raKw" style="color:var(--violet)">--</div><div class="score-lbl">Keywords</div></div>
+            <div class="score-card"><div class="score-num" id="raImpact" style="color:var(--teal)">--</div><div class="score-lbl">Impact</div></div>
+          </div>
+          <div class="kw-grid">
+            <div class="kw-box"><div class="kw-title" style="color:var(--green)">Present Keywords</div><div class="tag-row" id="raPKw"></div></div>
+            <div class="kw-box"><div class="kw-title" style="color:var(--coral)">Missing Keywords</div><div class="tag-row" id="raMKw"></div></div>
+          </div>
+          <div class="section-eyebrow" style="margin-bottom:10px">AI Suggestions</div>
+          <div id="raSugg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- MOCK INTERVIEW -->
+<div id="interview">
+<div class="section-wrap">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Mock Interview</div>
+    <h2 class="section-title">Practice. Improve.<br><em>Get hired.</em></h2>
+    <p class="section-desc">Get AI-generated interview questions, write your answer, and receive instant scoring with STAR method feedback.</p>
+  </div>
+  <div class="il-wrap reveal">
+    <div class="setup-row">
+      <input class="fld-input" id="ilRole" placeholder="Role (e.g. SDE-2 at Razorpay)" value="SDE-2 at Razorpay"/>
+      <select class="fld-select" id="ilMode"><option value="behavioral">Behavioral</option><option value="technical">Technical</option></select>
+      <select class="fld-select" id="ilDiff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select>
+    </div>
+    <button class="action-btn violet-btn" id="ilGetBtn" onclick="getQuestion()" style="margin-bottom:16px"><span id="ilBtnTxt">Get Interview Question</span></button>
+    <div id="ilQBox" class="q-box hidden">
+      <div class="q-label" id="ilQLabel">BEHAVIORAL QUESTION</div>
+      <div class="q-text" id="ilQText"></div>
+      <div class="tips-row" id="ilTips"></div>
+    </div>
+    <textarea id="ilAnswer" class="ans-area hidden" placeholder="Type your answer here... Use STAR: Situation - Task - Action - Result" oninput="ilTyped()"></textarea>
+    <button id="ilScoreBtn" class="sm-btn hidden" onclick="scoreAnswer()"><span id="ilScoreTxt">Score My Answer</span></button>
+    <div id="ilFeedback" class="hidden" style="margin-top:16px;animation:slideUp .4s ease">
+      <div class="fb-header">
+        <div class="fb-big" id="ilFbScore" style="color:var(--gold)">--</div>
+        <div><span class="badge" id="ilFbGrade">--</span><div style="font-size:12px;color:var(--muted);margin-top:4px">Interview Score</div></div>
+      </div>
+      <div id="ilFbItems"></div>
+      <button class="action-btn violet-btn" style="margin-top:16px" onclick="getQuestion()">Next Question</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- SKILL QUIZ -->
+<div id="quiz">
+<div class="section-wrap">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Skill Assessment</div>
+    <h2 class="section-title">Test knowledge.<br><em>Find the gaps.</em></h2>
+    <p class="section-desc">AI-generated quizzes with timed questions and instant explanations. Every score feeds your career analytics.</p>
+  </div>
+  <div class="ql-wrap reveal">
+    <div class="setup-row">
+      <select class="fld-select" id="qlDomain">
+        <option>React / Frontend</option><option>Node.js / Backend</option><option>System Design</option>
+        <option>Machine Learning</option><option>DevOps / Cloud</option><option>Python</option>
+        <option>DSA</option><option>Databases / SQL</option>
+      </select>
+      <select class="fld-select" id="qlDiff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select>
+      <select class="fld-select" id="qlCount"><option value="5">5 Questions</option><option value="8" selected>8 Questions</option><option value="10">10 Questions</option></select>
+    </div>
+    <button class="action-btn" id="qlBtn" onclick="startQuiz()" style="margin-bottom:20px"><span id="qlBtnTxt">Start Quiz</span></button>
+    <div id="qlArena" class="hidden">
+      <div class="ql-pbar"><div class="ql-fill" id="qlFill" style="width:0%"></div></div>
+      <div class="ql-meta">
+        <span class="badge badge-violet" id="qlMeta">Q1 of 8</span>
+        <span class="ql-timer" id="qlTimer">30s</span>
+      </div>
+      <div class="ql-q" id="qlQ"></div>
+      <div class="ql-opts" id="qlOpts"></div>
+      <div class="ql-exp hidden" id="qlExp"></div>
+      <button class="ql-next hidden" id="qlNext" onclick="nextQ()">Next</button>
+    </div>
+    <div id="qlResults" class="hidden">
+      <div style="text-align:center;padding:24px 0 32px">
+        <div class="ql-result-score" id="qlScore" style="color:var(--gold)">--%</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:8px" id="qlSub"></div>
+      </div>
+      <div class="ql-rg">
+        <div class="ql-rc" id="qlFeedback"></div>
+        <div class="ql-rc" id="qlRecos"></div>
+      </div>
+      <button class="action-btn" style="margin-top:20px" onclick="startQuiz()">Retake Quiz</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- CAREER PLAN -->
+<div id="career">
+<div class="section-wrap">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Career Roadmap</div>
+    <h2 class="section-title">Your personalized<br><em>learning journey.</em></h2>
+    <p class="section-desc">VidyaMitra evaluates your quiz scores and builds a prioritized, adaptive week-by-week path with real YouTube and Coursera resources.</p>
+  </div>
+  <div class="flow-steps reveal">
+    <div class="flow-step"><div class="flow-node" style="border-color:var(--gold);color:var(--gold)">01</div><div class="flow-step-title">Take Quizzes</div><div class="flow-step-desc">Complete skill assessments to give AI a baseline of your knowledge.</div></div>
+    <div class="flow-step"><div class="flow-node" style="border-color:var(--violet);color:var(--violet)">02</div><div class="flow-step-title">Gap Detection</div><div class="flow-step-desc">AI pinpoints your critical weaknesses vs your target role requirements.</div></div>
+    <div class="flow-step"><div class="flow-node" style="border-color:var(--teal);color:var(--teal)">03</div><div class="flow-step-title">Adaptive Path</div><div class="flow-step-desc">Get a prioritized learning path with critical gaps first, curated resources.</div></div>
+    <div class="flow-step"><div class="flow-node" style="border-color:var(--green);color:var(--green)">04</div><div class="flow-step-title">Track and Adapt</div><div class="flow-step-desc">Retake quizzes to validate progress. Path adapts automatically to new scores.</div></div>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- PROGRESS -->
+<div id="progress">
+<div class="section-wrap">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Progress Tracking</div>
+    <h2 class="section-title">Watch yourself<br><em>level up.</em></h2>
+  </div>
+  <div class="metrics-grid metrics-grid-3 reveal">
+    <div class="metric-cell"><span class="metric-num" id="metricAts" style="color:var(--gold)">0%</span><div class="metric-label">Best ATS Score</div></div>
+    <div class="metric-cell"><span class="metric-num" id="metricInt" style="color:var(--violet)">0</span><div class="metric-label">Interviews Practiced</div></div>
+    <div class="metric-cell"><span class="metric-num" id="metricQs" style="color:var(--teal)">0</span><div class="metric-label">Quiz Questions Answered</div></div>
+  </div>
+  <div class="reveal" style="margin-top:32px;">
+    <div class="prog-live">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:20px;">Your Skill Progress <span style="font-size:11px;color:var(--dim);font-weight:400">(from quiz results)</span></div>
+      <div id="progBars"><div style="font-size:13px;color:var(--muted)">Take quizzes above to see your skill progress here.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- JOBS -->
+<div id="jobs">
+<div class="section-wrap">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Job Board</div>
+    <h2 class="section-title">Matched roles,<br><em>live from India.</em></h2>
+  </div>
+  <div class="reveal">
+    <div class="jobs-search">
+      <input class="jobs-input" id="jobRole" placeholder="Role (e.g. Full Stack Developer)"/>
+      <input class="jobs-input" id="jobLoc" placeholder="Location" value="India"/>
+      <button class="jobs-btn" onclick="searchJobs()">Search Jobs</button>
+    </div>
+    <div class="jobs-grid" id="jobsGrid">
+      <div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted);font-size:14px">Click Search Jobs to load AI-curated listings</div>
+    </div>
+    <div class="trends-box hidden" id="jobsTrends">
+      <div class="trend-title">Market Trends</div>
+      <div class="trend-row" id="trendChips"></div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6" id="trendText"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- TECH STACK -->
+<div id="tech">
+<div class="section-wrap">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Technology Stack</div>
+    <h2 class="section-title">Built with the<br><em>best tools.</em></h2>
+  </div>
+  <div class="tech-grid reveal">
+    <div><div class="tech-group-title">Frontend</div><div class="chip-list"><div class="chip">HTML5</div><div class="chip">CSS3</div><div class="chip">Vanilla JS</div><div class="chip">Canvas API</div><div class="chip">IntersectionObserver</div></div></div>
+    <div><div class="tech-group-title">Backend</div><div class="chip-list"><div class="chip">FastAPI</div><div class="chip">Python 3.11</div><div class="chip">Groq LLaMA-3</div><div class="chip">Pydantic</div><div class="chip">JWT Auth</div></div></div>
+  </div>
+</div>
+</div>
+
+<section class="cta-section">
+  <div class="section-eyebrow" style="justify-content:center;margin-bottom:32px;">Start Today - It is Free</div>
+  <h2 class="cta-title">Your dream role<br><em>awaits.</em></h2>
+  <div class="hero-actions" style="opacity:1;animation:none;margin-top:40px;">
+    <a href="#agent" class="btn-hero-primary" onclick="scrollToSection('agent')">Start Career Journey</a>
+  </div>
+  <div class="cta-badges">
+    <span class="cbadge cbadge-gold">Powered by Groq</span>
+    <span class="cbadge cbadge-violet">JWT Secured</span>
+    <span class="cbadge cbadge-teal">India-first</span>
+    <span class="cbadge cbadge-coral">FastAPI Backend</span>
+  </div>
+</section>
+
+<footer>
+  <span>2026 VidyaMitra. Renaissance Edition.</span>
+  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="http://localhost:8000/docs" target="_blank">API Docs</a></div>
+</footer>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const API='http://localhost:8000';
+const ST={interviews:0,quizQs:0,bestAts:0,scores:{}};
+
+async function apiFetch(path,opts={}){
+  const headers={'Content-Type':'application/json',...(opts.headers||{})};
+  const res=await fetch(API+path,{...opts,headers});
+  if(!res.ok){const e=await res.json().catch(()=>({detail:'Error'}));throw new Error(e.detail||'HTTP '+res.status);}
+  return res.json();
+}
+
+function showToast(msg,type='success'){
+  const icons={success:'OK',error:'ERR',warn:'WARN',info:'INFO'};
+  const t=document.createElement('div');t.className='toast';
+  t.textContent=msg;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300);},3000);
+}
+
+function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
+
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled',scrollY>20);
+  const secs=['agent','resume','interview','quiz','career','progress','jobs','tech'];
+  const y=scrollY+130;
+  for(let i=secs.length-1;i>=0;i--){
+    const el=document.getElementById(secs[i]);
+    if(el&&el.offsetTop<=y){
+      document.querySelectorAll('.snav-link,.nav-pill').forEach((l,idx)=>l.classList.toggle('active',idx===i));
+      break;
+    }
+  }
+});
+
+window.revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revObs.unobserve(e.target);}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+
+const cntObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target,target=+el.dataset.target,suffix=el.dataset.suffix||'';
+    let start=null;
+    const step=ts=>{if(!start)start=ts;const p=Math.min((ts-start)/1800,1);el.textContent=Math.floor((1-Math.pow(1-p,3))*target)+suffix;if(p<1)requestAnimationFrame(step);else el.textContent=target+suffix;};
+    requestAnimationFrame(step);cntObs.unobserve(el);
+  });
+},{threshold:.5});
+document.querySelectorAll('.counter').forEach(el=>cntObs.observe(el));
+
+setTimeout(()=>{document.querySelectorAll('.hero-title .word').forEach((w,i)=>{w.style.animation=`wordReveal .7s ${.4+i*.12}s cubic-bezier(.16,1,.3,1) forwards`;});},100);
+
+// ── CHAT ──
+const CHAT_SYS=`You are VidyaMitra, expert AI career advisor for Indian tech professionals. Expertise in ATS resumes, skill gaps, mock interviews (STAR method), salary benchmarks (Bengaluru, Mumbai, Pune), DSA prep, system design, FAANG India, Razorpay, Swiggy, Zomato, Flipkart, CRED. Be concise 3-4 sentences, practical, encouraging. Use **bold** for key terms.`;
+let chatHistory=[];
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function injectPrompt(text){const inp=document.getElementById('chatInput');inp.value=text;scrollToSection('agent');setTimeout(sendChat,200);}
+async function sendChat(){
+  const inp=document.getElementById('chatInput'),btn=document.getElementById('chatSendBtn');
+  const text=inp.value.trim();if(!text)return;
+  addMsg(text,'user');inp.value='';autoResize(inp);
+  document.getElementById('chatQuickBtns').style.display='none';btn.disabled=true;
+  chatHistory.push({role:'user',content:text});
+  const tid=addTyping();
+  try{const d=await apiFetch('/ai/chat',{method:'POST',body:JSON.stringify({messages:chatHistory,system:CHAT_SYS})});
+    const reply=d.reply||'Sorry, could not respond.';removeTyping(tid);chatHistory.push({role:'assistant',content:reply});addMsg(reply,'ai');
+  }catch{removeTyping(tid);addMsg('Backend offline. Make sure uvicorn is running on port 8000.','ai');}
+  btn.disabled=false;
+}
+function addMsg(text,role){
+  const msgs=document.getElementById('chatMessages'),div=document.createElement('div');div.className='cmsg '+role;
+  const fmt=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  div.innerHTML=`<div class="cmsg-av ${role}">${role==='ai'?'V':'U'}</div><div class="cmsg-bubble ${role}">${fmt}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function addTyping(){const msgs=document.getElementById('chatMessages'),id='ty'+Date.now();const d=document.createElement('div');d.className='cmsg';d.id=id;d.innerHTML=`<div class="cmsg-av ai">V</div><div class="cmsg-bubble ai"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return id;}
+function removeTyping(id){document.getElementById(id)?.remove();}
+
+// ── RESUME ──
+async function analyzeResume(){
+  const text=document.getElementById('resumeText').value.trim();
+  const role=document.getElementById('resumeRole').value.trim();
+  if(text.length<50){showToast('Paste more resume text (50+ chars)','warn');return;}
+  const btn=document.getElementById('raBtn'),btnTxt=document.getElementById('raBtnTxt');
+  btn.disabled=true;btnTxt.textContent='Analyzing...';
+  try{
+    const d=await apiFetch('/resume/analyze',{method:'POST',body:JSON.stringify({resume_text:text,target_role:role})});
+    document.getElementById('raAts').textContent=d.ats_score+'%';
+    document.getElementById('raKw').textContent=d.keyword_score+'%';
+    document.getElementById('raImpact').textContent=d.impact_score+'%';
+    document.getElementById('raPKw').innerHTML=(d.present_keywords||[]).map(k=>`<span class="ktag ktag-g">${k}</span>`).join('');
+    document.getElementById('raMKw').innerHTML=(d.missing_keywords||[]).map(k=>`<span class="ktag ktag-r">${k}</span>`).join('');
+    document.getElementById('raSugg').innerHTML=(d.suggestions||[]).map(s=>`<div class="suggestion">- ${s}</div>`).join('');
+    document.getElementById('raResults').classList.remove('hidden');
+    if(d.ats_score>ST.bestAts){ST.bestAts=d.ats_score;updateMetrics();}
+    showToast('Resume analyzed!');
+  }catch(e){showToast('Analysis failed: '+e.message,'error');}
+  btn.disabled=false;btnTxt.textContent='Analyze Again';
+}
+
+// ── INTERVIEW ──
+let curQ=null;
+async function getQuestion(){
+  const role=document.getElementById('ilRole').value||'SDE-2',mode=document.getElementById('ilMode').value,diff=document.getElementById('ilDiff').value;
+  const btn=document.getElementById('ilGetBtn'),btnTxt=document.getElementById('ilBtnTxt');
+  btn.disabled=true;btnTxt.textContent='Generating...';
+  document.getElementById('ilFeedback').classList.add('hidden');
+  document.getElementById('ilAnswer').value='';
+  document.getElementById('ilAnswer').classList.add('hidden');
+  document.getElementById('ilScoreBtn').classList.add('hidden');
+  try{
+    const d=await apiFetch('/interview/question',{method:'POST',body:JSON.stringify({role,mode,difficulty:diff})});
+    curQ=d.question;
+    document.getElementById('ilQLabel').textContent=mode.toUpperCase()+' - '+diff.toUpperCase();
+    document.getElementById('ilQText').textContent=d.question;
+    document.getElementById('ilTips').innerHTML=(d.tips||[]).map(t=>`<span class="tip">${t}</span>`).join('');
+    document.getElementById('ilQBox').classList.remove('hidden');
+    document.getElementById('ilAnswer').classList.remove('hidden');
+    document.getElementById('ilAnswer').focus();
+  }catch(e){showToast('Could not get question: '+e.message,'error');}
+  btn.disabled=false;btnTxt.textContent='New Question';
+}
+function ilTyped(){const v=document.getElementById('ilAnswer').value.trim();const btn=document.getElementById('ilScoreBtn');if(v.length>30)btn.classList.remove('hidden');else btn.classList.add('hidden');}
+async function scoreAnswer(){
+  const answer=document.getElementById('ilAnswer').value.trim(),mode=document.getElementById('ilMode').value;
+  if(!curQ||!answer){showToast('Write your answer first','warn');return;}
+  const btnTxt=document.getElementById('ilScoreTxt'),btn=document.getElementById('ilScoreBtn');
+  btnTxt.textContent='Scoring...';btn.disabled=true;
+  try{
+    const d=await apiFetch('/interview/score',{method:'POST',body:JSON.stringify({question:curQ,answer,mode})});
+    const c=d.score>=75?'var(--green)':d.score>=50?'var(--gold)':'var(--coral)';
+    document.getElementById('ilFbScore').textContent=d.score;document.getElementById('ilFbScore').style.color=c;
+    document.getElementById('ilFbGrade').textContent='Grade '+d.grade;
+    let h='';
+    (d.strengths||[]).forEach(s=>h+=`<div class="fb-item fb-str">OK: ${s}</div>`);
+    (d.improvements||[]).forEach(s=>h+=`<div class="fb-item fb-imp">Improve: ${s}</div>`);
+    if(d.star_feedback)h+=`<div class="fb-item fb-hint">STAR: ${d.star_feedback}</div>`;
+    if(d.model_answer_hint)h+=`<div class="fb-item">Hint: ${d.model_answer_hint}</div>`;
+    document.getElementById('ilFbItems').innerHTML=h;
+    document.getElementById('ilFeedback').classList.remove('hidden');
+    ST.interviews++;updateMetrics();showToast('Answer scored!');
+  }catch(e){showToast('Scoring failed: '+e.message,'error');}
+  btnTxt.textContent='Score My Answer';btn.disabled=false;
+}
+
+// ── QUIZ ──
+let qqAll=[],qqIdx=0,qqAns=[],qqTimer=null,qqLeft=30,qqDone=false;
+async function startQuiz(){
+  const domain=document.getElementById('qlDomain').value,diff=document.getElementById('qlDiff').value,count=+document.getElementById('qlCount').value;
+  const btn=document.getElementById('qlBtn'),btnTxt=document.getElementById('qlBtnTxt');
+  btnTxt.textContent='Generating...';btn.disabled=true;
+  document.getElementById('qlResults').classList.add('hidden');document.getElementById('qlArena').classList.add('hidden');
+  try{
+    const d=await apiFetch('/quiz/generate',{method:'POST',body:JSON.stringify({domain,difficulty:diff,count})});
+    qqAll=d.questions||[];qqIdx=0;qqAns=[];
+    if(!qqAll.length){showToast('No questions returned','warn');return;}
+    document.getElementById('qlArena').classList.remove('hidden');
+    renderQ();showToast('Quiz started!');
+  }catch(e){showToast('Quiz failed: '+e.message,'error');}
+  btnTxt.textContent='Restart Quiz';btn.disabled=false;
+}
+function renderQ(){
+  if(qqIdx>=qqAll.length){finishQuiz();return;}
+  qqDone=false;
+  const q=qqAll[qqIdx],total=qqAll.length;
+  document.getElementById('qlMeta').textContent='Q'+(qqIdx+1)+' of '+total;
+  document.getElementById('qlFill').style.width=(qqIdx/total*100)+'%';
+  document.getElementById('qlQ').textContent=q.question;
+  document.getElementById('qlExp').classList.add('hidden');
+  document.getElementById('qlNext').classList.add('hidden');
+  document.getElementById('qlOpts').innerHTML=q.options.map((o,i)=>`<button class="ql-opt" onclick="pickOpt(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('');
+  clearInterval(qqTimer);qqLeft=30;updTimer();
+  qqTimer=setInterval(()=>{qqLeft--;updTimer();if(qqLeft<=0){clearInterval(qqTimer);if(!qqDone)pickOpt(-1);}},1000);
+}
+function updTimer(){const el=document.getElementById('qlTimer');el.textContent=qqLeft+'s';el.classList.toggle('urgent',qqLeft<=10);}
+function pickOpt(idx){
+  if(qqDone)return;qqDone=true;clearInterval(qqTimer);
+  const q=qqAll[qqIdx];qqAns.push(idx);ST.quizQs++;updateMetrics();
+  document.querySelectorAll('.ql-opt').forEach((b,i)=>{b.disabled=true;if(i===q.correct_index)b.classList.add('correct');else if(i===idx)b.classList.add('wrong');});
+  const exp=document.getElementById('qlExp');exp.textContent='Explanation: '+(q.explanation||'N/A');exp.classList.remove('hidden');
+  document.getElementById('qlNext').classList.remove('hidden');
+}
+function nextQ(){qqIdx++;renderQ();}
+async function finishQuiz(){
+  clearInterval(qqTimer);document.getElementById('qlArena').classList.add('hidden');document.getElementById('qlFill').style.width='100%';
+  try{
+    const d=await apiFetch('/quiz/submit',{method:'POST',body:JSON.stringify({questions:qqAll,answers:qqAns})});
+    const c=d.score>=75?'var(--green)':d.score>=50?'var(--gold)':'var(--coral)';
+    document.getElementById('qlScore').textContent=d.score+'%';document.getElementById('qlScore').style.color=c;
+    document.getElementById('qlSub').textContent=d.correct+' / '+d.total+' correct - Grade '+d.grade;
+    document.getElementById('qlFeedback').innerHTML='<div style="font-size:11px;font-weight:700;color:var(--dim);font-family:var(--ff-mono);text-transform:uppercase;margin-bottom:10px">AI Feedback</div>'+(d.feedback||'')+(d.weak_areas||[]).map(a=>`<div style="font-size:12px;color:var(--coral);margin-top:6px">Weak: ${a}</div>`).join('');
+    document.getElementById('qlRecos').innerHTML='<div style="font-size:11px;font-weight:700;color:var(--dim);font-family:var(--ff-mono);text-transform:uppercase;margin-bottom:10px">Recommendations</div>'+(d.recommendations||[]).map(r=>`<div style="font-size:13px;color:var(--muted);margin-bottom:8px;padding-left:12px;border-left:2px solid var(--gold)">${r}</div>`).join('');
+    document.getElementById('qlResults').classList.remove('hidden');
+    const domain=document.getElementById('qlDomain').value;
+    ST.scores[domain]=d.score;updateProgBars();
+    showToast('Quiz done! '+d.score+'% Grade '+d.grade);
+  }catch(e){showToast('Could not grade: '+e.message,'error');}
+}
+
+// ── JOBS ──
+async function searchJobs(){
+  const role=document.getElementById('jobRole').value,loc=document.getElementById('jobLoc').value||'India';
+  const grid=document.getElementById('jobsGrid');
+  grid.innerHTML='<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted)">Loading jobs...</div>';
+  try{
+    const [jd,td]=await Promise.all([apiFetch('/jobs/list?role='+encodeURIComponent(role)+'&location='+encodeURIComponent(loc)),apiFetch('/jobs/trends')]);
+    const jobs=jd.jobs||[];
+    if(!jobs.length){grid.innerHTML='<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted)">No jobs found. Try different search.</div>';return;}
+    grid.innerHTML=jobs.map(j=>`<div class="jcard"><div class="jco">${j.icon||''} ${j.company} - ${j.location}</div><div class="jti">${j.title}</div><div class="jsal">${j.salary||''}</div><div class="jskills">${(j.skills||[]).map(s=>`<span class="jsk">${s}</span>`).join('')}</div><div class="jme">${j.experience||''} - ${j.type||'Full Time'}</div></div>`).join('');
+    const tr=document.getElementById('jobsTrends');tr.classList.remove('hidden');
+    const colors=['cbadge-gold','cbadge-violet','cbadge-teal','cbadge-coral'];
+    document.getElementById('trendChips').innerHTML=(td.hot_roles||[]).map((r,i)=>`<span class="trend-chip cbadge ${colors[i%colors.length]}">${r}</span>`).join('')+(td.top_skills||[]).map(s=>`<span class="trend-chip cbadge cbadge-teal">${s}</span>`).join('');
+    document.getElementById('trendText').textContent=td.insight||'';
+    showToast('Found '+jobs.length+' jobs');
+  }catch(e){grid.innerHTML='<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--coral)">Error loading jobs. Check backend is running.</div>';}
+}
+
+// ── PROGRESS ──
+function updateMetrics(){
+  document.getElementById('metricAts').textContent=ST.bestAts+'%';
+  document.getElementById('metricInt').textContent=ST.interviews;
+  document.getElementById('metricQs').textContent=ST.quizQs;
+}
+function updateProgBars(){
+  const el=document.getElementById('progBars'),entries=Object.entries(ST.scores);
+  if(!entries.length)return;
+  const cols=['var(--gold)','var(--violet)','var(--teal)','var(--green)','var(--coral)'];
+  el.innerHTML=entries.map(([d,s],i)=>`<div class="pb-row"><div class="pb-hd"><span>${d}</span><span>${s}%</span></div><div class="pb-track"><div class="pb-fill" style="background:${cols[i%cols.length]};width:0" data-w="${s}%"></div></div></div>`).join('');
+  setTimeout(()=>{el.querySelectorAll('.pb-fill').forEach(b=>b.style.width=b.dataset.w);},100);
+}
+
+// Auto load jobs
+searchJobs();
+</script>
+
+
+<!-- ══ AUTH MODAL ══ -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-modal" role="dialog" aria-modal="true">
+    <button class="auth-close" onclick="closeAuth()" aria-label="Close">&#x2715;</button>
+    <div class="auth-logo">Vidya<em>Mitra</em></div>
+    <div class="auth-tagline" id="authTagline">Sign in to save progress, access all features, and get your personalized career roadmap.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Create Account</button>
+    </div>
+    <!-- Login form -->
+    <div id="loginForm">
+      <div class="auth-field"><label>Email</label><input class="auth-input" id="loginEmail" type="email" placeholder="arjun@gmail.com" onkeydown="authKey(event)"/></div>
+      <div class="auth-field"><label>Password</label><input class="auth-input" id="loginPass" type="password" placeholder="Your password" onkeydown="authKey(event)"/></div>
+      <div class="auth-error" id="loginErr"></div>
+      <button class="auth-submit" id="loginBtn" onclick="doLogin()"><span id="loginBtnTxt">Sign In</span></button>
+      <div class="auth-footer">No account? <a onclick="switchTab('register')">Create one free</a></div>
+    </div>
+    <!-- Register form -->
+    <div id="registerForm" style="display:none">
+      <div class="auth-field"><label>Full Name</label><input class="auth-input" id="regName" type="text" placeholder="Arjun Sharma" onkeydown="authKey(event)"/></div>
+      <div class="auth-field"><label>Email</label><input class="auth-input" id="regEmail" type="email" placeholder="arjun@gmail.com" onkeydown="authKey(event)"/></div>
+      <div class="auth-field"><label>Password</label><input class="auth-input" id="regPass" type="password" placeholder="Min. 8 characters" onkeydown="authKey(event)"/></div>
+      <div class="auth-error" id="regErr"></div>
+      <button class="auth-submit" id="regBtn" onclick="doRegister()"><span id="regBtnTxt">Create Account</span></button>
+      <div class="auth-footer">Already have an account? <a onclick="switchTab('login')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<script src="src/components/learn.js"></script>
+<script>
+// ══ AUTH ══════════════════════════════
+let authToken = sessionStorage.getItem('vm_token') || null;
+let authUser  = sessionStorage.getItem('vm_user')  || null;
+
+function openAuth(tab='login'){
+  document.getElementById('authOverlay').classList.add('open');
+  switchTab(tab);
+  setTimeout(()=>{
+    const f = tab==='login'?'loginEmail':'regName';
+    document.getElementById(f)?.focus();
+  },200);
+}
+function closeAuth(){document.getElementById('authOverlay').classList.remove('open');}
+document.getElementById('authOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAuth();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth();});
+
+function switchTab(tab){
+  document.getElementById('loginForm').style.display   = tab==='login'?'block':'none';
+  document.getElementById('registerForm').style.display = tab==='register'?'block':'none';
+  document.getElementById('tabLogin').classList.toggle('active',tab==='login');
+  document.getElementById('tabRegister').classList.toggle('active',tab==='register');
+  clearAuthErrors();
+}
+
+function clearAuthErrors(){
+  ['loginErr','regErr'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='';el.classList.remove('visible');}});
+  document.querySelectorAll('.auth-input').forEach(i=>i.classList.remove('err'));
+}
+
+function showAuthError(id,msg){
+  const el=document.getElementById(id);if(!el)return;
+  el.textContent=msg;el.classList.add('visible');
+}
+
+function authKey(e){if(e.key==='Enter'){const active=document.getElementById('registerForm').style.display==='none'?'login':'register';active==='login'?doLogin():doRegister();}}
+
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email){document.getElementById('loginEmail').classList.add('err');showAuthError('loginErr','Email is required.');return;}
+  if(!pass){document.getElementById('loginPass').classList.add('err');showAuthError('loginErr','Password is required.');return;}
+  const btn=document.getElementById('loginBtn'),txt=document.getElementById('loginBtnTxt');
+  btn.disabled=true;txt.textContent='Signing in...';
+  try{
+    const d=await apiFetch('/auth/login',{method:'POST',body:JSON.stringify({email,password:pass})});
+    onAuthSuccess(d);
+  }catch(e){
+    showAuthError('loginErr',e.message||'Invalid email or password.');
+    document.getElementById('loginEmail').classList.add('err');
+    document.getElementById('loginPass').classList.add('err');
+  }
+  btn.disabled=false;txt.textContent='Sign In';
+}
+
+async function doRegister(){
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  if(!name){document.getElementById('regName').classList.add('err');showAuthError('regErr','Name is required.');return;}
+  if(!email){document.getElementById('regEmail').classList.add('err');showAuthError('regErr','Email is required.');return;}
+  if(pass.length<8){document.getElementById('regPass').classList.add('err');showAuthError('regErr','Password must be at least 8 characters.');return;}
+  const btn=document.getElementById('regBtn'),txt=document.getElementById('regBtnTxt');
+  btn.disabled=true;txt.textContent='Creating account...';
+  try{
+    const d=await apiFetch('/auth/register',{method:'POST',body:JSON.stringify({email,password:pass,name})});
+    onAuthSuccess(d);
+  }catch(e){
+    showAuthError('regErr',e.message||'Registration failed. Try a different email.');
+    document.getElementById('regEmail').classList.add('err');
+  }
+  btn.disabled=false;txt.textContent='Create Account';
+}
+
+function onAuthSuccess(data){
+  authToken=data.access_token;
+  authUser=data.name||'User';
+  sessionStorage.setItem('vm_token',authToken);
+  sessionStorage.setItem('vm_user',authUser);
+  closeAuth();
+  updateNavForAuth();
+  unlockGatedSections();
+  showToast('Welcome, '+authUser+'! Your journey begins.');
+}
+
+function updateNavForAuth(){
+  const pill=document.getElementById('navUserPill');
+  const btn=document.getElementById('navAuthBtn');
+  if(authToken&&authUser){
+    if(pill){pill.classList.add('visible');document.getElementById('navAvatarLetter').textContent=authUser[0].toUpperCase();document.getElementById('navUserName').textContent=authUser;}
+    if(btn)btn.style.display='none';
+  }else{
+    if(pill)pill.classList.remove('visible');
+    if(btn)btn.style.display='';
+  }
+}
+
+function doLogout(){
+  authToken=null;authUser=null;
+  sessionStorage.removeItem('vm_token');sessionStorage.removeItem('vm_user');
+  updateNavForAuth();
+  lockGatedSections();
+  showToast('Signed out. See you soon!','info');
+}
+
+// ── Auth gating for Resume, Interview, Quiz, Jobs, Career ──
+const GATED=['resume','interview','quiz','career','jobs'];
+
+function lockGatedSections(){
+  GATED.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.classList.add('auth-gate');
+    if(!el.querySelector('.auth-gate-lock')){
+      const lock=document.createElement('div');
+      lock.className='auth-gate-lock';
+      lock.innerHTML=`<div class="gate-icon">🔐</div><div class="gate-msg">Sign in to access this feature<br>and save your progress.</div><button class="gate-btn" onclick="openAuth('login')">Sign In Free</button>`;
+      el.style.position='relative';
+      el.appendChild(lock);
+    }
+    el.classList.add('locked');
+  });
+}
+
+function unlockGatedSections(){
+  GATED.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.remove('locked');
+  });
+}
+
+// Init on load
+updateNavForAuth();
+if(!authToken)lockGatedSections();else unlockGatedSections();
+</script>
+</body>
+</html>

@@ -23,7 +23,7 @@ function chatKey(e) {
 }
 
 function autoResize(el) {
-  el.style.height = 'auto';
+  el.style.height = '0px';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 

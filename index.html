@@ -4,11 +4,13 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>VidyaMitra - The Renaissance Edition</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="src/styles/main.css"/>
-<link rel="stylesheet" href="src/styles/components.css"/>
-<link rel="stylesheet" href="src/styles/animations.css"/>
-<link rel="stylesheet" href="src/styles/learn.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Inter:wght@100..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="src/styles/main.css?v=7"/>
+<link rel="stylesheet" href="src/styles/components.css?v=7"/>
+<link rel="stylesheet" href="src/styles/animations.css?v=7"/>
+<link rel="stylesheet" href="src/styles/learn.css?v=7"/>
 <style>
 .ra-wrap,.il-wrap,.ql-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px;margin-top:48px;position:relative;overflow:hidden}
 .ra-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--violet))}
@@ -108,7 +110,7 @@
 /* ══ AUTH MODAL ══ */
 .auth-overlay{position:fixed;inset:0;background:rgba(8,8,9,.85);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
 .auth-overlay.open{opacity:1;visibility:visible}
-.auth-modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:48px 44px;width:100%;max-width:420px;position:relative;overflow:hidden;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.auth-modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:48px 44px;width:100%;max-width:420px;position:relative;overflow:visible;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.16,1,.3,1)}
 .auth-overlay.open .auth-modal{transform:none}
 .auth-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--violet),var(--teal))}
 .auth-close{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--dim);font-size:20px;cursor:pointer;line-height:1;transition:color .2s}
@@ -233,26 +235,14 @@
   <button class="mobile-menu-auth" id="mobileAuthBtn" onclick="openAuth('login');toggleMobileMenu()">Sign In</button>
 </div>
 
+<!-- LEGACY HERO (Hidden)
 <section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-tag">The Renaissance Edition - 2026</div>
-  <div class="hero-edition">150+ AI-Powered Career Features</div>
-  <h1 class="hero-title">
-    <span class="line"><span class="word">The</span> <span class="word"><em>Renaissance</em></span></span>
-    <span class="line"><span class="word">of Your</span> <span class="word">Career</span></span>
-  </h1>
-  <p class="hero-subtitle">Resume analysis, skill assessment, mock interviews, personalized learning paths powered by Groq AI.</p>
-  <div class="hero-actions">
-    <a href="#agent" class="btn-hero-primary" onclick="scrollToSection('agent')">Start Career Journey</a>
-    <a href="#resume" class="btn-hero-secondary" onclick="scrollToSection('resume')">Try Resume Analyzer</a>
-  </div>
-  <div class="hero-stats">
-    <div class="hero-stat"><span class="hero-stat-num counter" data-target="150" data-suffix="+">0</span><div class="hero-stat-label">AI Features</div></div>
-    <div class="hero-stat"><span class="hero-stat-num counter" data-target="8" data-suffix=" APIs">0</span><div class="hero-stat-label">Integrations</div></div>
-    <div class="hero-stat"><span class="hero-stat-num counter" data-target="94" data-suffix="%">0</span><div class="hero-stat-label">Resume Improvement</div></div>
-  </div>
+  ...
 </section>
+-->
+
+<div id="hero-root"></div>
+<script type="module" src="/src/main.tsx"></script>
 
 
 <!-- AI AGENT -->
@@ -558,19 +548,6 @@
 </div>
 </div>
 
-<section class="cta-section">
-  <div class="section-eyebrow" style="justify-content:center;margin-bottom:32px;">Start Today - It is Free</div>
-  <h2 class="cta-title">Your dream role<br><em>awaits.</em></h2>
-  <div class="hero-actions" style="opacity:1;animation:none;margin-top:40px;">
-    <a href="#agent" class="btn-hero-primary" onclick="scrollToSection('agent')">Start Career Journey</a>
-  </div>
-  <div class="cta-badges">
-    <span class="cbadge cbadge-gold">Powered by Groq</span>
-    <span class="cbadge cbadge-violet">JWT Secured</span>
-    <span class="cbadge cbadge-teal">India-first</span>
-    <span class="cbadge cbadge-coral">FastAPI Backend</span>
-  </div>
-</section>
 
 <footer>
   <span>2026 VidyaMitra. Renaissance Edition.</span>
@@ -990,7 +967,7 @@ function lockGatedSections(){
     if(!el.querySelector('.auth-gate-lock')){
       const lock=document.createElement('div');
       lock.className='auth-gate-lock';
-      lock.innerHTML=`<div class="gate-icon">🔐</div><div class="gate-msg">Sign in to access this feature<br>and save your progress.</div><button class="gate-btn" onclick="openAuth('login')">Sign In Free</button>`;
+      lock.innerHTML=`<div class="gate-icon"><span class="material-symbols-outlined" style="font-size:48px">lock</span></div><div class="gate-msg">Sign in to access this feature<br>and save your progress.</div><button class="gate-btn" onclick="openAuth('login')">Sign In Free</button>`;
       el.style.position='relative';
       el.appendChild(lock);
     }

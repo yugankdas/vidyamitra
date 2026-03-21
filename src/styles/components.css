@@ -191,16 +191,6 @@
 .quiz-opt { padding: 9px 13px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; color: var(--muted); cursor: pointer; transition: all 0.18s; }
 .quiz-opt:hover, .quiz-opt.sel { border-color: var(--gold); background: var(--glow); color: var(--gold); }
 
-/* ═══════════════════════════════════════
-   FLOW STEPS
-═══════════════════════════════════════ */
-.flow-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
-.flow-steps::before { content: ''; position: absolute; top: 27px; left: 28px; right: 28px; height: 1px; background: linear-gradient(90deg, var(--gold), var(--violet), var(--teal), var(--green)); opacity: 0.4; }
-.flow-step { padding: 0 16px; text-align: center; position: relative; z-index: 1; }
-.flow-node { width: 56px; height: 56px; border-radius: 50%; background: var(--bg2); border: 2px solid var(--border2); display: flex; align-items: center; justify-content: center; font-family: var(--ff-display); font-size: 18px; font-weight: 700; margin: 0 auto 18px; transition: all 0.3s; }
-.flow-step:hover .flow-node { border-color: var(--gold); background: var(--glow); box-shadow: 0 0 20px rgba(232,184,75,0.25); }
-.flow-step-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.flow-step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
 /* ═══════════════════════════════════════
    CHAT DEMO
@@ -232,10 +222,15 @@
 .cdemo-quick { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 24px 14px; }
 .cquick-btn { padding: 5px 13px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--muted); cursor: pointer; font-family: var(--ff-body); transition: all 0.18s; white-space: nowrap; }
 .cquick-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--glow); }
-.cdemo-input-area { padding: 14px 24px 20px; border-top: 1px solid var(--border); background: var(--bg3); display: flex; gap: 10px; align-items: flex-end; }
-.cdemo-textarea { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 11px 16px; font-family: var(--ff-body); font-size: 13px; color: var(--text); resize: none; outline: none; min-height: 42px; max-height: 120px; line-height: 1.5; transition: border-color 0.2s; }
-.cdemo-textarea::placeholder { color: var(--dim); }
-.cdemo-textarea:focus { border-color: var(--gold); }
+.cdemo-input-area { 
+  padding: 14px 24px 20px; border-top: 1px solid var(--border); background: var(--bg3); display: flex; gap: 10px; align-items: flex-end; 
+  box-sizing: border-box; width: 100%; flex-shrink: 0;
+}
+.cdemo-textarea { 
+  flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 11px 16px; font-family: var(--ff-body); font-size: 13px; color: var(--text); resize: none; outline: none; min-height: 42px; max-height: 120px; line-height: 1.5; transition: border-color 0.2s; 
+  box-sizing: border-box; margin: 0;
+}
+.cdemo-textarea:focus { border-color: var(--gold); outline: none; }
 .cdemo-send { width: 42px; height: 42px; background: var(--gold); border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; transition: all 0.2s; flex-shrink: 0; }
 .cdemo-send:hover { background: var(--gold2); box-shadow: 0 6px 18px rgba(232,184,75,0.4); transform: translateY(-1px); }
 .cdemo-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }

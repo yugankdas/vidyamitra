@@ -6,10 +6,14 @@ GET  /learn/resources  → get curated YouTube/Coursera resources for a topic
 """
 import json
 import re
+import logging
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.services.groq_service import json_completion
 from app.utils import clean_json_str
+
+# Setup logging
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/learn", tags=["learning"])
 
@@ -95,6 +99,8 @@ Target Role: {req.target_role}
 {skills_text}
 Available time: {req.weekly_hours} hours/week
 
+CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
+
 Rules:
 - Modules with quiz score < 50 are "critical" priority
 - Modules with score 50-70 are "high" priority  
@@ -138,22 +144,57 @@ Return ONLY valid JSON:
 Include 3-5 modules total, ordered by priority. Keep it realistic and actionable.
 """
 
-    raw = json_completion(prompt, max_tokens=3000)
+    logger.info(f"Generating learning path for role: {req.target_role}")
+    raw = json_completion(prompt, max_tokens=2500) # Slightly reduced to avoid timeouts
+    
     try:
         clean = clean_json_str(raw)
         data = json.loads(clean)
-        modules = [Module(**m) for m in data["modules"]]
+        
+        # Robust module parsing
+        raw_modules = data.get("modules", [])
+        if not isinstance(raw_modules, list):
+            raw_modules = []
+            
+        modules = []
+        for m in raw_modules:
+            try:
+                # Ensure resources is a list
+                if "resources" not in m or not isinstance(m["resources"], list):
+                    m["resources"] = []
+                
+                # Use .get() or provide defaults for Pydantic to avoid strictness failures
+                modules.append(Module(
+                    id=m.get("id", len(modules) + 1),
+                    title=m.get("title", "Untitled Module"),
+                    domain=m.get("domain", req.target_role),
+                    priority=m.get("priority", "medium"),
+                    current_score=m.get("current_score", 0),
+                    target_score=m.get("target_score", 90),
+                    estimated_weeks=m.get("estimated_weeks", 2),
+                    why_this_now=m.get("why_this_now", m.get("why", "Recommended for your path")),
+                    resources=[Resource(**r) for r in m["resources"] if isinstance(r, dict) and "url" in r],
+                    milestone=m.get("milestone", "Complete this module")
+                ))
+            except Exception as mod_err:
+                logger.warning(f"Failed to parse module: {mod_err}. Data: {m}")
+                continue
+
+        if not modules:
+             raise ValueError("No valid modules could be parsed from AI response")
+
         return LearningPath(
             target_role=req.target_role,
             overall_readiness=data.get("overall_readiness", 40),
-            total_weeks=data.get("total_weeks", 12),
+            total_weeks=data.get("total_weeks", sum(m.estimated_weeks for m in modules)),
             adapted_from_scores=bool(req.quiz_scores),
             modules=modules,
-            next_action=data.get("next_action", "Start with the first critical module"),
+            next_action=data.get("next_action", "Start with the first module"),
             motivational_note=data.get("motivational_note", "You're on the right path!"),
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to parse learning path: {e}")
+        logger.error(f"Learning Path Generation Error: {str(e)}\nRaw Response: {raw}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate learning path. The AI response was invalid or incomplete.")
 
 
 @router.post("/adapt", response_model=LearningPath)
@@ -164,6 +205,8 @@ A user just completed a quiz and their path needs adapting.
 
 New quiz result: {req.new_quiz.domain} = {req.new_quiz.score}%
 Current path summary: {json.dumps(req.current_path, indent=2)[:2000]}
+
+CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
 
 Re-generate the learning path with updated priorities.
 If score >= 80, mark that module as "medium" or remove it.
@@ -196,6 +239,8 @@ def get_resources(req: ResourceRequest):
     prompt = f"""
 Recommend {req.count} real learning resources for: "{req.topic}" at {req.level} level.
 Target audience: Indian tech professionals.
+
+CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
 
 Include a mix of YouTube playlists/channels AND Coursera courses where applicable.
 Use real, existing resources with accurate URLs.

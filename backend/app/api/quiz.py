@@ -54,6 +54,8 @@ def generate_quiz(req: QuizGenerateRequest):
 Create {count} multiple-choice quiz questions on the topic "{req.domain}" at {req.difficulty} difficulty.
 Target audience: Indian tech students/professionals.
 
+CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
+
 Return JSON:
 {{
   "questions": [
@@ -104,6 +106,8 @@ def submit_quiz(req: QuizSubmitRequest):
     prompt = f"""
 A student scored {score}% ({correct}/{total}) on a quiz.
 Wrong questions: {json.dumps(wrong[:5])}
+
+CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
 
 Return JSON:
 {{

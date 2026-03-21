@@ -11,27 +11,27 @@
   const quizScores = {}; // { domain: score }
 
   const DOMAINS = [
-    { key: 'React / Frontend',   emoji: '⚛️' },
-    { key: 'Node.js / Backend',  emoji: '🟩' },
-    { key: 'System Design',      emoji: '🏗️' },
-    { key: 'DevOps / Cloud',     emoji: '☁️' },
-    { key: 'Machine Learning',   emoji: '🤖' },
-    { key: 'DSA',                emoji: '🧩' },
-    { key: 'Python',             emoji: '🐍' },
-    { key: 'Databases / SQL',    emoji: '🗄️' },
+    { key: 'React / Frontend' },
+    { key: 'Node.js / Backend' },
+    { key: 'System Design' },
+    { key: 'DevOps / Cloud' },
+    { key: 'Machine Learning' },
+    { key: 'DSA' },
+    { key: 'Python' },
+    { key: 'Databases / SQL' },
   ];
 
   const RESOURCE_ICONS = {
-    youtube:  '▶️',
-    coursera: '🎓',
-    article:  '📄',
-    practice: '💻',
+    youtube:  '',
+    coursera: '',
+    article:  '',
+    practice: '',
   };
 
   const PRIORITY_LABELS = {
-    critical: '🔴 Critical',
-    high:     '🟡 High',
-    medium:   '🟢 Polish',
+    critical: 'CRITICAL',
+    high:     'HIGH',
+    medium:   'POLISH',
   };
 
   // ── DOM Injection ────────────────────
@@ -45,7 +45,7 @@
     const html = `
 <!-- ══ LEARNING JOURNEY ══ -->
 <div class="lj-setup reveal" id="ljSetup" style="margin-top:64px;">
-  <div class="lj-setup-title">🧭 Your AI Learning Journey</div>
+  <div class="lj-setup-title">Your AI Learning Journey</div>
   <div class="lj-setup-sub">
     Tell us your target role and share your quiz scores — Groq AI will build a personalized,
     prioritized learning path with real YouTube and Coursera resources curated just for you.
@@ -71,7 +71,7 @@
   <div class="lj-score-chips" id="ljScoreChips">
     ${DOMAINS.map(d => `
       <div class="lj-score-chip" data-domain="${d.key}" onclick="ljToggleDomain(this)">
-        <span>${d.emoji} ${d.key}</span>
+        <span>${d.key}</span>
         <span class="chip-score" id="chip-score-${d.key.replace(/\s+/g,'-')}">—</span>
       </div>
     `).join('')}
@@ -86,7 +86,7 @@
 
   <button class="lj-generate-btn" id="ljGenerateBtn" onclick="ljGenerate()" style="margin-top:28px;">
     <div class="spinner"></div>
-    <span class="btn-label">⚡ Generate My Learning Path</span>
+    <span class="btn-label">Generate My Learning Path</span>
   </button>
 </div>
 
@@ -96,7 +96,7 @@
   <div class="lj-motive" id="ljMotive"></div>
   <div class="lj-modules" id="ljModules"></div>
   <div class="lj-adapt-banner" id="ljAdaptBanner">
-    ⚡ You've added a new quiz score — want to re-adapt your path?
+    You've added a new quiz score — want to re-adapt your path?
     <button onclick="ljAdapt()">Re-adapt now</button>
   </div>
 </div>
@@ -192,6 +192,15 @@
     btn.disabled = false;
   };
 
+  window.ljSaveCurrentPath = function() {
+    if (!currentPath) return;
+    toggleBookmark(null, 'roadmap', 'path-' + currentPath.target_role, { 
+      title: 'Roadmap for ' + currentPath.target_role, 
+      subtitle: currentPath.total_weeks + ' weeks path', 
+      fullPath: currentPath 
+    });
+  };
+
   // ── Adapt path ───────────────────────
   window.ljAdapt = async function () {
     if (!currentPath) return;
@@ -239,10 +248,13 @@
           <div class="lj-readiness-label">Overall Readiness</div>
           <div class="lj-readiness-role">${path.target_role}</div>
           <div class="lj-readiness-weeks">~${path.total_weeks} weeks to job-ready ${path.adapted_from_scores ? '· <span style="color:var(--teal)">Adapted from your scores</span>' : ''}</div>
+          <button class="sm-btn bookmark-btn" id="saveRoadmapBtn" data-id="path-${path.target_role}" data-type="roadmap" onclick="ljSaveCurrentPath()" style="margin-top:12px;">
+            <span class="material-symbols-outlined" style="font-size:16px;">bookmark_border</span> Save Roadmap
+          </button>
         </div>
       </div>
       <div class="lj-next-action">
-        <div class="lj-next-action-label">⚡ Next Action</div>
+        <div class="lj-next-action-label">Next Action</div>
         <div class="lj-next-action-text">${path.next_action}</div>
       </div>
     `;
@@ -292,11 +304,11 @@
       </div>
       <div class="lj-weeks-badge">${mod.estimated_weeks}w</div>
     </div>
-    <div class="lj-expand-icon">▼</div>
+    <div class="lj-expand-icon">[+]</div>
   </div>
   <div class="lj-module-body">
     <div class="lj-module-body-inner">
-      <div class="lj-milestone">🎯 Milestone: ${mod.milestone}</div>
+      <div class="lj-milestone">Milestone: ${mod.milestone}</div>
       <div class="lj-resources-title">Recommended Resources</div>
       <div class="lj-resources-list">${resources}</div>
     </div>
@@ -307,7 +319,7 @@
 
   function renderResource(res) {
     const typeClass = `type-${res.type}`;
-    const icon = RESOURCE_ICONS[res.type] || '📚';
+    const icon = RESOURCE_ICONS[res.type] || '';
     const safeUrl = res.url && res.url.startsWith('http') ? res.url : '#';
 
     return `
@@ -322,7 +334,7 @@
       <span class="lj-resource-tag">${res.difficulty}</span>
     </div>
   </div>
-  <div class="lj-resource-arrow">→</div>
+  <div class="lj-resource-arrow">>></div>
 </a>
 `;
   }
@@ -346,5 +358,7 @@
   } else {
     injectUI();
   }
+
+  window.renderPath = renderPath;
 
 })();

@@ -11,7 +11,14 @@ _client: Groq | None = None
 def get_groq_client() -> Groq:
     global _client
     if _client is None:
-        _client = Groq(api_key=settings.groq_api_key)
+        key = settings.groq_api_key
+        if key:
+            # Mask the key for logging: "gsk_...3ImFvf"
+            masked = key[:7] + "..." + key[-6:] if len(key) > 13 else "SHORT_KEY"
+            print(f"DEBUG: Groq API Key loaded: {masked}")
+        else:
+            print("ERROR: Groq API Key is EMPTY!")
+        _client = Groq(api_key=key)
     return _client
 
 

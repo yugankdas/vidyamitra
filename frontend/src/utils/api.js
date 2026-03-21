@@ -4,10 +4,12 @@
 //  Backend base URL — update if you deploy elsewhere.
 // ═══════════════════════════════════════
 
-const API_BASE = 'https://newvidyamitra.onrender.com';
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+  ? 'http://localhost:8000' 
+  : 'https://newvidyamitra.onrender.com';
 
-// Auth token storage (in-memory for this session)
-let _authToken = null;
+// Auth token storage (synced with sessionStorage)
+let _authToken = sessionStorage.getItem('vm_token') || null;
 
 function setAuthToken(token) {
   _authToken = token;
@@ -65,10 +67,10 @@ const ResumeAPI = {
 
 // ── Interview ───────────────────────────
 const InterviewAPI = {
-  generateQuestion: (role, mode = 'behavioral') =>
+  generateQuestion: (role, mode = 'behavioral', difficulty = 'medium') =>
     apiFetch('/interview/question', {
       method: 'POST',
-      body: JSON.stringify({ role, mode }),
+      body: JSON.stringify({ role, mode, difficulty }),
     }),
 
   scoreAnswer: (question, answer, mode = 'behavioral') =>

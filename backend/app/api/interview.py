@@ -43,11 +43,18 @@ class ScoreResponse(BaseModel):
 @router.post("/question", response_model=QuestionResponse)
 def generate_question(req: QuestionRequest):
     prompt = f"""
-Generate a {req.difficulty} {req.mode} interview question for a {req.role} role at an Indian tech company.
+Generate 1 interview question for the following role and mode.
+Role: {req.role}
+Mode: {req.mode} (behavioral, technical, or situational)
+Difficulty: {req.difficulty}
+
+Target Indian tech industry standards (top startups and FAANG).
+
+CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
 
 Return JSON:
 {{
-  "question": "<the interview question>",
+  "question": "<the question text>",
   "tips": ["<tip 1>", "<tip 2>", "<tip 3>"],
   "follow_ups": ["<follow-up question 1>", "<follow-up question 2>"]
 }}
@@ -64,19 +71,21 @@ Return JSON:
 @router.post("/score", response_model=ScoreResponse)
 def score_answer(req: ScoreRequest):
     prompt = f"""
-Score this interview answer for a {req.mode} question.
-
+Score the user's interview answer based on the question and mode.
 Question: {req.question}
 Answer: {req.answer}
+Mode: {req.mode}
+
+CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
 
 Return JSON:
 {{
-  "score": <integer 0-100>,
-  "grade": "<A|B|C|D>",
+  "score": <0-100 integer>,
+  "grade": "<A/B/C/D/F>",
   "strengths": ["<strength 1>", "<strength 2>"],
   "improvements": ["<improvement 1>", "<improvement 2>"],
-  "star_feedback": "<feedback on STAR method usage>",
-  "model_answer_hint": "<brief hint for a better answer>"
+  "star_feedback": "<optional feedback on STAR method>",
+  "model_answer_hint": "<brief hint of a great answer>"
 }}
 """
     raw = json_completion(prompt, max_tokens=800)

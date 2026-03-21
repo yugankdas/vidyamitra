@@ -9,28 +9,91 @@ function scrollToSection(id) {
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── Nav scroll class ────────────────────
+// ── Section nav active state with IntersectionObserver ──
+const sectionObserverOptions = {
+  root: null,
+  rootMargin: '-100px 0px -40% 0px', // Trigger when section is near the top
+  threshold: 0
+};
+
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      let pageId = entry.target.id.replace('page-', '');
+      if (pageId === 'hero') pageId = 'home';
+      highlightNavPill(pageId);
+    }
+  });
+}, sectionObserverOptions);
+
+function highlightNavPill(pageId) {
+  document.querySelectorAll('.nav-pill').forEach(pill => {
+    const dp = pill.getAttribute('data-page');
+    const isActive = (dp === pageId);
+    pill.classList.toggle('active', isActive);
+    
+    if (isActive) {
+      pill.style.background = '#FFFFFF';
+      pill.style.color = '#000000';
+    } else {
+      pill.style.background = '';
+      pill.style.color = '';
+    }
+  });
+
+  // Also highlight mobile menu
+  document.querySelectorAll('.mobile-menu-link').forEach(link => {
+    const dp = link.getAttribute('data-page');
+    link.classList.toggle('active', dp === pageId);
+  });
+}
+
+// Observe all major section/page units
+function initSectionObserver() {
+  const ids = ['hero', 'agent', 'page-resume', 'page-interview', 'page-career', 'page-roadmap', 'page-jobs'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) sectionObserver.observe(el);
+  });
+}
+
+// ── Profile Modal ───────────────────────
+function openProfile() {
+  const p = document.getElementById('profileOverlay');
+  if (p) {
+    p.classList.add('open');
+    const userName = sessionStorage.getItem('vm_user') || 'User';
+    document.getElementById('profileName').textContent = userName;
+    document.getElementById('profileAvatarBig').textContent = userName.charAt(0).toUpperCase();
+    
+    // Mock analytical stats (simulating backend data)
+    const seed = userName.length;
+    document.getElementById('metricAts').textContent = (75 + (seed % 15)) + '%';
+    document.getElementById('metricInt').textContent = (seed % 7) + 2;
+    document.getElementById('metricQs').textContent = (seed * 12);
+
+    if (window.updateProgBars) window.updateProgBars();
+    if (window.renderProfileBookmarks) window.renderProfileBookmarks();
+  }
+}
+
+function closeProfile() {
+  const p = document.getElementById('profileOverlay');
+  if (p) p.classList.remove('open');
+}
+
+// Initialise observer
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSectionObserver);
+} else {
+  initSectionObserver();
+}
+
+// Legacy scroll listener for nav background toggle
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('mainNav');
   if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
-  updateSectionNav();
 });
-
-// ── Section nav active state ────────────
-function updateSectionNav() {
-  const sections = ['agent', 'resume', 'interview', 'quiz', 'career', 'progress', 'jobs', 'tech'];
-  const scrollY = window.scrollY + 120;
-
-  for (let i = sections.length - 1; i >= 0; i--) {
-    const el = document.getElementById(sections[i]);
-    if (el && el.offsetTop <= scrollY) {
-      document.querySelectorAll('.nav-pill').forEach((l, idx) => {
-        l.classList.toggle('active', idx === i);
-      });
-      break;
-    }
-  }
-}
 
 // ── Reveal on scroll ────────────────────
 const revealObs = new IntersectionObserver((entries) => {
@@ -44,35 +107,6 @@ const revealObs = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-// ── Counter animation ───────────────────
-function animateCounter(el) {
-  const target = parseInt(el.dataset.target, 10);
-  const suffix = el.dataset.suffix || '';
-  const duration = 1800;
-  const start = performance.now();
-
-  function update(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    const current = Math.floor(eased * target);
-    el.textContent = current + suffix;
-    if (progress < 1) requestAnimationFrame(update);
-    else el.textContent = target + suffix;
-  }
-  requestAnimationFrame(update);
-}
-
-const counterObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      animateCounter(e.target);
-      counterObs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.5 });
-
-document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
 
 // ── Word reveal for hero title ───────────
 setTimeout(() => {
@@ -126,17 +160,8 @@ setTimeout(() => {
 
 // ── Toast utility ───────────────────────
 function showToast(msg, type = 'success') {
-  const icons = { success: '✅', error: '❌', info: 'ℹ️', warn: '⚠️' };
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.innerHTML = (icons[type] || '✅') + ' ' + msg;
-  const container = document.getElementById('toastContainer');
-  if (container) container.appendChild(t);
-  setTimeout(() => {
-    t.style.opacity = '0';
-    t.style.transition = '0.3s';
-    setTimeout(() => t.remove(), 300);
-  }, 3000);
+  // Disabled as per user request
+  return;
 }
 
 // ── Feature card 3D tilt ────────────────
@@ -157,3 +182,7 @@ document.querySelectorAll('.feature-card').forEach(card => {
 // Export globals
 window.scrollToSection = scrollToSection;
 window.showToast = showToast;
+window.revObs = revealObs;
+window.openProfile = openProfile;
+window.closeProfile = closeProfile;
+window.updateProgBars = updateProgBars;

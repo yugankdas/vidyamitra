@@ -34,6 +34,7 @@ def analyze_resume(req: ResumeRequest):
 
     prompt = f"""
 Analyze this resume for ATS compatibility{f' for the role: {req.target_role}' if req.target_role else ''}.
+CRITICAL: NO EMOJIS.
 
 Resume:
 {req.resume_text[:4000]}

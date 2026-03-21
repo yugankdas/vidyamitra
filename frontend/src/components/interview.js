@@ -64,8 +64,8 @@ function drawInterviewChart() {
 
   // Area fill
   const grad = ctx.createLinearGradient(0, pad.t, 0, H);
-  grad.addColorStop(0, 'rgba(232,184,75,0.2)');
-  grad.addColorStop(1, 'rgba(232,184,75,0)');
+  grad.addColorStop(0, 'rgba(0,0,0,0.08)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.beginPath();
   ctx.moveTo(xp(0), yp(data[0]));
   for (let i = 1; i < data.length; i++) {
@@ -85,7 +85,7 @@ function drawInterviewChart() {
     const cx = (xp(i - 1) + xp(i)) / 2;
     ctx.bezierCurveTo(cx, yp(data[i - 1]), cx, yp(data[i]), xp(i), yp(data[i]));
   }
-  ctx.strokeStyle = '#e8b84b';
+  ctx.strokeStyle = '#000000';
   ctx.lineWidth = 2.5;
   ctx.stroke();
 
@@ -93,13 +93,13 @@ function drawInterviewChart() {
   data.forEach((v, i) => {
     ctx.beginPath();
     ctx.arc(xp(i), yp(v), 3.5, 0, Math.PI * 2);
-    ctx.fillStyle = '#e8b84b';
+    ctx.fillStyle = '#000000';
     ctx.fill();
   });
 
   // Labels
-  ctx.fillStyle = 'rgba(138,130,153,0.8)';
-  ctx.font = '10px Syne, sans-serif';
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.font = '10px Outfit, sans-serif';
   ctx.textAlign = 'center';
   labels.forEach((l, i) => ctx.fillText(l, xp(i), H - pad.b + 14));
 }

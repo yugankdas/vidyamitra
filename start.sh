@@ -19,7 +19,7 @@ echo "📦 Setting up backend..."
 cd backend
 
 if [ ! -f ".env" ]; then
-  cp ../.env.example .env
+  cp .env.example .env
   echo "⚠️  Created .env from .env.example"
   echo "   → Please add your GROQ_API_KEY to backend/.env"
 fi

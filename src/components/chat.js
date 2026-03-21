@@ -11,7 +11,9 @@ const CHAT_SYSTEM = `You are VidyāMitra, an expert AI career advisor for Indian
 - Mock interview coaching using STAR method and technical prep
 - Salary benchmarks for Bengaluru, Mumbai, Delhi, Pune, Hyderabad
 - Learning resources (Coursera, YouTube, LeetCode, System Design Primer)
-Be concise (3-4 sentences), practical, and encouraging. Use **bold** for key terms. Indian context when relevant.`;
+Be concise (3-4 sentences), practical, and encouraging. Use **bold** for key terms. Indian context when relevant.
+Strictly no emojis. Always respond in plain text.
+`;
 
 let chatHistory = [];
 
@@ -23,7 +25,7 @@ function chatKey(e) {
 }
 
 function autoResize(el) {
-  el.style.height = 'auto';
+  el.style.height = '0px';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
@@ -77,7 +79,7 @@ function addMsg(text, role) {
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n/g, '<br>');
   div.innerHTML = `
-    <div class="cmsg-av ${role}">${role === 'ai' ? 'V' : '👤'}</div>
+    <div class="cmsg-av ${role}">${role === 'ai' ? 'V' : 'U'}</div>
     <div class="cmsg-bubble ${role}">${fmt}</div>
   `;
   msgs.appendChild(div);

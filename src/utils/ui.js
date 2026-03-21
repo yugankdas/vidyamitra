@@ -126,10 +126,10 @@ setTimeout(() => {
 
 // ── Toast utility ───────────────────────
 function showToast(msg, type = 'success') {
-  const icons = { success: '✅', error: '❌', info: 'ℹ️', warn: '⚠️' };
+  const icons = { success: 'OK', error: 'ERR', info: 'INFO', warn: 'WARN' };
   const t = document.createElement('div');
   t.className = 'toast';
-  t.innerHTML = (icons[type] || '✅') + ' ' + msg;
+  t.innerHTML = (icons[type] || 'OK') + ' ' + msg;
   const container = document.getElementById('toastContainer');
   if (container) container.appendChild(t);
   setTimeout(() => {

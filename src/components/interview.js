@@ -99,7 +99,7 @@ function drawInterviewChart() {
 
   // Labels
   ctx.fillStyle = 'rgba(138,130,153,0.8)';
-  ctx.font = '10px Syne, sans-serif';
+  ctx.font = '10px Outfit, sans-serif';
   ctx.textAlign = 'center';
   labels.forEach((l, i) => ctx.fillText(l, xp(i), H - pad.b + 14));
 }

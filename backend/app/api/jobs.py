@@ -9,6 +9,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from app.services.groq_service import json_completion
 from app.utils import clean_json_str
+import httpx
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -21,7 +22,6 @@ class Job(BaseModel):
     experience: str = ""
     skills: list[str] = []
     type: str = "Full Time"
-    icon: str = "🏢"
     url: str = ""
 
 
@@ -38,15 +38,61 @@ class TrendsResponse(BaseModel):
 
 
 @router.get("/list", response_model=JobsResponse)
-def list_jobs(role: str = "", location: str = "India"):
+async def list_jobs(role: str = "", location: str = "India"):
     """
-    Returns AI-generated representative job listings.
-    In production, replace with a real job board API (Naukri, LinkedIn, etc.)
+    Returns REAL job listings from Adzuna API with an AI fallback.
     """
+    from app.core.config import settings
+    
+    app_id = settings.adzuna_app_id
+    app_key = settings.adzuna_app_key
+    
+    if app_id and app_key:
+        try:
+            # Adzuna API Search (India = 'in')
+            url = f"https://api.adzuna.com/v1/api/jobs/in/search/1"
+            params = {
+                "app_id": app_id,
+                "app_key": app_key,
+                "results_per_page": 6,
+                "what": role or "software engineer",
+                "content-type": "application/json"
+            }
+            if location and location.lower() != "india":
+                params["where"] = location
+
+            async with httpx.AsyncClient() as client:
+                res = await client.get(url, params=params, timeout=10.0)
+                res.raise_for_status()
+                data = res.json()
+                
+                results = data.get("results", [])
+                jobs = []
+                for r in results:
+                    jobs.append(Job(
+                        title=r.get("title", "Untitled Role").replace("<strong>", "").replace("</strong>", ""),
+                        company=r.get("company", {}).get("display_name", "Unknown Company"),
+                        location=r.get("location", {}).get("display_name", "Remote / India"),
+                        salary=f"₹{r.get('salary_min', 'N/A')} - {r.get('salary_max', '')}",
+                        experience="Verified listing",
+                        skills=[c.get("label", "") for c in r.get("category", {}).get("tag", []) if c][:3],
+                        type="Remote" if "remote" in r.get("title", "").lower() else "Full Time",
+                        url=r.get("redirect_url", "")
+                    ))
+                if jobs:
+                    return JobsResponse(jobs=jobs, total=len(jobs))
+        except Exception:
+            pass
+
+    # fallback AI logic
     prompt = f"""
 Generate 6 realistic tech job listings{f' for the role: {role}' if role else ''} in {location}.
 Focus on Indian tech companies (Swiggy, Razorpay, Zomato, Flipkart, CRED, PhonePe, etc.) 
 and FAANG India offices.
+
+CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
+
+For each job, provide a realistic "url" that would lead to a search for that job on LinkedIn or Google (e.g., https://www.linkedin.com/jobs/search/?keywords=Software+Engineer+at+Razorpay).
 
 Return JSON:
 {{
@@ -59,8 +105,7 @@ Return JSON:
       "experience": "<X-Y YOE>",
       "skills": ["<skill1>", "<skill2>", "<skill3>"],
       "type": "Full Time",
-      "icon": "<relevant emoji>",
-      "url": ""
+      "url": "<realistic search URL>"
     }}
   ]
 }}
@@ -75,9 +120,9 @@ Return JSON:
         # Fallback static data
         return JobsResponse(
             jobs=[
-                Job(title="Senior SDE", company="Razorpay", location="Bengaluru", salary="₹28–38 LPA", experience="4–6 YOE", skills=["React", "Node.js", "PostgreSQL"], icon="🏢"),
-                Job(title="ML Engineer", company="Swiggy", location="Bengaluru", salary="₹22–32 LPA", experience="3–5 YOE", skills=["Python", "TensorFlow", "Spark"], icon="🚀"),
-                Job(title="Backend SDE", company="CRED", location="Mumbai", salary="₹18–26 LPA", experience="2–4 YOE", skills=["Go", "Kafka", "Redis"], icon="💳"),
+                Job(title="Senior SDE", company="Razorpay", location="Bengaluru", salary="₹28–38 LPA", experience="4–6 YOE", skills=["React", "Node.js", "PostgreSQL"], icon="🏢", url="https://www.linkedin.com/jobs/search/?keywords=Razorpay+SDE"),
+                Job(title="ML Engineer", company="Swiggy", location="Bengaluru", salary="₹22–32 LPA", experience="3–5 YOE", skills=["Python", "TensorFlow", "Spark"], icon="🚀", url="https://www.linkedin.com/jobs/search/?keywords=Swiggy+ML"),
+                Job(title="Backend SDE", company="CRED", location="Mumbai", salary="₹18–26 LPA", experience="2–4 YOE", skills=["Go", "Kafka", "Redis"], icon="💳", url="https://www.linkedin.com/jobs/search/?keywords=CRED+Backend"),
             ],
             total=3,
         )

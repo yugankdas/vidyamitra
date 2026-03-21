@@ -19,7 +19,12 @@ async function loadJobs(role = '', location = 'India') {
     }
 
     container.innerHTML = jobs.map(job => `
-      <div class="feature-card" style="--accent-color:var(--gold)">
+      <div class="feature-card" style="--accent-color:var(--gold); position:relative;">
+        <button class="bookmark-btn" data-id="${job.id || job.title}" data-type="job" 
+          onclick="toggleBookmark(event, 'job', '${job.id || job.title}', { title: '${job.title}', subtitle: '${job.location || 'India'}' })"
+          style="position:absolute; top:12px; right:12px; z-index:2;">
+          <span class="material-symbols-outlined">bookmark_border</span>
+        </button>
         <div class="fc-icon">${job.icon || '🏢'}</div>
         <div class="fc-eyebrow">${job.location || 'India'} · ${job.type || 'Full Time'}</div>
         <div class="fc-title">${job.title}</div>

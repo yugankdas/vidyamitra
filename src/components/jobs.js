@@ -20,7 +20,7 @@ async function loadJobs(role = '', location = 'India') {
 
     container.innerHTML = jobs.map(job => `
       <div class="feature-card" style="--accent-color:var(--gold)">
-        <div class="fc-icon">${job.icon || '🏢'}</div>
+        <div class="fc-icon">${job.icon || ''}</div>
         <div class="fc-eyebrow">${job.location || 'India'} · ${job.type || 'Full Time'}</div>
         <div class="fc-title">${job.title}</div>
         <div class="fc-desc">${job.salary || ''} · ${job.experience || ''} · ${(job.skills || []).join(', ')}</div>

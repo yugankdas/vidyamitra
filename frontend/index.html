@@ -800,6 +800,7 @@ function updateProgBars(){
     <div id="loginForm">
       <div class="auth-field"><label>Email</label><input class="auth-input" id="loginEmail" type="email" placeholder="arjun@gmail.com" onkeydown="authKey(event)"/></div>
       <div class="auth-field"><label>Password</label><input class="auth-input" id="loginPass" type="password" placeholder="Your password" onkeydown="authKey(event)"/></div>
+      <div class="auth-field" style="flex-direction:row; align-items:center; gap:8px; margin-top:-8px; margin-bottom:14px;"><input type="checkbox" id="rememberMe" checked/><label for="rememberMe" style="text-transform:none; letter-spacing:normal; font-weight:500; opacity:0.8; margin:0">Remember me for 30 days</label></div>
       <div class="auth-error" id="loginErr"></div>
       <button class="auth-submit" id="loginBtn" onclick="doLogin()"><span id="loginBtnTxt">Sign In</span></button>
       <div class="auth-footer">No account? <a onclick="switchTab('register')">Create one free</a></div>
@@ -879,8 +880,8 @@ function updateProgBars(){
 <script src="src/components/learn.js?v=2"></script>
 <script>
 // ══ AUTH ══════════════════════════════
-let authToken = sessionStorage.getItem('vm_token') || null;
-let authUser  = sessionStorage.getItem('vm_user')  || null;
+let authToken = localStorage.getItem('vm_token') || sessionStorage.getItem('vm_token') || null;
+let authUser  = localStorage.getItem('vm_user')  || sessionStorage.getItem('vm_user')  || null;
 
 function openAuth(tab='login'){
   document.getElementById('authOverlay').classList.add('open');
@@ -952,8 +953,14 @@ async function doRegister(){
 function onAuthSuccess(data){
   authToken=data.access_token;
   authUser=data.name||'User';
-  sessionStorage.setItem('vm_token',authToken);
-  sessionStorage.setItem('vm_user',authUser);
+  const remember = document.getElementById('rememberMe')?.checked;
+  if (remember) {
+    localStorage.setItem('vm_token',authToken);
+    localStorage.setItem('vm_user',authUser);
+  } else {
+    sessionStorage.setItem('vm_token',authToken);
+    sessionStorage.setItem('vm_user',authUser);
+  }
   // Keep window.API in sync so all module calls send the auth header
   if(window.API) window.API.setAuthToken(authToken);
   closeAuth();
@@ -980,6 +987,7 @@ function updateNavForAuth(){
 function doLogout(){
   authToken=null;authUser=null;
   sessionStorage.removeItem('vm_token');sessionStorage.removeItem('vm_user');
+  localStorage.removeItem('vm_token');localStorage.removeItem('vm_user');
   if(window.API) window.API.setAuthToken(null);
   updateNavForAuth();
   lockGatedSections();

@@ -791,7 +791,7 @@ footer a:hover { color: var(--muted); }
   .marquee-card { min-width: 220px; padding: 16px 18px; }
   .cc-sidebar { padding: 12px; }
   .cc-workspace { height: 320px; }
-  .cdemo-messages { height: 220px; padding: 16px; }
+  .cdemo-messages { height: 220px; padding: 16px 16px 90px; }
   .cmsg-bubble { padding: 10px 14px; font-size: 13px; max-width: 90%; }
   .score-num { font-size: 28px; }
   .score-card { padding: 14px; }

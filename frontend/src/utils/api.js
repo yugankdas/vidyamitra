@@ -6,7 +6,7 @@
 
 const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
   ? 'http://localhost:8000' 
-  : 'https://newvidyamitra.onrender.com';
+  : 'https://vidyamitra-xa8m.onrender.com';
 
 // Auth token storage (synced with sessionStorage)
 let _authToken = sessionStorage.getItem('vm_token') || null;

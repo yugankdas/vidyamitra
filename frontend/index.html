@@ -272,12 +272,14 @@
         </div>
         <div class="reveal reveal-delay-2">
           <div class="ra-wrap">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <label class="section-eyebrow" style="margin:0;">Resume Text</label>
-              <div class="pdf-upload-btn" onclick="document.getElementById('pdfInput').click()" style="cursor:pointer; color:var(--text); font-size:12px; font-weight:600; text-transform:none; letter-spacing:normal; font-family:var(--ff-body); text-decoration:underline;">Upload PDF</div>
-            </div>
+            <label class="section-eyebrow" style="margin-bottom:8px">Resume Text</label>
+            <textarea class="txt-area" id="resumeText" placeholder="Paste your resume here or manually type it out..."></textarea>
+            
+            <button class="action-btn" onclick="document.getElementById('pdfInput').click()" style="margin:16px 0; background:var(--bg2); color:var(--text); border:2px dashed var(--border); box-shadow:none; width:100%; display:flex; justify-content:center; align-items:center;">
+              <span class="material-symbols-outlined" style="font-size:20px; margin-right:8px;">upload_file</span> Upload Resume File (PDF)
+            </button>
             <input type="file" id="pdfInput" accept="application/pdf" style="display:none;" onchange="handlePdfUpload(event)"/>
-            <textarea class="txt-area" id="resumeText" placeholder="Paste your resume here or upload a PDF..."></textarea>
+
             <div class="fld-row">
               <input class="fld-input" id="resumeRole" placeholder="Target role (e.g. Senior SDE)"/>
               <button class="action-btn" id="raBtn" onclick="analyzeResume()"><span id="raBtnTxt">Analyze Resume</span></button>
@@ -431,7 +433,7 @@
 
 
 <footer>
-  <span>2026 VidyaMitra. Team Zebwired.</span>
+  <span>2026 VidyaMitra. Team Zenwired.</span>
   <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="https://vidyamitra-1-ddka.onrender.com/docs" target="_blank">API Docs</a></div>
 </footer>
 
@@ -656,11 +658,18 @@ async function getQuestion(){
     const d=await window.API.interview.generateQuestion(role, mode, diff);
     curQ=d.question;
     document.getElementById('ilQLabel').textContent=mode.toUpperCase()+' - '+diff.toUpperCase();
-    document.getElementById('ilQText').textContent=d.question;
-    document.getElementById('ilTips').innerHTML=(d.tips||[]).map(t=>`<span class="tip">${t}</span>`).join('');
-    document.getElementById('ilQBox').classList.remove('hidden');
-    document.getElementById('ilAnswer').classList.remove('hidden');
-    document.getElementById('ilAnswer').focus();
+    if (!curQ || curQ.trim() === '') {
+      document.getElementById('ilQText').textContent="There's none. Please try different parameters.";
+      document.getElementById('ilAnswer').classList.add('hidden');
+      document.getElementById('ilTips').innerHTML='';
+      document.getElementById('ilQBox').classList.remove('hidden');
+    } else {
+      document.getElementById('ilQText').textContent=d.question;
+      document.getElementById('ilTips').innerHTML=(d.tips||[]).map(t=>`<span class="tip">${t}</span>`).join('');
+      document.getElementById('ilQBox').classList.remove('hidden');
+      document.getElementById('ilAnswer').classList.remove('hidden');
+      document.getElementById('ilAnswer').focus();
+    }
   }catch(e){showToast('Could not get question: '+e.message,'error');}
   btn.disabled=false;btnTxt.textContent='New Question';
 }
@@ -831,7 +840,6 @@ function updateProgBars(){
       <div class="profile-info">
         <h3 id="profileName">User Name</h3>
         <p id="profileRole">Aspiring Developer</p>
-        <span class="profile-joined">Member of VidyaMitra Renaissance</span>
       </div>
     </div>
     
@@ -857,6 +865,10 @@ function updateProgBars(){
         <div class="profile-edit-field">
           <label>Email Address</label>
           <input type="email" id="editEmail" class="profile-edit-input" placeholder="Your Email">
+        </div>
+        <div class="profile-edit-field">
+          <label>Role / Designation</label>
+          <input type="text" id="editRole" class="profile-edit-input" placeholder="Your Designation">
         </div>
         <button class="sm-btn" onclick="saveProfileChanges()" style="width:100%; justify-content:center; background:#000; color:#fff; border:none; margin-top:8px;">
           <span class="material-symbols-outlined" style="font-size:16px;">save</span> Update Details

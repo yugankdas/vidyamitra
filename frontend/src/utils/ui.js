@@ -186,3 +186,32 @@ window.revObs = revealObs;
 window.openProfile = openProfile;
 window.closeProfile = closeProfile;
 window.updateProgBars = updateProgBars;
+
+// ── Profile Saving Logic ────────────────
+function saveProfileChanges() {
+  const name = document.getElementById('editName')?.value.trim();
+  const role = document.getElementById('editRole')?.value.trim();
+  
+  if (name) {
+    if(document.getElementById('profileName')) document.getElementById('profileName').textContent = name;
+    if(document.getElementById('navUserName')) document.getElementById('navUserName').textContent = name;
+    if(document.getElementById('navAvatarLetter')) document.getElementById('navAvatarLetter').textContent = name[0].toUpperCase();
+    if(document.getElementById('profileAvatarBig')) document.getElementById('profileAvatarBig').textContent = name[0].toUpperCase();
+    if(localStorage.getItem('vm_token')) localStorage.setItem('vm_user', name);
+    if(sessionStorage.getItem('vm_token')) sessionStorage.setItem('vm_user', name);
+  }
+  if (role) {
+    if(document.getElementById('profileRole')) document.getElementById('profileRole').textContent = role;
+    localStorage.setItem('vm_role', role);
+    sessionStorage.setItem('vm_role', role);
+  }
+  
+  if (typeof window.showToast === 'function') window.showToast('Profile updated!', 'success');
+}
+window.saveProfileChanges = saveProfileChanges;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const role = localStorage.getItem('vm_role') || sessionStorage.getItem('vm_role') || 'Aspiring Developer';
+  if (document.getElementById('profileRole')) document.getElementById('profileRole').textContent = role;
+  if (document.getElementById('editRole')) document.getElementById('editRole').value = role;
+});

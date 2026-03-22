@@ -65,11 +65,8 @@ function openProfile() {
     document.getElementById('profileName').textContent = userName;
     document.getElementById('profileAvatarBig').textContent = userName.charAt(0).toUpperCase();
     
-    const seed = userName.length;
-    document.getElementById('metricAts').textContent = (75 + (seed % 15)) + '%';
-    document.getElementById('metricInt').textContent = (seed % 7) + 2;
-    document.getElementById('metricQs').textContent = (seed * 12);
-
+    // Sync with real data tracked in ST (index.html)
+    if (window.updateMetrics) window.updateMetrics();
     if (window.updateProgBars) window.updateProgBars();
     if (window.renderProfileBookmarks) window.renderProfileBookmarks();
   }

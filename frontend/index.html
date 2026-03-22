@@ -440,7 +440,8 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const ST={interviews:0,quizQs:0,bestAts:0,scores:{}};
+const ST = JSON.parse(localStorage.getItem('vm_stats')) || {interviews:0,quizQs:0,bestAts:0,scores:{}};
+function saveST(){ localStorage.setItem('vm_stats', JSON.stringify(ST)); }
 
 function showToast(msg,type='success'){
   // Disabled as per user request to remove popping messages
@@ -639,7 +640,7 @@ async function analyzeResume(){
     document.getElementById('raMKw').innerHTML=(d.missing_keywords||[]).map(k=>`<span class="ktag ktag-r">${k}</span>`).join('');
     document.getElementById('raSugg').innerHTML=(d.suggestions||[]).map(s=>`<div class="suggestion">- ${s}</div>`).join('');
     document.getElementById('raResults').classList.remove('hidden');
-    if(d.ats_score>ST.bestAts){ST.bestAts=d.ats_score;updateMetrics();}
+    if(d.ats_score>ST.bestAts){ST.bestAts=d.ats_score;saveST();updateMetrics();}
     showToast('Resume analyzed!');
   }catch(e){showToast('Analysis failed: '+e.message,'error');}
   btn.disabled=false;btnTxt.textContent='Analyze Again';
@@ -726,7 +727,7 @@ function renderQ(){
 function updTimer(){const el=document.getElementById('qlTimer');el.textContent=qqLeft+'s';el.classList.toggle('urgent',qqLeft<=10);}
 function pickOpt(idx){
   if(qqDone)return;qqDone=true;clearInterval(qqTimer);
-  const q=qqAll[qqIdx];qqAns.push(idx);ST.quizQs++;updateMetrics();
+  const q=qqAll[qqIdx];qqAns.push(idx);ST.quizQs++;saveST();updateMetrics();
   document.querySelectorAll('.ql-opt').forEach((b,i)=>{b.disabled=true;if(i===q.correct_index)b.classList.add('correct');else if(i===idx)b.classList.add('wrong');});
   const exp=document.getElementById('qlExp');exp.textContent='Explanation: '+(q.explanation||'N/A');exp.classList.remove('hidden');
   document.getElementById('qlNext').classList.remove('hidden');
@@ -742,7 +743,7 @@ async function finishQuiz(){
     document.getElementById('qlRecos').innerHTML='<div style="font-size:11px;font-weight:700;color:var(--dim);font-family:var(--ff-mono);text-transform:uppercase;margin-bottom:10px">Recommendations</div>'+(d.recommendations||[]).map(r=>`<div style="font-size:13px;color:var(--muted);margin-bottom:8px;padding-left:12px;border-left:2px solid #000">${r}</div>`).join('');
     document.getElementById('qlResults').classList.remove('hidden');
     const domain=document.getElementById('qlDomain').value;
-    ST.scores[domain]=d.score;updateProgBars();
+    ST.scores[domain]=d.score;saveST();updateProgBars();
     showToast('Quiz done! '+d.score+'% Grade '+d.grade);
   }catch(e){showToast('Could not grade: '+e.message,'error');}
 }
@@ -778,6 +779,7 @@ async function searchJobs(){
   } catch(e) {
     grid.innerHTML=`<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--coral)"><strong>Connection Error</strong><br>${e.message}<br>Check if backend is running at ${window.API?.base||'local'}.</div>`;
   }
+  ST.interviews++;saveST();updateMetrics();
 }
 
 // ── PROGRESS ──
@@ -874,7 +876,6 @@ function updateProgBars(){
     <div style="font-size:22px; font-weight:700; color:#000; margin-bottom:20px; text-align:center; font-family:var(--ff-display); letter-spacing:-0.03em;">Edit Profile</div>
     <div class="profile-edit-form">
       <div class="profile-edit-field"><label>Full Name</label><input type="text" id="editName" class="profile-edit-input" placeholder="Your Name"></div>
-      <div class="profile-edit-field"><label>Email Address</label><input type="email" id="editEmail" class="profile-edit-input" placeholder="Your Email"></div>
       <div class="profile-edit-field"><label>Role / Designation</label><input type="text" id="editRole" class="profile-edit-input" placeholder="Your Designation"></div>
       <button class="sm-btn" onclick="saveProfileChanges()" style="width:100%; justify-content:center; background:#000; color:#fff; border:none; margin-top:16px;">
         <span class="material-symbols-outlined" style="font-size:16px;">save</span> Save Changes

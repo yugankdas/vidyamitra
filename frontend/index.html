@@ -272,8 +272,12 @@
         </div>
         <div class="reveal reveal-delay-2">
           <div class="ra-wrap">
-            <label class="section-eyebrow" style="margin-bottom:8px">Resume Text</label>
-            <textarea class="txt-area" id="resumeText" placeholder="Paste your resume here..."></textarea>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <label class="section-eyebrow" style="margin:0;">Resume Text</label>
+              <div class="pdf-upload-btn" onclick="document.getElementById('pdfInput').click()" style="cursor:pointer; color:var(--text); font-size:12px; font-weight:600; text-transform:none; letter-spacing:normal; font-family:var(--ff-body); text-decoration:underline;">Upload PDF</div>
+            </div>
+            <input type="file" id="pdfInput" accept="application/pdf" style="display:none;" onchange="handlePdfUpload(event)"/>
+            <textarea class="txt-area" id="resumeText" placeholder="Paste your resume here or upload a PDF..."></textarea>
             <div class="fld-row">
               <input class="fld-input" id="resumeRole" placeholder="Target role (e.g. Senior SDE)"/>
               <button class="action-btn" id="raBtn" onclick="analyzeResume()"><span id="raBtnTxt">Analyze Resume</span></button>
@@ -800,7 +804,7 @@ function updateProgBars(){
     <div id="loginForm">
       <div class="auth-field"><label>Email</label><input class="auth-input" id="loginEmail" type="email" placeholder="arjun@gmail.com" onkeydown="authKey(event)"/></div>
       <div class="auth-field"><label>Password</label><input class="auth-input" id="loginPass" type="password" placeholder="Your password" onkeydown="authKey(event)"/></div>
-      <div class="auth-field" style="flex-direction:row; align-items:center; gap:8px; margin-top:-8px; margin-bottom:14px;"><input type="checkbox" id="rememberMe" checked/><label for="rememberMe" style="text-transform:none; letter-spacing:normal; font-weight:500; opacity:0.8; margin:0">Remember me for 30 days</label></div>
+      <div class="auth-field" style="flex-direction:row; align-items:center; gap:8px; margin-top:-8px; margin-bottom:14px;"><input type="checkbox" id="rememberMe" checked style="accent-color: #000;"/><label for="rememberMe" style="text-transform:none; letter-spacing:normal; font-weight:500; opacity:0.8; margin:0">Remember me for 30 days</label></div>
       <div class="auth-error" id="loginErr"></div>
       <button class="auth-submit" id="loginBtn" onclick="doLogin()"><span id="loginBtnTxt">Sign In</span></button>
       <div class="auth-footer">No account? <a onclick="switchTab('register')">Create one free</a></div>
@@ -1031,5 +1035,32 @@ if(!authToken){
 }
 </script>
 <script src="src/main.js?v=2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  async function handlePdfUpload(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const btn = document.querySelector('.pdf-upload-btn');
+    const originalText = btn.textContent;
+    btn.textContent = 'Extracting...';
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+      let fullText = '';
+      for(let i=1; i<=pdf.numPages; i++){
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        fullText += textContent.items.map(item => item.str).join(' ') + '\n';
+      }
+      document.getElementById('resumeText').value = fullText.trim();
+      btn.textContent = 'Uploaded ✓';
+    } catch(err){
+      console.error(err);
+      btn.textContent = 'Upload Failed';
+      setTimeout(()=>btn.textContent=originalText, 3000);
+    }
+  }
+</script>
 </body>
 </html>

@@ -6,8 +6,8 @@
 
 (function () {
   function init() {
-    // Restore auth token from sessionStorage so window.API sends it
-    const token = sessionStorage.getItem('vm_token');
+    // Restore auth token from localStorage or sessionStorage so window.API sends it
+    const token = localStorage.getItem('vm_token') || sessionStorage.getItem('vm_token');
     if (token && window.API) {
       window.API.setAuthToken(token);
     }

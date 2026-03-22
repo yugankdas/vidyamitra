@@ -9,7 +9,7 @@ const API_BASE = (window.location.hostname === 'localhost' || window.location.ho
   : 'https://vidyamitra-1-ddka.onrender.com';
 
 // Auth token storage (synced with sessionStorage)
-let _authToken = sessionStorage.getItem('vm_token') || null;
+let _authToken = localStorage.getItem('vm_token') || sessionStorage.getItem('vm_token') || null;
 
 function setAuthToken(token) {
   _authToken = token;

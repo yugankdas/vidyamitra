@@ -275,8 +275,8 @@
             <label class="section-eyebrow" style="margin-bottom:8px">Resume Text</label>
             <textarea class="txt-area" id="resumeText" placeholder="Paste your resume here or manually type it out..."></textarea>
             
-            <button class="action-btn" onclick="document.getElementById('pdfInput').click()" style="margin:16px 0; background:var(--bg2); color:var(--text); border:2px dashed var(--border); box-shadow:none; width:100%; display:flex; justify-content:center; align-items:center;">
-              <span class="material-symbols-outlined" style="font-size:20px; margin-right:8px;">upload_file</span> Upload Resume File (PDF)
+            <button class="action-btn" id="pdfUploadBtn" onclick="document.getElementById('pdfInput').click()" style="margin:16px 0; background:var(--bg2); color:var(--text); border:2px dashed var(--border); box-shadow:none; width:100%; display:flex; justify-content:center; align-items:center;">
+              <span class="material-symbols-outlined" style="font-size:20px; margin-right:8px;">upload_file</span> <span id="pdfUploadBtnTxt">Upload Resume File (PDF)</span>
             </button>
             <input type="file" id="pdfInput" accept="application/pdf" style="display:none;" onchange="handlePdfUpload(event)"/>
 
@@ -1051,9 +1051,10 @@ if(!authToken){
   async function handlePdfUpload(e){
     const file = e.target.files[0];
     if(!file) return;
-    const btn = document.querySelector('.pdf-upload-btn');
-    const originalText = btn.textContent;
-    btn.textContent = 'Extracting...';
+    const btnTxt = document.getElementById('pdfUploadBtnTxt');
+    if (!btnTxt) return;
+    const originalText = btnTxt.textContent;
+    btnTxt.textContent = 'Extracting...';
     try {
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
@@ -1064,11 +1065,12 @@ if(!authToken){
         fullText += textContent.items.map(item => item.str).join(' ') + '\n';
       }
       document.getElementById('resumeText').value = fullText.trim();
-      btn.textContent = 'Uploaded ✓';
+      btnTxt.textContent = 'Uploaded ✓';
+      setTimeout(()=>btnTxt.textContent=originalText, 3000);
     } catch(err){
       console.error(err);
-      btn.textContent = 'Upload Failed';
-      setTimeout(()=>btn.textContent=originalText, 3000);
+      btnTxt.textContent = 'Upload Failed';
+      setTimeout(()=>btnTxt.textContent=originalText, 3000);
     }
   }
 </script>

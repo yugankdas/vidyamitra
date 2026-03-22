@@ -856,31 +856,29 @@ function updateProgBars(){
         <div id="progBars"><div style="font-size:13px;color:var(--muted)">Reviewing your progress...</div></div>
       </div>
 
-      <div class="profile-section-title">Edit Profile</div>
-      <div class="profile-edit-form">
-        <div class="profile-edit-field">
-          <label>Full Name</label>
-          <input type="text" id="editName" class="profile-edit-input" placeholder="Your Name">
-        </div>
-        <div class="profile-edit-field">
-          <label>Email Address</label>
-          <input type="email" id="editEmail" class="profile-edit-input" placeholder="Your Email">
-        </div>
-        <div class="profile-edit-field">
-          <label>Role / Designation</label>
-          <input type="text" id="editRole" class="profile-edit-input" placeholder="Your Designation">
-        </div>
-        <button class="sm-btn" onclick="saveProfileChanges()" style="width:100%; justify-content:center; background:#000; color:#fff; border:none; margin-top:8px;">
-          <span class="material-symbols-outlined" style="font-size:16px;">save</span> Update Details
-        </button>
-      </div>
-
       <div id="profileBookmarks" style="margin-bottom:24px;"></div>
 
       <div class="profile-actions">
+         <button class="nav-cta" onclick="openEditProfile()" style="background:#000; color:#fff;">Edit Profile</button>
          <button class="nav-cta" onclick="closeProfile()">Explore More</button>
          <button class="auth-submit" style="background:var(--bg2); color:var(--text); border: 1px solid var(--border);" onclick="doLogout(); closeProfile();">Sign Out</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT PROFILE MODAL ══ -->
+<div class="auth-overlay" id="editProfileOverlay" style="z-index: 3100 !important;">
+  <div class="auth-modal profile-modal" role="dialog" style="max-width: 400px !important; padding:32px 24px !important; text-align:left; border-top:1px solid var(--border);">
+    <button class="auth-close" onclick="closeEditProfile()" aria-label="Close">&#x2715;</button>
+    <div style="font-size:22px; font-weight:700; color:#000; margin-bottom:20px; text-align:center; font-family:var(--ff-display); letter-spacing:-0.03em;">Edit Profile</div>
+    <div class="profile-edit-form">
+      <div class="profile-edit-field"><label>Full Name</label><input type="text" id="editName" class="profile-edit-input" placeholder="Your Name"></div>
+      <div class="profile-edit-field"><label>Email Address</label><input type="email" id="editEmail" class="profile-edit-input" placeholder="Your Email"></div>
+      <div class="profile-edit-field"><label>Role / Designation</label><input type="text" id="editRole" class="profile-edit-input" placeholder="Your Designation"></div>
+      <button class="sm-btn" onclick="saveProfileChanges()" style="width:100%; justify-content:center; background:#000; color:#fff; border:none; margin-top:16px;">
+        <span class="material-symbols-outlined" style="font-size:16px;">save</span> Save Changes
+      </button>
     </div>
   </div>
 </div>

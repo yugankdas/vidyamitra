@@ -667,6 +667,7 @@ footer a:hover { color: var(--muted); }
   max-width: 650px !important;
   background: var(--bg);
   border: 1px solid var(--border);
+  border-top: 1px solid var(--border);
 }
 
 .nav-user-pill {
@@ -690,8 +691,10 @@ footer a:hover { color: var(--muted); }
   overflow-y: auto !important;
   padding: 40px !important;
   display: block;
-  scrollbar-width: thin;
 }
+.profile-modal::-webkit-scrollbar { width: 5px; }
+.profile-modal::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+.profile-modal::-webkit-scrollbar-track { background: transparent; }
 
 .profile-header {
   display: flex; flex-direction: column; align-items: center; text-align: center;

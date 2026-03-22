@@ -34,6 +34,28 @@ function quickChat(btn) {
   if (input) { input.value = text; sendChat(); }
 }
 
+// ── Hindsight Memory Management ────────
+function getHindsightContext() {
+  try {
+    const mems = JSON.parse(localStorage.getItem('vm_memory') || '[]');
+    if (mems.length === 0) return '';
+    // Take the last 5 relevant memories to avoid context bloat
+    const recent = mems.slice(-5).join('\n- ');
+    return `\n\n[HINDSIGHT MEMORY - Use this for personalization]:\n- ${recent}`;
+  } catch(e) { return ''; }
+}
+
+function addMemory(text) {
+  try {
+    const mems = JSON.parse(localStorage.getItem('vm_memory') || '[]');
+    mems.push(text);
+    // Keep only last 20 memories for performance
+    if (mems.length > 20) mems.shift();
+    localStorage.setItem('vm_memory', JSON.stringify(mems));
+    console.log('[Hindsight] Memory added:', text);
+  } catch(e) { console.error('Memory failed:', e); }
+}
+
 async function sendChat() {
   const input = document.getElementById('chatInput');
   const sendBtn = document.getElementById('chatSendBtn');
@@ -54,8 +76,9 @@ async function sendChat() {
   const typingId = addTyping();
 
   try {
-    // Call our FastAPI backend which proxies to Groq
-    const data = await window.API.chat.send(chatHistory, CHAT_SYSTEM);
+    // Inject Hindsight memories into the system prompt
+    const fullSystem = CHAT_SYSTEM + getHindsightContext();
+    const data = await window.API.chat.send(chatHistory, fullSystem);
     const reply = data.reply || data.content || 'I had trouble responding. Please try again.';
     removeTyping(typingId);
     chatHistory.push({ role: 'assistant', content: reply });
@@ -114,3 +137,4 @@ window.chatKey = chatKey;
 window.autoResize = autoResize;
 window.quickChat = quickChat;
 window.sendChat = sendChat;
+window.addMemory = addMemory;

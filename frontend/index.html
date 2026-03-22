@@ -641,6 +641,11 @@ async function analyzeResume(){
     document.getElementById('raSugg').innerHTML=(d.suggestions||[]).map(s=>`<div class="suggestion">- ${s}</div>`).join('');
     document.getElementById('raResults').classList.remove('hidden');
     if(d.ats_score>ST.bestAts){ST.bestAts=d.ats_score;saveST();updateMetrics();}
+    // Hindsight Reflection: Resume analysis
+    if (typeof window.addMemory === 'function') {
+      const memText = `Analyzed resume for "${role || 'General'}". ATS Score: ${d.ats_score}%. Missing skills: ${(d.missing_keywords || []).slice(0,3).join(', ')}.`;
+      window.addMemory(memText);
+    }
     showToast('Resume analyzed!');
   }catch(e){showToast('Analysis failed: '+e.message,'error');}
   btn.disabled=false;btnTxt.textContent='Analyze Again';
@@ -691,7 +696,12 @@ async function scoreAnswer(){
     if(d.model_answer_hint)h+=`<div class="fb-item">Hint: ${d.model_answer_hint}</div>`;
     document.getElementById('ilFbItems').innerHTML=h;
     document.getElementById('ilFeedback').classList.remove('hidden');
-    ST.interviews++;updateMetrics();showToast('Answer scored!');
+    ST.interviews++;saveST();updateMetrics();showToast('Answer scored!');
+    // Hindsight Reflection: Save this experience to long-term memory
+    if (typeof window.addMemory === 'function') {
+      const memText = `Faced ${mode} question: "${curQ}". Score: ${d.score}/100. Feedback: ${d.improvements?.[0] || 'Good performance'}.`;
+      window.addMemory(memText);
+    }
   }catch(e){showToast('Scoring failed: '+e.message,'error');}
   btnTxt.textContent='Score My Answer';btn.disabled=false;
 }

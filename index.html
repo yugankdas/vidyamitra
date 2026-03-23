@@ -440,8 +440,16 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const ST = JSON.parse(localStorage.getItem('vm_stats')) || {interviews:0,quizQs:0,bestAts:0,scores:{}};
+const ST = JSON.parse(localStorage.getItem('vm_stats')) || {interviews:0,quizQs:0,bestAts:0,scores:{},memories:[]};
+if (!ST.memories) ST.memories = [];
 function saveST(){ localStorage.setItem('vm_stats', JSON.stringify(ST)); }
+window.ST = ST;
+window.addMemory = function(text) {
+  if (!ST.memories) ST.memories = [];
+  ST.memories.push(`[${new Date().toLocaleDateString()}] ${text}`);
+  if (ST.memories.length > 50) ST.memories.shift();
+  saveST();
+};
 
 function showToast(msg,type='success'){
   const container = document.getElementById('toastContainer');
@@ -727,6 +735,10 @@ async function finishQuiz(){
     document.getElementById('qlResults').classList.remove('hidden');
     const domain=document.getElementById('qlDomain').value;
     ST.scores[domain]=d.score;saveST();updateProgBars();
+    // Hindsight: Quiz performance
+    if (typeof window.addMemory === 'function') {
+      window.addMemory(`Completed ${domain} Quiz. Score: ${d.score}%. Grade: ${d.grade}. Strong in ${d.strong_areas?.[0]||'noted areas'}, focus on ${d.weak_areas?.[0]||'missing gaps'}.`);
+    }
     showToast('Quiz done! '+d.score+'% Grade '+d.grade);
   }catch(e){showToast('Could not grade: '+e.message,'error');}
 }
@@ -1105,10 +1117,10 @@ window.addEventListener('scroll', () => {
   const nav = document.getElementById('mainNav');
   if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
 });
-const revealObs = new IntersectionObserver((entries) => {
+window.revealObs = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
 }, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+document.querySelectorAll('.reveal').forEach(el => window.revealObs.observe(el));
 
 function animateCounter(el) {
   const target = parseInt(el.dataset.target, 10);
@@ -1297,9 +1309,16 @@ async function sendChat() {
   if (quickBtns) quickBtns.style.display = 'none';
   if (sendBtn) sendBtn.disabled = true;
   chatHistory.push({ role: 'user', content: text });
+  
+  // Hindsight: Inject memories into prompt
+  let memories = '';
+  if (window.ST && window.ST.memories && window.ST.memories.length > 0) {
+    memories = '\n\nHindsight (User Progress): ' + window.ST.memories.slice(-8).join(' | ');
+  }
+  
   const typingId = addTyping();
   try {
-    const data = await window.API.chat.send(chatHistory, CHAT_SYSTEM);
+    const data = await window.API.chat.send(chatHistory, CHAT_SYSTEM + memories);
     const reply = data.reply || data.content || 'I had trouble responding. Please try again.';
     removeTyping(typingId);
     chatHistory.push({ role: 'assistant', content: reply });
@@ -1383,6 +1402,10 @@ window.sendChat = sendChat;
   <button class="lj-generate-btn" id="ljGenerateBtn" onclick="ljGenerate()"><div class="spinner"></div><span class="btn-label">Generate Path</span></button>
 </div>
 <div class="lj-path" id="ljPath"><div class="lj-path-header" id="ljPathHeader"></div><div class="lj-motive" id="ljMotive"></div><div class="lj-modules" id="ljModules"></div><div class="lj-adapt-banner" id="ljAdaptBanner">New quiz score — re-adapt path? <button onclick="ljAdapt()">Adapt Now</button></div></div>`);
+    // Register reveals
+    document.querySelectorAll('.lj-setup.reveal').forEach(el => {
+      if (window.revealObs) window.revealObs.observe(el);
+    });
   }
   window.ljToggleDomain = (chip) => {
     const d=chip.dataset.domain; document.querySelectorAll('.lj-score-chip').forEach(c=>c.classList.remove('active')); chip.classList.add('active');

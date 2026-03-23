@@ -54,13 +54,16 @@ def ai_chat(req: ChatRequest):
             memories.append(m_stripped)
             seen.add(m_stripped)
 
-    # 2. Inject memories into system prompt if found
-    enhanced_system = req.system
+    # 2. Inject memories INTO THE TOP of the system prompt for maximum priority
+    # LLMs pay more attention to the first part of the context
+    memory_context = ""
     if memories:
-        enhanced_system += "\n\n=== USER CAREER HISTORY & PERSONAL DATA (HINDSIGHT) ===\n"
-        enhanced_system += "You MUST use the following facts to personalize your answer. This data is retrieved from the user's past actions in VidyaMitra.\n\n"
-        enhanced_system += "\n".join([f"- {m}" for m in memories])
-        enhanced_system += "\n\n=== END OF PERSONAL CONTEXT ===\n"
+        memory_context = "=== USER CAREER HISTORY & PERSONAL DATA (HINDSIGHT - PRIORITY) ===\n"
+        memory_context += "You MUST use the following facts to personalize your answer. This data is from the user's past actions.\n\n"
+        memory_context += "\n".join([f"- {m}" for m in memories])
+        memory_context += "\n\n=== END OF PERSONAL CONTEXT ===\n\n"
+    
+    enhanced_system = memory_context + req.system
 
     # 3. Chat Completion
     msgs = [{"role": m.role, "content": m.content} for m in req.messages]
@@ -70,7 +73,11 @@ def ai_chat(req: ChatRequest):
         max_tokens=req.max_tokens,
     )
     
-    # 4. Retain the new interaction
+    # 4. Diagnostic: Prepend a visible tag so the user (and I) can confirm it's working
+    visible_prefix = f"[Hindsight Active: {len(memories)} memories recalled] " if memories else "[Hindsight: No relevant records found] "
+    reply = visible_prefix + reply
+
+    # 5. Retain the new interaction
     if user_query:
         retain_memory(f"User: {user_query}\nAssistant: {reply}")
 

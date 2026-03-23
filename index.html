@@ -984,12 +984,24 @@ function getAuthToken() { return _authToken; }
 
 async function apiFetch(path, options = {}) {
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), 15000);
+  const id = setTimeout(() => controller.abort(), 60000); // 60s for Render cold starts
   const headers = { 'Content-Type': 'application/json', ...options.headers };
   if (_authToken) headers['Authorization'] = 'Bearer ' + _authToken;
+
+  // Cold start indicator
+  let wakeTimer = setTimeout(() => {
+    const errEl = document.getElementById('loginErr') || document.getElementById('chatErr');
+    if (errEl) {
+      errEl.textContent = 'Waking up server... please wait (up to 30s)';
+      errEl.classList.add('visible');
+      errEl.style.color = 'var(--text)';
+    }
+  }, 3000);
+
   try {
     const res = await fetch(API_BASE + path, { ...options, headers, signal: controller.signal });
     clearTimeout(id);
+    clearTimeout(wakeTimer);
     if (!res.ok) {
       const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
       throw new Error(err.detail || 'HTTP ' + res.status);
@@ -997,10 +1009,13 @@ async function apiFetch(path, options = {}) {
     return res.json();
   } catch (err) {
     clearTimeout(id);
-    if (err.name === 'AbortError') throw new Error('Request timed out (15s). Please try again.');
+    clearTimeout(wakeTimer);
+    if (err.name === 'AbortError') throw new Error('Request timed out (60s). Please check your connection.');
     throw err;
   }
 }
+// Pre-warm the backend
+fetch(API_BASE).catch(() => {});
 
 const AuthAPI = {
   register: (email, password, name) => apiFetch('/auth/register', { method: 'POST', body: JSON.stringify({ email, password, name }) }),

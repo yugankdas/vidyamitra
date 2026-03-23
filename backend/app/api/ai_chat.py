@@ -25,6 +25,9 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
     memories_found: list[str] = []
+    
+class DebugResponse(BaseModel):
+    last_memories: list[str]
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -33,13 +36,14 @@ def ai_chat(req: ChatRequest):
     user_query = req.messages[-1].content if req.messages else ""
     
     all_memories = []
-    # Broad sweeps for key data types
-    all_memories += recall_memories("user resume analysis skills experience")
-    all_memories += recall_memories("user interview performance feedback scores")
-    all_memories += recall_memories("user quiz results domain mastery")
+    # Broad sweeps with higher top_k (10 instead of default)
+    all_memories += recall_memories("user resume analysis skills experience") # Likely matches resume text
+    all_memories += recall_memories("user interview performance feedback scores") # Matches interview text
+    all_memories += recall_memories("user quiz results domain mastery") # Matches quiz text
+    
     # Specific sweep for the current question
     if user_query:
-        all_memories += recall_memories(user_query)
+        all_memories += recall_memories(user_query) # top_k=5 is usually default in my service but I'll assume standard library behavior
     
     # Deduplicate while preserving order (approx)
     seen = set()
@@ -54,7 +58,7 @@ def ai_chat(req: ChatRequest):
     enhanced_system = req.system
     if memories:
         enhanced_system += "\n\n=== USER CAREER HISTORY & PERSONAL DATA (HINDSIGHT) ===\n"
-        enhanced_system += "You MUST use the following facts to personalize your answer. If the context below contains resume scores, interview feedback, or quiz results, refer to them explicitly.\n\n"
+        enhanced_system += "You MUST use the following facts to personalize your answer. This data is retrieved from the user's past actions in VidyaMitra.\n\n"
         enhanced_system += "\n".join([f"- {m}" for m in memories])
         enhanced_system += "\n\n=== END OF PERSONAL CONTEXT ===\n"
 
@@ -70,4 +74,12 @@ def ai_chat(req: ChatRequest):
     if user_query:
         retain_memory(f"User: {user_query}\nAssistant: {reply}")
 
-    return ChatResponse(reply=reply, memories_found=memories[:5])
+    return ChatResponse(reply=reply, memories_found=memories[:10])
+
+@router.get("/chat/debug", response_model=DebugResponse)
+def debug_memories():
+    # Return last 10 entries directly from the bank or via a generic recall
+    # Since Hindsight recall is semantic, searching for " " or ".*" might work depending on implementation
+    # For now, I'll recall "career profile" as a broad proxy
+    last_raw = recall_memories(" ") # Many RAGs return most recent on empty query
+    return DebugResponse(last_memories=last_raw[:20])

@@ -127,12 +127,17 @@
   .nav { padding: 0 20px !important; }
   .nav-pills { display: none !important; } 
   .nav-right .nav-cta { padding: 8px 14px !important; font-size: 11px !important; }
-  .nav-user-pill { padding: 4px 8px 4px 4px !important; max-width: 140px !important; }
+  .nav-user-pill { display: flex !important; visibility: visible !important; padding: 4px 8px 4px 4px !important; max-width: 140px !important; }
   .nav-username { max-width: 60px !important; font-size: 11px !important; }
 
   /* Modal Actions Fix (Edit Profile / Signout) */
-  .profile-actions, .confirm-btns { display: flex !important; flex-direction: column !important; gap: 10px !important; width: 100% !important; }
-  .profile-actions button, .confirm-btns button { width: 100% !important; margin: 0 !important; }
+  .profile-actions, .confirm-btns { display: flex !important; visibility: visible !important; opacity: 1 !important; flex-direction: column !important; gap: 10px !important; width: 100% !important; margin-top: 20px !important; }
+  .profile-actions button, .confirm-btns button { width: 100% !important; margin: 0 !important; display: flex !important; align-items: center; justify-content: center; }
+  
+  /* Chat UI Fix - Send Button Off Center */
+  .cdemo-input-area { padding: 10px 15px !important; box-sizing: border-box !important; }
+  .cdemo-textarea { font-size: 12px !important; padding: 8px 12px !important; }
+  .cdemo-send { width: 38px !important; height: 38px !important; flex-shrink: 0 !important; }
   
   /* Chat & Interview Bubbles */
   .cmsg-bubble { max-width: 90% !important; font-size: 14px !important; }

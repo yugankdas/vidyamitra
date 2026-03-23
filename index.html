@@ -862,6 +862,7 @@ function updateProgBars(){
   </div>
 </div>
 
+<script src="/src/utils/api.js"></script>
 <script>
 // ══ AUTH ══════════════════════════════
 let authToken = localStorage.getItem('vm_token') || sessionStorage.getItem('vm_token') || null;
@@ -1014,15 +1015,15 @@ if(!authToken){
   unlockGatedSections();
 }
 </script>
-<script type="module" src="/src/utils/api.js"></script>
-<script type="module" src="/src/utils/ui.js"></script>
-<script type="module" src="/src/components/skills.js"></script>
-<script type="module" src="/src/components/interview.js"></script>
-<script type="module" src="/src/components/jobs.js"></script>
-<script type="module" src="/src/components/chat.js"></script>
-<script type="module" src="/src/components/marquee.js"></script>
-<script type="module" src="/src/components/learn.js"></script>
-<script type="module" src="/src/main.js"></script>
+
+<script src="/src/utils/ui.js"></script>
+<script src="/src/components/skills.js"></script>
+<script src="/src/components/interview.js"></script>
+<script src="/src/components/jobs.js"></script>
+<script src="/src/components/chat.js"></script>
+<script src="/src/components/marquee.js"></script>
+<script src="/src/components/learn.js"></script>
+<script src="/src/main.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';

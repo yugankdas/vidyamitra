@@ -36,7 +36,7 @@
   --card-bg: #FFFFFF;
   --btn-bg: #000000;
   --btn-text: #FFFFFF;
-  --nav-bg: rgba(0,0,0,0.8);
+  --nav-bg: rgba(255,255,255,0.85);
   
   --radius-lg: 32px;
   --radius-md: 20px;
@@ -128,18 +128,19 @@ body::before {
   padding: 0 48px; height: 64px;
   display: flex; align-items: center; justify-content: space-between;
   background: var(--nav-bg);
+  color: var(--text);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   transition: all 0.3s;
 }
-.nav.scrolled { background: rgba(0,0,0,0.95); box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+.nav.scrolled { background: rgba(255,255,255,0.97); box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
 .nav-logo {
   font-family: var(--ff-display); font-size: 20px; font-weight: 800;
   letter-spacing: -0.04em; color: #000; text-decoration: none;
 }
 .nav-logo em { color: #000; opacity: 0.5; font-style: italic; }
 .nav-pills {
-  display: flex; gap: 4px; background: var(--bg2);
+  display: flex; gap: 4px; background: rgba(0,0,0,0.03);
   border: 1px solid var(--border); border-radius: 100px; padding: 4px;
   overflow: hidden; max-width: 70vw; overflow-x: auto; scrollbar-width: none;
 }

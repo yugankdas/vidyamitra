@@ -3,30 +3,30 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>VidyaMitra - The Renaissance Edition</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Inter:wght@100..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="src/styles/main.css?v=7"/>
-<link rel="stylesheet" href="src/styles/components.css?v=7"/>
-<link rel="stylesheet" href="src/styles/animations.css?v=7"/>
-<link rel="stylesheet" href="src/styles/learn.css?v=7"/>
+<title>VidyaMitra</title>
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/styles/main.css?v=13"/>
+<link rel="stylesheet" href="src/styles/components.css?v=13"/>
+<link rel="stylesheet" href="src/styles/animations.css?v=13"/>
+<link rel="stylesheet" href="src/styles/learn.css?v=13"/>
 <style>
 .ra-wrap,.il-wrap,.ql-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px;margin-top:48px;position:relative;overflow:hidden}
-.ra-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--violet))}
-.il-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--teal))}
-.ql-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--violet),var(--gold))}
+.ra-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--text)}
+.il-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--text);opacity:0.3}
+.ql-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--text);opacity:0.6}
 .txt-area{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:var(--ff-mono);font-size:12px;color:var(--text);resize:vertical;min-height:130px;outline:none;transition:border-color .2s;line-height:1.7}
-.txt-area:focus{border-color:var(--gold)}
+.txt-area:focus{border-color:#000}
 .txt-area::placeholder{color:var(--dim)}
 .fld-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
 .fld-input,.fld-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:var(--ff-body);font-size:13px;color:var(--text);outline:none;transition:border-color .2s;appearance:none}
-.fld-input:focus,.fld-select:focus{border-color:var(--gold)}
+.fld-input:focus,.fld-select:focus{border-color:#000}
 .fld-input::placeholder{color:var(--dim)}
-.action-btn{width:100%;background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:14px;font-weight:700;padding:14px;border-radius:10px;border:none;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
-.action-btn:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,184,75,.35)}
+.action-btn{width:100%;background:var(--btn-bg);color:var(--btn-text);font-family:var(--ff-body);font-size:14px;font-weight:700;padding:14px;border-radius:10px;border:none;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+.action-btn:hover{background:var(--bg3);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
 .action-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-.action-btn.violet-btn{background:var(--violet)}
+.action-btn.violet-btn{background:var(--btn-bg);opacity:0.8}
 .action-btn.violet-btn:hover{background:var(--violet2);color:var(--bg)}
 .score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
 .score-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
@@ -36,30 +36,30 @@
 .kw-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
 .kw-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:var(--ff-mono);margin-bottom:10px}
 .tag-row{display:flex;flex-wrap:wrap;gap:6px}
-.ktag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;font-family:var(--ff-mono)}
-.ktag-g{background:rgba(93,219,146,.12);color:var(--green)}
-.ktag-r{background:rgba(255,107,107,.12);color:var(--coral)}
-.suggestion{background:rgba(232,184,75,.07);border:1px solid rgba(232,184,75,.15);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:8px;border-left:3px solid var(--gold)}
+.ktag{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;border:1px solid var(--border);background:var(--bg2);color:var(--text);display:inline-flex;align-items:center;letter-spacing:.02em}
+.ktag-g{background:rgba(255,255,255,0.05);color:var(--text);border-color:var(--border)}
+.ktag-r{background:rgba(255,255,255,0.15);color:var(--text);border-color:var(--border)}
+.suggestion{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:8px;border-left:3px solid var(--text)}
 .hidden{display:none}
 .setup-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
 .q-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px}
-.q-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);font-family:var(--ff-mono);margin-bottom:8px}
+.q-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#000;opacity:0.6;font-family:var(--ff-mono);margin-bottom:8px}
 .q-text{font-size:15px;font-weight:600;color:var(--text);line-height:1.55}
 .tips-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .tip{font-size:11px;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 9px}
 .ans-area{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;font-family:var(--ff-body);font-size:13px;color:var(--text);resize:vertical;min-height:110px;outline:none;transition:border-color .2s;line-height:1.65}
-.ans-area:focus{border-color:var(--violet)}
+.ans-area:focus{border-color:#000}
 .ans-area::placeholder{color:var(--dim)}
 .sm-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--ff-body);font-size:13px;font-weight:600;padding:10px 18px;border-radius:10px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;margin-top:10px}
-.sm-btn:hover{border-color:var(--violet);color:var(--violet)}
+.sm-btn:hover{border-color:#000;color:#000}
 .fb-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .fb-big{font-family:var(--ff-display);font-size:52px;font-weight:900;line-height:1}
 .fb-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;font-size:13px;line-height:1.6}
-.fb-str{border-left:3px solid var(--green)}
-.fb-imp{border-left:3px solid var(--coral)}
-.fb-hint{border-left:3px solid var(--gold)}
+.fb-str{border-left:3px solid #000;opacity:0.8}
+.fb-imp{border-left:3px solid #000;opacity:0.4}
+.fb-hint{border-left:3px solid #000;opacity:0.6}
 .ql-pbar{height:3px;background:var(--border);border-radius:3px;margin-bottom:20px;overflow:hidden}
-.ql-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .4s ease}
+.ql-fill{height:100%;background:#000;border-radius:3px;transition:width .4s ease}
 .ql-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .ql-timer{font-family:var(--ff-mono);font-size:13px;color:var(--dim)}
 .ql-timer.urgent{color:var(--coral);animation:urgblink 1s infinite}
@@ -67,30 +67,30 @@
 .ql-q{font-size:16px;font-weight:700;color:var(--text);line-height:1.55;margin-bottom:18px;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
 .ql-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
 .ql-opt{padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .18s;text-align:left;font-family:var(--ff-body);width:100%}
-.ql-opt:hover:not(:disabled){border-color:var(--gold);color:var(--gold);background:rgba(232,184,75,.06)}
-.ql-opt.correct{border-color:var(--green);color:var(--green);background:rgba(93,219,146,.1)}
-.ql-opt.wrong{border-color:var(--coral);color:var(--coral);background:rgba(255,107,107,.1)}
+.ql-opt:hover:not(:disabled){border-color:#000;color:#000;background:rgba(0,0,0,.03)}
+.ql-opt.correct{border-color:#000;color:#000;background:rgba(0,0,0,0.05);font-weight:700}
+.ql-opt.wrong{border-color:#000;color:#000;background:rgba(0,0,0,0.15)}
 .ql-opt:disabled{cursor:default}
-.ql-exp{background:rgba(62,212,196,.07);border:1px solid rgba(62,212,196,.2);border-radius:10px;padding:14px;font-size:13px;color:var(--teal2);line-height:1.6;margin-bottom:14px}
-.ql-next{background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:13px;font-weight:700;padding:10px 22px;border-radius:10px;border:none;cursor:pointer;transition:all .2s}
-.ql-next:hover{background:var(--gold2)}
+.ql-exp{background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.1);border-radius:10px;padding:14px;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px}
+.ql-next{background:#000;color:#fff;font-family:var(--ff-body);font-size:13px;font-weight:700;padding:10px 22px;border-radius:10px;border:none;cursor:pointer;transition:all .2s}
+.ql-next:hover{background:#333}
 .ql-result-score{font-family:var(--ff-display);font-size:72px;font-weight:900;letter-spacing:-.05em;line-height:1}
 .ql-rg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
 .ql-rc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;font-size:13px;line-height:1.65}
 .jobs-search{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;margin-bottom:28px}
 .jobs-input{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-family:var(--ff-body);font-size:13px;color:var(--text);outline:none;width:100%;transition:border-color .2s}
-.jobs-input:focus{border-color:var(--gold)}
+.jobs-input:focus{border-color:#000}
 .jobs-input::placeholder{color:var(--dim)}
-.jobs-btn{background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:13px;font-weight:700;padding:12px 20px;border-radius:10px;border:none;cursor:pointer;white-space:nowrap;transition:all .2s}
-.jobs-btn:hover{background:var(--gold2)}
+.jobs-btn{background:#000;color:#fff;font-family:var(--ff-body);font-size:13px;font-weight:700;padding:12px 20px;border-radius:10px;border:none;cursor:pointer;white-space:nowrap;transition:all .2s}
+.jobs-btn:hover{background:#333}
 .jobs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border-radius:20px;overflow:hidden;min-height:80px}
 .jcard{background:var(--bg2);padding:28px 24px;position:relative;overflow:hidden;transition:background .3s}
 .jcard:hover{background:var(--bg3)}
-.jcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.jcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:#000;opacity:0;transition:opacity .3s}
 .jcard:hover::before{opacity:1}
 .jco{font-size:11px;color:var(--dim);font-family:var(--ff-mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
 .jti{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3}
-.jsal{font-family:var(--ff-mono);font-size:12px;color:var(--gold);font-weight:600;margin-bottom:10px}
+.jsal{font-family:var(--ff-mono);font-size:12px;color:#000;font-weight:700;margin-bottom:10px}
 .jskills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
 .jsk{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;font-family:var(--ff-mono);background:var(--surface);color:var(--muted);border:1px solid var(--border)}
 .jme{font-size:11px;color:var(--dim)}
@@ -105,55 +105,59 @@
 .pb-fill{height:100%;border-radius:6px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
 .spin{display:inline-block;animation:spn .7s linear infinite}
 @keyframes spn{to{transform:rotate(360deg)}}
-@media(max-width:900px){.fld-row,.score-grid,.kw-grid,.setup-row,.ql-rg,.jobs-search{grid-template-columns:1fr}.jobs-grid{grid-template-columns:1fr}}
+.split-col-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+@media(max-width:900px){
+  .fld-row,.score-grid,.kw-grid,.setup-row,.ql-rg,.jobs-search{grid-template-columns:1fr}
+  .jobs-grid{grid-template-columns:1fr}
+  .split-col-grid{grid-template-columns:1fr !important; gap:32px !important;}
+}
 
 /* ══ AUTH MODAL ══ */
-.auth-overlay{position:fixed;inset:0;background:rgba(8,8,9,.85);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
 .auth-overlay.open{opacity:1;visibility:visible}
 .auth-modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:48px 44px;width:100%;max-width:420px;position:relative;overflow:visible;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.16,1,.3,1)}
 .auth-overlay.open .auth-modal{transform:none}
-.auth-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--violet),var(--teal))}
+.auth-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:#000}
 .auth-close{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--dim);font-size:20px;cursor:pointer;line-height:1;transition:color .2s}
 .auth-close:hover{color:var(--text)}
 .auth-logo{font-family:var(--ff-display);font-size:22px;font-weight:900;color:var(--text);margin-bottom:6px;letter-spacing:-.03em}
-.auth-logo em{color:var(--gold)}
+.auth-logo em{color:#000;opacity:0.5}
 .auth-tagline{font-size:13px;color:var(--muted);margin-bottom:32px;line-height:1.5}
 .auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;gap:4px;margin-bottom:28px}
 .auth-tab{padding:9px;border-radius:9px;font-family:var(--ff-body);font-size:13px;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .2s}
-.auth-tab.active{background:var(--bg2);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.auth-tab.active{background:var(--bg2);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .auth-field{margin-bottom:14px}
 .auth-field label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:7px;font-family:var(--ff-mono)}
 .auth-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:var(--ff-body);font-size:14px;color:var(--text);outline:none;transition:border-color .2s}
-.auth-input:focus{border-color:var(--gold)}
+.auth-input:focus{border-color:#000}
 .auth-input::placeholder{color:var(--dim)}
-.auth-input.err{border-color:var(--coral)}
-.auth-error{font-size:12px;color:var(--coral);margin-bottom:14px;padding:10px 14px;background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.2);border-radius:8px;display:none}
+.auth-input.err{border-color:#000}
+.auth-error{font-size:12px;color:#000;margin-bottom:14px;padding:10px 14px;background:rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.1);border-radius:8px;display:none}
 .auth-error.visible{display:block}
-.auth-submit{width:100%;background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:15px;font-weight:700;padding:14px;border-radius:12px;border:none;cursor:pointer;letter-spacing:.02em;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px}
-.auth-submit:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,184,75,.35)}
+.auth-submit{width:100%;background:#000;color:#fff;font-family:var(--ff-body);font-size:15px;font-weight:700;padding:14px;border-radius:12px;border:none;cursor:pointer;letter-spacing:.02em;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px}
+.auth-submit:hover{background:#333;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
 .auth-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
 .auth-footer{font-size:12px;color:var(--dim);text-align:center;margin-top:18px}
-.auth-footer a{color:var(--gold);cursor:pointer;text-decoration:none}
-.auth-footer a:hover{text-decoration:underline}
-
+.auth-footer a{color:#000;cursor:pointer;text-decoration:underline}
+.auth-footer a:hover{opacity:0.75}
 /* Nav auth button & user pill */
 .nav-auth-btn{background:transparent;border:1px solid var(--border);color:var(--text);font-family:var(--ff-body);font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .2s;margin-left:8px}
-.nav-auth-btn:hover{border-color:var(--gold);color:var(--gold)}
+.nav-auth-btn:hover{border-color:#000;color:#000}
 .nav-user-pill{display:none;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 5px;margin-left:8px}
 .nav-user-pill.visible{display:flex}
-.nav-avatar{width:26px;height:26px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--ff-body);flex-shrink:0}
+.nav-avatar{width:26px;height:26px;border-radius:50%;background:#000;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--ff-body);flex-shrink:0}
 .nav-username{font-size:12px;font-weight:600;color:var(--text);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nav-logout{background:none;border:none;color:var(--dim);font-size:11px;cursor:pointer;transition:color .2s;padding-left:4px}
-.nav-logout:hover{color:var(--coral)}
+.nav-logout:hover{color:#000}
 
 /* Auth gating — lock overlay on sections */
 .auth-gate{position:relative}
-.auth-gate-lock{display:none;position:absolute;inset:0;background:linear-gradient(transparent 0%,rgba(8,8,9,.95) 30%);border-radius:20px;z-index:10;align-items:flex-end;justify-content:center;padding-bottom:48px;flex-direction:column;align-items:center;text-align:center}
+.auth-gate-lock{display:none;position:absolute;inset:0;background:linear-gradient(transparent 0%,rgba(0,0,0,.95) 30%);border-radius:20px;z-index:10;align-items:flex-end;justify-content:center;padding-bottom:48px;flex-direction:column;align-items:center;text-align:center}
 .auth-gate.locked .auth-gate-lock{display:flex}
 .gate-icon{font-size:32px;margin-bottom:12px}
 .gate-msg{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.5}
-.gate-btn{background:var(--gold);color:var(--bg);font-family:var(--ff-body);font-size:13px;font-weight:700;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;transition:all .2s}
-.gate-btn:hover{background:var(--gold2)}
+.gate-btn{background:#000;color:#fff;font-family:var(--ff-body);font-size:13px;font-weight:700;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;transition:all .2s}
+.gate-btn:hover{background:#333}
 
 </style>
 </head>
@@ -162,417 +166,286 @@
 <nav class="nav" id="mainNav">
   <a href="#" class="nav-logo">Vidya<em>Mitra</em></a>
   <div class="nav-pills" id="navPills">
-    <a class="nav-pill active" onclick="scrollToSection('agent')">
-      <svg class="npill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-      AI Agent
-    </a>
-    <a class="nav-pill" onclick="scrollToSection('resume')">
-      <svg class="npill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      Resume
-    </a>
-    <a class="nav-pill" onclick="scrollToSection('interview')">
-      <svg class="npill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Interview
-    </a>
-    <a class="nav-pill" onclick="scrollToSection('quiz')">
-      <svg class="npill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      Quiz
-    </a>
-    <a class="nav-pill" onclick="scrollToSection('career')">
-      <svg class="npill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Career
-    </a>
-    <a class="nav-pill" onclick="scrollToSection('progress')">
-      <svg class="npill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      Progress
-    </a>
-    <a class="nav-pill" onclick="scrollToSection('jobs')">
-      <svg class="npill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-      Jobs
-    </a>
+    <a class="nav-pill active" onclick="showPage('home')" data-page="home">Home</a>
+    <a class="nav-pill" onclick="showPage('agent')" data-page="agent">AI Agent</a>
+    <a class="nav-pill" onclick="showPage('resume')" data-page="resume">Resume</a>
+    <a class="nav-pill" onclick="showPage('career')" data-page="career">Career</a>
+    <a class="nav-pill" onclick="showPage('interview')" data-page="interview">Interview</a>
+    <a class="nav-pill" onclick="showPage('roadmap')" data-page="roadmap">Roadmap</a>
+    <a class="nav-pill" onclick="showPage('jobs')" data-page="jobs">Jobs</a>
   </div>
   <div class="nav-right">
-    <button class="nav-cta" onclick="scrollToSection('agent')">Start Free</button>
+
     <button class="nav-auth-btn" id="navAuthBtn" onclick="openAuth('login')">Sign In</button>
-    <div class="nav-user-pill" id="navUserPill"><div class="nav-avatar" id="navAvatarLetter">U</div><span class="nav-username" id="navUserName">User</span><button class="nav-logout" onclick="doLogout()">Sign out</button></div>
+    <div class="nav-user-pill" id="navUserPill" onclick="openProfile()"><div class="nav-avatar" id="navAvatarLetter">U</div><span class="nav-username" id="navUserName">User</span><button class="nav-logout" onclick="doLogout()">Sign out</button></div>
     <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
 
-<!-- Mobile menu drawer -->
+<!-- Mobile menu sidebar -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
 <div class="mobile-menu" id="mobileMenu">
-  <a class="mobile-menu-link" onclick="scrollToSection('agent');toggleMobileMenu()">
-    <svg class="mmenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-    AI Agent
-  </a>
-  <a class="mobile-menu-link" onclick="scrollToSection('resume');toggleMobileMenu()">
-    <svg class="mmenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-    Resume
-  </a>
-  <a class="mobile-menu-link" onclick="scrollToSection('interview');toggleMobileMenu()">
-    <svg class="mmenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    Interview
-  </a>
-  <a class="mobile-menu-link" onclick="scrollToSection('quiz');toggleMobileMenu()">
-    <svg class="mmenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    Quiz
-  </a>
-  <a class="mobile-menu-link" onclick="scrollToSection('career');toggleMobileMenu()">
-    <svg class="mmenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    Career
-  </a>
-  <a class="mobile-menu-link" onclick="scrollToSection('progress');toggleMobileMenu()">
-    <svg class="mmenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-    Progress
-  </a>
-  <a class="mobile-menu-link" onclick="scrollToSection('jobs');toggleMobileMenu()">
-    <svg class="mmenu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-    Jobs
-  </a>
+  <a class="mobile-menu-link" onclick="showPage('home')" data-page="home">Home</a>
+  <a class="mobile-menu-link" onclick="showPage('agent')" data-page="agent">AI Agent</a>
+  <a class="mobile-menu-link" onclick="showPage('resume')" data-page="resume">Resume</a>
+  <a class="mobile-menu-link" onclick="showPage('career')" data-page="career">Career</a>
+  <a class="mobile-menu-link" onclick="showPage('interview')" data-page="interview">Interview</a>
+  <a class="mobile-menu-link" onclick="showPage('roadmap')" data-page="roadmap">Roadmap</a>
+  <a class="mobile-menu-link" onclick="showPage('jobs')" data-page="jobs">Jobs</a>
   <div class="mobile-menu-divider"></div>
   <button class="mobile-menu-auth" id="mobileAuthBtn" onclick="openAuth('login');toggleMobileMenu()">Sign In</button>
 </div>
-
-<!-- LEGACY HERO (Hidden)
-<section class="hero" id="hero">
-  ...
-</section>
--->
-
-<div id="hero-root"></div>
-<script type="module" src="/src/main.tsx"></script>
-
-
-<!-- AI AGENT -->
-<div id="agent">
-<div class="section-wrap">
-  <div class="section-header reveal">
-    <div class="section-eyebrow">AI Agent</div>
-    <h2 class="section-title">Your personal career<br><em>advisor, always on.</em></h2>
-    <p class="section-desc">Powered by Groq LLaMA-3 — proactive insights, trajectory analysis, and complex career tasks on demand.</p>
-  </div>
-  <div class="marquee-wrap" style="margin-bottom:12px;">
-    <div class="marquee-track">
-      <div class="marquee-card" onclick="injectPrompt('Analyze my resume and give ATS score with improvements')"><div class="mcard-cmd">/resume-score</div><div class="mcard-text">Analyze my resume and give a detailed ATS score with improvements.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Detect skill gaps for Senior ML Engineer at Google')"><div class="mcard-cmd">/skill-gap</div><div class="mcard-text">Detect skill gaps for a Senior ML Engineer role at Google.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Simulate a behavioral interview for Product Manager')"><div class="mcard-cmd">/mock-interview</div><div class="mcard-text">Simulate a behavioral interview for a Product Manager role.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Generate 3-month path to become full-stack developer')"><div class="mcard-cmd">/learn-path</div><div class="mcard-text">Generate a 3-month path to become a full-stack developer.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('What should I negotiate as fresher in FinTech in Bangalore?')"><div class="mcard-cmd">/salary-check</div><div class="mcard-text">What should I negotiate as a fresher in FinTech in Bangalore?</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Write a personalized cover letter for Backend Developer at Razorpay')"><div class="mcard-cmd">/cover-letter</div><div class="mcard-text">Write a personalized cover letter for this job description.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Create 60-day DSA study plan for FAANG interviews')"><div class="mcard-cmd">/dsa-plan</div><div class="mcard-text">Create a 60-day DSA study plan for FAANG interviews.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Walk me through designing a URL shortener at scale')"><div class="mcard-cmd">/system-design</div><div class="mcard-text">Walk me through designing a URL shortener at scale.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Analyze my resume and give ATS score with improvements')"><div class="mcard-cmd">/resume-score</div><div class="mcard-text">Analyze my resume and give a detailed ATS score with improvements.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Detect skill gaps for Senior ML Engineer at Google')"><div class="mcard-cmd">/skill-gap</div><div class="mcard-text">Detect skill gaps for a Senior ML Engineer role at Google.</div><div class="mcard-action">Try with VidyaMitra</div></div>
+<!-- PAGE: HOME -->
+<div id="page-home" class="page-view active">
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <h1 class="hero-title">
+      <span class="line"><span class="word">The</span> <span class="word"><em>Renaissance</em></span></span>
+      <span class="line"><span class="word">of Your</span> <span class="word">Career</span></span>
+    </h1>
+    <p class="hero-subtitle">Resume analysis, skill assessment, mock interviews, personalized learning paths powered by Groq AI.</p>
+    <div class="hero-actions">
+      <a class="btn-hero-primary" onclick="showPage('agent')">Start Career Journey</a>
+      <a class="btn-hero-secondary" onclick="showPage('resume')">Try Resume Analyzer</a>
     </div>
-  </div>
-  <div class="marquee-wrap" style="margin-bottom:64px;">
-    <div class="marquee-track reverse">
-      <div class="marquee-card" onclick="injectPrompt('Compare Backend vs Full Stack vs DevOps for my profile')"><div class="mcard-cmd">/compare-roles</div><div class="mcard-text">Compare Backend vs Full Stack vs DevOps for my profile.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Fastest path to become Data Scientist in 6 months')"><div class="mcard-cmd">/upskill-fast</div><div class="mcard-text">What is the fastest path to become a Data Scientist in 6 months?</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('I got offers from Razorpay and Swiggy, help me decide')"><div class="mcard-cmd">/offer-letter</div><div class="mcard-text">I got two offers - help me decide which to pick.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('I bombed my interview, what should I do differently?')"><div class="mcard-cmd">/interview-post</div><div class="mcard-text">I bombed my interview - what should I do differently next time?</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Optimize my LinkedIn headline for recruiter searches')"><div class="mcard-cmd">/linkedin-opt</div><div class="mcard-text">Optimize my LinkedIn headline and summary for recruiter searches.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Compare Backend vs Full Stack vs DevOps for my profile')"><div class="mcard-cmd">/compare-roles</div><div class="mcard-text">Compare Backend vs Full Stack vs DevOps for my profile.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('Fastest path to become Data Scientist in 6 months')"><div class="mcard-cmd">/upskill-fast</div><div class="mcard-text">What is the fastest path to become a Data Scientist in 6 months?</div><div class="mcard-action">Try with VidyaMitra</div></div>
-      <div class="marquee-card" onclick="injectPrompt('I got offers from Razorpay and Swiggy, help me decide')"><div class="mcard-cmd">/offer-letter</div><div class="mcard-text">I got two offers - help me decide which to pick.</div><div class="mcard-action">Try with VidyaMitra</div></div>
-    </div>
-  </div>
-  <div class="reveal">
-    <div class="chat-demo">
-      <div class="cdemo-header">
-        <div class="cdemo-avatar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a4 4 0 0 1 4 4v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/><circle cx="12" cy="13" r="2"/></svg>
+  </section>
+  
+  <div id="agent">
+    <div class="section-wrap" style="padding: 64px 48px">
+      <div class="command-center reveal">
+        <div class="cc-hero">
+          <h2 class="cc-title">Start from anywhere.<br><em>Finish with genius.</em></h2>
+          <p class="cc-subtitle">VidyaMitra leverages Groq's LLaMA-3.3 to transform your career trajectory in seconds.</p>
         </div>
-        <div>
-          <div class="cdemo-name">VidyaMitra AI</div>
-          <div class="cdemo-status"><span class="status-dot"></span>Online · Groq LLaMA-3.3</div>
-        </div>
-        <div class="cdemo-header-badges">
-          <span class="cdemo-badge">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            Fast
-          </span>
-          <span class="cdemo-badge">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            India-first
-          </span>
-        </div>
-      </div>
-      <div class="cdemo-messages" id="chatMessages">
-        <div class="cmsg ai">
-          <div class="cmsg-av ai">V</div>
-          <div class="cmsg-bubble ai">Namaste! I am <strong>VidyaMitra</strong>. I can help with <strong>resume analysis</strong>, <strong>interview prep</strong>, <strong>skill gap detection</strong>, and career roadmaps for Indian tech roles. What is your goal today?</div>
-        </div>
-      </div>
-      <div class="cdemo-quick" id="chatQuickBtns">
-        <button class="cquick-btn" onclick="injectPrompt('Analyze my resume and tell me what to improve for a Senior SDE role')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          Analyze my resume
-        </button>
-        <button class="cquick-btn" onclick="injectPrompt('What are the skill gaps for SDE-2 at Flipkart?')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Skill gap for SDE-2
-        </button>
-        <button class="cquick-btn" onclick="injectPrompt('Give me a mock behavioral interview question and tips')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Mock interview prep
-        </button>
-        <button class="cquick-btn" onclick="injectPrompt('Build me a 3-month career roadmap for Full Stack developer')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Career roadmap
-        </button>
-      </div>
-      <div class="cdemo-input-area">
-        <textarea id="chatInput" class="cdemo-textarea" placeholder="Ask VidyaMitra anything about your career..." rows="1" onkeydown="chatKey(event)" oninput="autoResize(this)"></textarea>
-        <button class="cdemo-send" id="chatSendBtn" onclick="sendChat()" title="Send message">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<hr class="section-divider"/>
-
-<!-- RESUME ANALYZER -->
-<div id="resume">
-<div class="section-wrap">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;">
-    <div class="reveal">
-      <div class="section-eyebrow">ATS Resume Analysis</div>
-      <h2 class="section-title">Know your<br><em>resume score.</em></h2>
-      <p class="section-desc">Paste your resume and get an instant AI-powered ATS score, keyword gaps, and actionable suggestions for Indian tech companies.</p>
-      <div class="chip-list">
-        <div class="chip">ATS Score</div>
-        <div class="chip">Keyword Analysis</div>
-        <div class="chip">Section Ratings</div>
-        <div class="chip">AI Suggestions</div>
-        <div class="chip">Company Match</div>
-      </div>
-    </div>
-    <div class="reveal reveal-delay-2">
-      <div class="ra-wrap">
-        <label class="section-eyebrow" style="margin-bottom:8px">Resume Text</label>
-        <textarea class="txt-area" id="resumeText" placeholder="Paste your resume here...&#10;&#10;Example: Arjun Sharma | Full Stack Developer&#10;Skills: React, Node.js, MongoDB, AWS&#10;Experience: 3 years at TCS building microservices..."></textarea>
-        <div class="fld-row">
-          <input class="fld-input" id="resumeRole" placeholder="Target role (e.g. Senior SDE)"/>
-          <button class="action-btn" id="raBtn" onclick="analyzeResume()"><span id="raBtnTxt">Analyze Resume</span></button>
-        </div>
-        <div id="raResults" class="hidden">
-          <div class="score-grid">
-            <div class="score-card"><div class="score-num" id="raAts" style="color:var(--gold)">--</div><div class="score-lbl">ATS Score</div></div>
-            <div class="score-card"><div class="score-num" id="raKw" style="color:var(--violet)">--</div><div class="score-lbl">Keywords</div></div>
-            <div class="score-card"><div class="score-num" id="raImpact" style="color:var(--teal)">--</div><div class="score-lbl">Impact</div></div>
+        <div class="cc-grid">
+          <div class="cc-sidebar">
+            <div class="cc-item active" onclick="setCCFeature('chat', this)">
+              <div class="cc-item-title"><span class="material-symbols-outlined">chat_bubble</span> Interactive Advisor</div>
+              <div class="cc-item-desc">Ask anything about your career, salary, or company culture.</div>
+            </div>
+            <div class="cc-item" onclick="showPage('resume')">
+              <div class="cc-item-title"><span class="material-symbols-outlined">description</span> Resume Genius</div>
+              <div class="cc-item-desc">ATS-optimized analysis and keyword bridge detection.</div>
+            </div>
+            <div class="cc-item" onclick="showPage('roadmap')">
+              <div class="cc-item-title"><span class="material-symbols-outlined">map</span> Learning Roadmap</div>
+              <div class="cc-item-desc">Adaptive paths tailored to your skill gaps and goals.</div>
+            </div>
+            <div class="cc-item" onclick="showPage('interview')">
+              <div class="cc-item-title"><span class="material-symbols-outlined">record_voice_over</span> Interview Simulator</div>
+              <div class="cc-item-desc">High-stakes mock sessions with STAR feedback.</div>
+            </div>
           </div>
-          <div class="kw-grid">
-            <div class="kw-box"><div class="kw-title" style="color:var(--green)">Present Keywords</div><div class="tag-row" id="raPKw"></div></div>
-            <div class="kw-box"><div class="kw-title" style="color:var(--coral)">Missing Keywords</div><div class="tag-row" id="raMKw"></div></div>
+          <div class="cc-workspace">
+            <div class="cdemo-messages" id="chatMessages">
+              <div class="cmsg ai">
+                <div class="cmsg-av ai">V</div>
+                <div class="cmsg-bubble ai">Namaste! I am <strong>VidyaMitra</strong>. What should we focus on today?</div>
+              </div>
+            </div>
+            <div class="cc-prompt-wrap">
+              <div class="cc-prompt-bar">
+                <input type="text" id="chatInput" class="cc-input" placeholder="Say 'Analyze my backend skills'..." onkeydown="chatKey(event)" autocomplete="new-password" name="vidyamitra_chat_prompt" spellcheck="false" readonly onfocus="this.removeAttribute('readonly');">
+                <button class="cc-send" id="chatSendBtn" onclick="sendChat()"><span class="material-symbols-outlined">arrow_upward</span></button>
+              </div>
+            </div>
           </div>
-          <div class="section-eyebrow" style="margin-bottom:10px">AI Suggestions</div>
-          <div id="raSugg"></div>
         </div>
       </div>
     </div>
   </div>
-</div>
+
 </div>
 
-<hr class="section-divider"/>
+  <!-- PAGE: RESUME -->
+  <div id="page-resume" class="page-view">
+    <div id="resume">
+    <div class="section-wrap">
+      <div class="split-col-grid">
+        <div class="reveal">
+          <div class="section-eyebrow">ATS Resume Analysis</div>
+          <h2 class="section-title">Know your<br><em>resume score.</em></h2>
+          <p class="section-desc">Paste your resume and get an instant AI-powered ATS score, keyword gaps, and actionable suggestions for Indian tech companies.</p>
+        </div>
+        <div class="reveal reveal-delay-2">
+          <div class="ra-wrap">
+            <label class="section-eyebrow" style="margin-bottom:8px">Resume Text</label>
+            <textarea class="txt-area" id="resumeText" placeholder="Paste your resume here or manually type it out..."></textarea>
+            
+            <button class="action-btn" id="pdfUploadBtn" onclick="document.getElementById('pdfInput').click()" style="margin:16px 0; background:var(--bg2); color:var(--text); border:2px dashed var(--border); box-shadow:none; width:100%; display:flex; justify-content:center; align-items:center;">
+              <span class="material-symbols-outlined" style="font-size:20px; margin-right:8px;">upload_file</span> <span id="pdfUploadBtnTxt">Upload Resume File (PDF)</span>
+            </button>
+            <input type="file" id="pdfInput" accept="application/pdf" style="display:none;" onchange="handlePdfUpload(event)"/>
 
-<!-- MOCK INTERVIEW -->
-<div id="interview">
-<div class="section-wrap">
-  <div class="section-header reveal">
-    <div class="section-eyebrow">Mock Interview</div>
-    <h2 class="section-title">Practice. Improve.<br><em>Get hired.</em></h2>
-    <p class="section-desc">Get AI-generated interview questions, write your answer, and receive instant scoring with STAR method feedback.</p>
-  </div>
-  <div class="il-wrap reveal">
-    <div class="setup-row">
-      <input class="fld-input" id="ilRole" placeholder="Role (e.g. SDE-2 at Razorpay)" value="SDE-2 at Razorpay"/>
-      <select class="fld-select" id="ilMode"><option value="behavioral">Behavioral</option><option value="technical">Technical</option></select>
-      <select class="fld-select" id="ilDiff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select>
-    </div>
-    <button class="action-btn violet-btn" id="ilGetBtn" onclick="getQuestion()" style="margin-bottom:16px"><span id="ilBtnTxt">Get Interview Question</span></button>
-    <div id="ilQBox" class="q-box hidden">
-      <div class="q-label" id="ilQLabel">BEHAVIORAL QUESTION</div>
-      <div class="q-text" id="ilQText"></div>
-      <div class="tips-row" id="ilTips"></div>
-    </div>
-    <textarea id="ilAnswer" class="ans-area hidden" placeholder="Type your answer here... Use STAR: Situation - Task - Action - Result" oninput="ilTyped()"></textarea>
-    <button id="ilScoreBtn" class="sm-btn hidden" onclick="scoreAnswer()"><span id="ilScoreTxt">Score My Answer</span></button>
-    <div id="ilFeedback" class="hidden" style="margin-top:16px;animation:slideUp .4s ease">
-      <div class="fb-header">
-        <div class="fb-big" id="ilFbScore" style="color:var(--gold)">--</div>
-        <div><span class="badge" id="ilFbGrade">--</span><div style="font-size:12px;color:var(--muted);margin-top:4px">Interview Score</div></div>
+            <div class="fld-row">
+              <input class="fld-input" id="resumeRole" placeholder="Target role (e.g. Senior SDE)"/>
+              <button class="action-btn" id="raBtn" onclick="analyzeResume()"><span id="raBtnTxt">Analyze Resume</span></button>
+            </div>
+            <div id="raResults" class="hidden">
+              <div class="score-grid">
+                <div class="score-card"><div class="score-num" id="raAts" style="color:var(--text)">--</div><div class="score-lbl">ATS Score</div></div>
+                <div class="score-card"><div class="score-num" id="raKw" style="color:var(--text);opacity:0.6">--</div><div class="score-lbl">Keywords</div></div>
+                <div class="score-card"><div class="score-num" id="raImpact" style="color:var(--text);opacity:0.4">--</div><div class="score-lbl">Impact</div></div>
+              </div>
+              <div class="kw-grid" style="grid-template-columns: 1fr 1fr">
+                <div class="kw-box"><div class="kw-title">Present Keywords</div><div class="tag-row" id="raPKw"></div></div>
+                <div class="kw-box"><div class="kw-title">Missing Keywords</div><div class="tag-row" id="raMKw"></div></div>
+              </div>
+              <div class="section-eyebrow" style="margin-bottom:10px">AI Suggestions</div>
+              <div id="raSugg"></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="ilFbItems"></div>
-      <button class="action-btn violet-btn" style="margin-top:16px" onclick="getQuestion()">Next Question</button>
+    </div>
     </div>
   </div>
-</div>
-</div>
 
-<hr class="section-divider"/>
-
-<!-- SKILL QUIZ -->
-<div id="quiz">
-<div class="section-wrap">
-  <div class="section-header reveal">
-    <div class="section-eyebrow">Skill Assessment</div>
-    <h2 class="section-title">Test knowledge.<br><em>Find the gaps.</em></h2>
-    <p class="section-desc">AI-generated quizzes with timed questions and instant explanations. Every score feeds your career analytics.</p>
-  </div>
-  <div class="ql-wrap reveal">
-    <div class="setup-row">
-      <select class="fld-select" id="qlDomain">
-        <option>React / Frontend</option><option>Node.js / Backend</option><option>System Design</option>
-        <option>Machine Learning</option><option>DevOps / Cloud</option><option>Python</option>
-        <option>DSA</option><option>Databases / SQL</option>
-      </select>
-      <select class="fld-select" id="qlDiff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select>
-      <select class="fld-select" id="qlCount"><option value="5">5 Questions</option><option value="8" selected>8 Questions</option><option value="10">10 Questions</option></select>
-    </div>
-    <button class="action-btn" id="qlBtn" onclick="startQuiz()" style="margin-bottom:20px"><span id="qlBtnTxt">Start Quiz</span></button>
-    <div id="qlArena" class="hidden">
-      <div class="ql-pbar"><div class="ql-fill" id="qlFill" style="width:0%"></div></div>
-      <div class="ql-meta">
-        <span class="badge badge-violet" id="qlMeta">Q1 of 8</span>
-        <span class="ql-timer" id="qlTimer">30s</span>
+  <!-- PAGE: INTERVIEW -->
+  <div id="page-interview" class="page-view">
+    <div id="interview">
+    <div class="section-wrap">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Mock Interview</div>
+        <h2 class="section-title">Practice. Improve.<br><em>Get hired.</em></h2>
+        <p class="section-desc">Get AI-generated interview questions, write your answer, and receive instant scoring with STAR method feedback.</p>
       </div>
-      <div class="ql-q" id="qlQ"></div>
-      <div class="ql-opts" id="qlOpts"></div>
-      <div class="ql-exp hidden" id="qlExp"></div>
-      <button class="ql-next hidden" id="qlNext" onclick="nextQ()">Next</button>
-    </div>
-    <div id="qlResults" class="hidden">
-      <div style="text-align:center;padding:24px 0 32px">
-        <div class="ql-result-score" id="qlScore" style="color:var(--gold)">--%</div>
-        <div style="font-size:14px;color:var(--muted);margin-top:8px" id="qlSub"></div>
+      <div class="il-wrap reveal">
+        <div class="setup-row">
+          <input class="fld-input" id="ilRole" placeholder="Role (e.g. SDE-2 at Razorpay)" value="SDE-2 at Razorpay"/>
+          <select class="fld-select" id="ilMode"><option value="behavioral">Behavioral</option><option value="technical">Technical</option></select>
+          <select class="fld-select" id="ilDiff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select>
+        </div>
+        <button class="action-btn" id="ilGetBtn" onclick="getQuestion()" style="margin-bottom:16px"><span id="ilBtnTxt">Get Interview Question</span></button>
+        <div id="ilQBox" class="q-box hidden">
+          <div class="q-label" id="ilQLabel">INTERVIEW QUESTION</div>
+          <div class="q-text" id="ilQText"></div>
+          <div class="tips-row" id="ilTips"></div>
+        </div>
+        <textarea id="ilAnswer" class="ans-area hidden" placeholder="Type your answer here... Use STAR: Situation - Task - Action - Result" oninput="ilTyped()"></textarea>
+        <button id="ilScoreBtn" class="sm-btn hidden" onclick="scoreAnswer()"><span id="ilScoreTxt">Score My Answer</span></button>
+        <div id="ilFeedback" class="hidden" style="margin-top:16px;animation:slideUp .4s ease">
+          <div class="fb-header">
+            <div class="fb-big" id="ilFbScore" style="color:var(--text)">--</div>
+            <div><span class="badge" id="ilFbGrade">--</span><div style="font-size:12px;color:var(--muted);margin-top:4px">Interview Score</div></div>
+          </div>
+          <div id="ilFbItems"></div>
+          <button class="action-btn" style="margin-top:16px" onclick="getQuestion()">Next Question</button>
+        </div>
       </div>
-      <div class="ql-rg">
-        <div class="ql-rc" id="qlFeedback"></div>
-        <div class="ql-rc" id="qlRecos"></div>
+    </div>
+    </div>
+  </div>
+
+  <!-- PAGE: CAREER (SKILLS) -->
+  <div id="page-career" class="page-view">
+    <div id="quiz">
+    <section class="section-wrap">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Skill Assessment</div>
+        <h2 class="section-title">Test knowledge.<br><em>Find the gaps.</em></h2>
       </div>
-      <button class="action-btn" style="margin-top:20px" onclick="startQuiz()">Retake Quiz</button>
+      <div class="ql-wrap reveal">
+        <div class="setup-row">
+          <select class="fld-select" id="qlDomain">
+            <option>React / Frontend</option><option>Node.js / Backend</option><option>System Design</option>
+            <option>DSA</option>
+          </select>
+          <select class="fld-select" id="qlDiff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select>
+          <select class="fld-select" id="qlCount">
+            <option value="5">5 Questions</option><option value="8" selected>8 Questions</option><option value="12">12 Questions</option>
+          </select>
+        </div>
+        <button class="action-btn" id="qlBtn" onclick="startQuiz()" style="margin-bottom:20px"><span id="qlBtnTxt">Start Assessment</span></button>
+        <div id="qlArena" class="hidden">
+          <div class="ql-pbar"><div class="ql-fill" id="qlFill" style="width:0%"></div></div>
+          <div class="ql-meta">
+            <span class="badge" id="qlMeta" style="background:var(--bg);color:var(--gold)">Q1 of 8</span>
+            <span class="ql-timer" id="qlTimer">30s</span>
+          </div>
+          <div class="ql-q" id="qlQ" style="background:var(--surface);border-color:var(--border)"></div>
+          <div class="ql-opts" id="qlOpts"></div>
+          <div class="ql-exp hidden" id="qlExp" style="background:var(--bg2);color:var(--text)"></div>
+          <button class="ql-next hidden" id="qlNext" onclick="nextQ()" style="background:var(--gold);color:var(--bg)">Next Question</button>
+        </div>
+        <div id="qlResults" class="hidden">
+          <div style="text-align:center;padding:24px 0 32px">
+            <div class="ql-result-score" id="qlScore" style="color:#000">--%</div>
+            <div id="qlSub" style="font-size:14px;color:var(--muted);margin-top:8px"></div>
+          </div>
+          <div class="ql-rg">
+            <div class="ql-rc" id="qlFeedback"></div>
+            <div class="ql-rc" id="qlRecos"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </section>
     </div>
   </div>
-</div>
-</div>
 
-<hr class="section-divider"/>
-
-<!-- CAREER PLAN -->
-<div id="career">
-<div class="section-wrap">
-  <div class="section-header reveal">
-    <div class="section-eyebrow">Career Roadmap</div>
-    <h2 class="section-title">Your personalized<br><em>learning journey.</em></h2>
-    <p class="section-desc">VidyaMitra evaluates your quiz scores and builds a prioritized, adaptive week-by-week path with real YouTube and Coursera resources.</p>
-  </div>
-  <div class="flow-steps reveal">
-    <div class="flow-step"><div class="flow-node" style="border-color:var(--gold);color:var(--gold)">01</div><div class="flow-step-title">Take Quizzes</div><div class="flow-step-desc">Complete skill assessments to give AI a baseline of your knowledge.</div></div>
-    <div class="flow-step"><div class="flow-node" style="border-color:var(--violet);color:var(--violet)">02</div><div class="flow-step-title">Gap Detection</div><div class="flow-step-desc">AI pinpoints your critical weaknesses vs your target role requirements.</div></div>
-    <div class="flow-step"><div class="flow-node" style="border-color:var(--teal);color:var(--teal)">03</div><div class="flow-step-title">Adaptive Path</div><div class="flow-step-desc">Get a prioritized learning path with critical gaps first, curated resources.</div></div>
-    <div class="flow-step"><div class="flow-node" style="border-color:var(--green);color:var(--green)">04</div><div class="flow-step-title">Track and Adapt</div><div class="flow-step-desc">Retake quizzes to validate progress. Path adapts automatically to new scores.</div></div>
-  </div>
-</div>
-</div>
-
-<hr class="section-divider"/>
-
-<!-- PROGRESS -->
-<div id="progress">
-<div class="section-wrap">
-  <div class="section-header reveal">
-    <div class="section-eyebrow">Progress Tracking</div>
-    <h2 class="section-title">Watch yourself<br><em>level up.</em></h2>
-  </div>
-  <div class="metrics-grid metrics-grid-3 reveal">
-    <div class="metric-cell"><span class="metric-num" id="metricAts" style="color:var(--gold)">0%</span><div class="metric-label">Best ATS Score</div></div>
-    <div class="metric-cell"><span class="metric-num" id="metricInt" style="color:var(--violet)">0</span><div class="metric-label">Interviews Practiced</div></div>
-    <div class="metric-cell"><span class="metric-num" id="metricQs" style="color:var(--teal)">0</span><div class="metric-label">Quiz Questions Answered</div></div>
-  </div>
-  <div class="reveal" style="margin-top:32px;">
-    <div class="prog-live">
-      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:20px;">Your Skill Progress <span style="font-size:11px;color:var(--dim);font-weight:400">(from quiz results)</span></div>
-      <div id="progBars"><div style="font-size:13px;color:var(--muted)">Take quizzes above to see your skill progress here.</div></div>
+  <!-- PAGE: ROADMAP -->
+  <div id="page-roadmap" class="page-view">
+    <div id="roadmap">
+    <div class="section-wrap">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Career Roadmap</div>
+        <h2 class="section-title">Your personalized<br><em>learning journey.</em></h2>
+        <p class="section-desc">VidyaMitra evaluates your quiz scores and builds a prioritized, adaptive week-by-week path with real YouTube and Coursera resources.</p>
+      </div>
+      <div id="career" class="reveal" style="margin-top:40px">
+        <div class="section-wrap" style="padding:0"></div>
+      </div>
+    </div>
     </div>
   </div>
-</div>
-</div>
 
-<hr class="section-divider"/>
-
-<!-- JOBS -->
-<div id="jobs">
-<div class="section-wrap">
-  <div class="section-header reveal">
-    <div class="section-eyebrow">Job Board</div>
-    <h2 class="section-title">Matched roles,<br><em>live from India.</em></h2>
-  </div>
-  <div class="reveal">
-    <div class="jobs-search">
-      <input class="jobs-input" id="jobRole" placeholder="Role (e.g. Full Stack Developer)"/>
-      <input class="jobs-input" id="jobLoc" placeholder="Location" value="India"/>
-      <button class="jobs-btn" onclick="searchJobs()">Search Jobs</button>
+  <!-- PAGE: JOBS -->
+  <div id="page-jobs" class="page-view">
+    <div id="jobs">
+    <div class="section-wrap">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Job Board</div>
+        <h2 class="section-title">Matched roles,<br><em>live from India.</em></h2>
+      </div>
+      <div class="reveal">
+        <div class="jobs-search">
+          <input class="jobs-input" id="jobRole" placeholder="Role (e.g. Full Stack Developer)"/>
+          <input class="jobs-input" id="jobLoc" placeholder="Location" value="India"/>
+          <button class="jobs-btn" onclick="searchJobs()">Search Jobs</button>
+        </div>
+        <div class="jobs-grid" id="jobsGrid">
+          <div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted);font-size:14px">Searching curated listings...</div>
+        </div>
+        <div id="jobsTrends" class="trends-box hidden">
+          <div class="trend-title">Market Hotspot (India)</div>
+          <div class="trend-row" id="trendChips"></div>
+          <div class="trend-text" id="trendText" style="font-size:13px;color:var(--muted);line-height:1.5;margin-top:12px"></div>
+        </div>
+      </div>
     </div>
-    <div class="jobs-grid" id="jobsGrid">
-      <div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted);font-size:14px">Click Search Jobs to load AI-curated listings</div>
-    </div>
-    <div class="trends-box hidden" id="jobsTrends">
-      <div class="trend-title">Market Trends</div>
-      <div class="trend-row" id="trendChips"></div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.6" id="trendText"></div>
     </div>
   </div>
-</div>
-</div>
-
-<hr class="section-divider"/>
-
-<!-- TECH STACK -->
-<div id="tech">
-<div class="section-wrap">
-  <div class="section-header reveal">
-    <div class="section-eyebrow">Technology Stack</div>
-    <h2 class="section-title">Built with the<br><em>best tools.</em></h2>
-  </div>
-  <div class="tech-grid reveal">
-    <div><div class="tech-group-title">Frontend</div><div class="chip-list"><div class="chip">HTML5</div><div class="chip">CSS3</div><div class="chip">Vanilla JS</div><div class="chip">Canvas API</div><div class="chip">IntersectionObserver</div></div></div>
-    <div><div class="tech-group-title">Backend</div><div class="chip-list"><div class="chip">FastAPI</div><div class="chip">Python 3.11</div><div class="chip">Groq LLaMA-3</div><div class="chip">Pydantic</div><div class="chip">JWT Auth</div></div></div>
-  </div>
-</div>
-</div>
 
 
 <footer>
-  <span>2026 VidyaMitra. Renaissance Edition.</span>
-  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="https://newvidyamitra.onrender.com/docs" target="_blank">API Docs</a></div>
+  <span>2026 VidyaMitra. Team Zenwired.</span>
+  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="https://vidyamitra-1-ddka.onrender.com/docs" target="_blank">API Docs</a></div>
 </footer>
 
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const API='https://newvidyamitra.onrender.com';
-const ST={interviews:0,quizQs:0,bestAts:0,scores:{}};
-
-async function apiFetch(path,opts={}){
-  const headers={'Content-Type':'application/json',...(opts.headers||{})};
-  const res=await fetch(API+path,{...opts,headers});
-  if(!res.ok){const e=await res.json().catch(()=>({detail:'Error'}));throw new Error(e.detail||'HTTP '+res.status);}
-  return res.json();
-}
+const ST = JSON.parse(localStorage.getItem('vm_stats')) || {interviews:0,quizQs:0,bestAts:0,scores:{}};
+function saveST(){ localStorage.setItem('vm_stats', JSON.stringify(ST)); }
 
 function showToast(msg,type='success'){
-  const icons={success:'OK',error:'ERR',warn:'WARN',info:'INFO'};
-  const t=document.createElement('div');t.className='toast';
-  t.textContent=msg;
-  document.getElementById('toastContainer').appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300);},3000);
+  // Disabled as per user request to remove popping messages
+  return;
 }
 
 function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
@@ -580,74 +453,145 @@ function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavi
 function toggleMobileMenu(){
   const menu=document.getElementById('mobileMenu');
   const hamburger=document.getElementById('navHamburger');
-  menu.classList.toggle('open');
+  const overlay=document.getElementById('mobileOverlay');
+  const isOpen = menu.classList.toggle('open');
   hamburger.classList.toggle('open');
+  overlay.classList.toggle('open');
+  document.body.style.overflow = isOpen ? 'hidden' : '';
 }
-// Close mobile menu on outside click
+
+// Close mobile menu on outside click/overlay
 document.addEventListener('click',e=>{
   const menu=document.getElementById('mobileMenu');
   const hamburger=document.getElementById('navHamburger');
   if(menu.classList.contains('open')&&!menu.contains(e.target)&&!hamburger.contains(e.target)){
-    menu.classList.remove('open');
-    hamburger.classList.remove('open');
+    toggleMobileMenu();
   }
 });
 
-window.addEventListener('scroll',()=>{
-  document.getElementById('mainNav').classList.toggle('scrolled',scrollY>20);
-  const secs=['agent','resume','interview','quiz','career','progress','jobs','tech'];
-  const y=scrollY+130;
-  for(let i=secs.length-1;i>=0;i--){
-    const el=document.getElementById(secs[i]);
-    if(el&&el.offsetTop<=y){
-      document.querySelectorAll('.nav-pill').forEach((l,idx)=>l.classList.toggle('active',idx===i));
-      break;
+// ── SWIPE LOGIC ──
+let touchStartX = 0;
+let touchEndX = 0;
+const SWIPE_THRESHOLD = 80;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+}, {passive: true});
+
+document.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, {passive: true});
+
+function handleSwipe() {
+    const menu = document.getElementById('mobileMenu');
+    const diff = touchEndX - touchStartX;
+    // Swipe from left edge (0-60px) to open
+    if (!menu.classList.contains('open') && touchStartX < 60 && diff > 70) {
+        toggleMobileMenu();
     }
-  }
-});
-
-window.revObs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revObs.unobserve(e.target);}});
-},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
-
-const cntObs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(!e.isIntersecting)return;
-    const el=e.target,target=+el.dataset.target,suffix=el.dataset.suffix||'';
-    let start=null;
-    const step=ts=>{if(!start)start=ts;const p=Math.min((ts-start)/1800,1);el.textContent=Math.floor((1-Math.pow(1-p,3))*target)+suffix;if(p<1)requestAnimationFrame(step);else el.textContent=target+suffix;};
-    requestAnimationFrame(step);cntObs.unobserve(el);
-  });
-},{threshold:.5});
-document.querySelectorAll('.counter').forEach(el=>cntObs.observe(el));
-
-setTimeout(()=>{document.querySelectorAll('.hero-title .word').forEach((w,i)=>{w.style.animation=`wordReveal .7s ${.4+i*.12}s cubic-bezier(.16,1,.3,1) forwards`;});},100);
-
-// ── CHAT ──
-function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
-function injectPrompt(text){const inp=document.getElementById('chatInput');inp.value=text;scrollToSection('agent');setTimeout(sendChat,200);}
-async function sendChat(){
-  const inp=document.getElementById('chatInput'),btn=document.getElementById('chatSendBtn');
-  const text=inp.value.trim();if(!text)return;
-  addMsg(text,'user');inp.value='';autoResize(inp);
-  document.getElementById('chatQuickBtns').style.display='none';btn.disabled=true;
-  chatHistory.push({role:'user',content:text});
-  const tid=addTyping();
-  try{const d=await apiFetch('/ai/chat',{method:'POST',body:JSON.stringify({messages:chatHistory,system:CHAT_SYS})});
-    const reply=d.reply||'Sorry, could not respond.';removeTyping(tid);chatHistory.push({role:'assistant',content:reply});addMsg(reply,'ai');
-  }catch{removeTyping(tid);addMsg('Could not reach VidyaMitra backend. Please try again in a moment.','ai');}
-  btn.disabled=false;
+    // Swipe left anywhere to close
+    else if (menu.classList.contains('open') && diff < -70) {
+        toggleMobileMenu();
+    }
 }
-function addMsg(text,role){
-  const msgs=document.getElementById('chatMessages'),div=document.createElement('div');div.className='cmsg '+role;
-  const fmt=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-  div.innerHTML=`<div class="cmsg-av ${role}">${role==='ai'?'V':'U'}</div><div class="cmsg-bubble ${role}">${fmt}</div>`;
-  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+
+function showPage(pageId) {
+    if (!pageId) return;
+    console.log('[SPA] Navigating to:', pageId);
+    
+    // 1. Identify if this is a section within a page
+    const sectionMap = {
+        'agent': 'home',
+        'roadmap': 'roadmap'
+    };
+    
+    const parentPageId = sectionMap[pageId] || pageId;
+    const targetPage = document.getElementById('page-' + parentPageId);
+    
+    if (!targetPage) {
+        console.warn('[SPA] Page not found:', parentPageId);
+        return;
+    }
+
+    // 2. Hide all page-view elements
+    document.querySelectorAll('.page-view').forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none';
+    });
+    
+    // 3. Show target parent page
+    targetPage.classList.add('active');
+    targetPage.style.display = 'block';
+    
+    // 4. Scroll to section if it's a section, else scroll to top
+    if (sectionMap[pageId]) {
+        const sectionEl = document.getElementById(pageId);
+        if (sectionEl) {
+            sectionEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }
+    } else {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+    
+    console.log('[SPA] Target displayed:', targetPage.id);
+    
+    // 5. Update navigation pills
+    document.querySelectorAll('.nav-pill').forEach(pill => {
+        const dp = pill.getAttribute('data-page');
+        const isActive = (dp === pageId);
+        pill.classList.toggle('active', isActive);
+        
+        // Visual cleanup for the active pill
+        if (isActive) {
+            pill.style.background = '#FFFFFF';
+            pill.style.color = '#000000';
+        } else {
+            pill.style.background = '';
+            pill.style.color = '';
+        }
+    });
+
+    // Handle mobile close
+    if (document.getElementById('mobileMenu')?.classList.contains('open')) {
+        toggleMobileMenu();
+    }
 }
-function addTyping(){const msgs=document.getElementById('chatMessages'),id='ty'+Date.now();const d=document.createElement('div');d.className='cmsg';d.id=id;d.innerHTML=`<div class="cmsg-av ai">V</div><div class="cmsg-bubble ai"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return id;}
-function removeTyping(id){document.getElementById(id)?.remove();}
+
+function scrollToSection(id) {
+    showPage(id);
+}
+
+function setCCFeature(feat, el){
+    document.querySelectorAll('.cc-item').forEach(item => item.classList.remove('active'));
+    el.classList.add('active');
+    if(feat === 'chat') {
+        document.getElementById('chatMessages').innerHTML = '<div class="cmsg ai"><div class="cmsg-av ai">V</div><div class="cmsg-bubble ai">Switching to <strong>Interactive Advisor</strong> mode. How can I help?</div></div>';
+    }
+}
+
+function showReasoning(steps) {
+    const log = document.getElementById('reasoningLog');
+    const stepsDiv = document.getElementById('reasoningSteps');
+    stepsDiv.innerHTML = '';
+    log.classList.add('visible');
+    
+    steps.forEach((step, i) => {
+        setTimeout(() => {
+            const div = document.createElement('div');
+            div.className = 'reasoning-step';
+            div.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>${step}</span>`;
+            stepsDiv.appendChild(div);
+        }, i * 600);
+    });
+}
+
+function hideReasoning() {
+    setTimeout(() => {
+        document.getElementById('reasoningLog').classList.remove('visible');
+    }, 1000);
+}
+
 
 // ── RESUME ──
 async function analyzeResume(){
@@ -655,9 +599,8 @@ async function analyzeResume(){
   const role=document.getElementById('resumeRole').value.trim();
   if(text.length<50){showToast('Paste more resume text (50+ chars)','warn');return;}
   const btn=document.getElementById('raBtn'),btnTxt=document.getElementById('raBtnTxt');
-  btn.disabled=true;btnTxt.textContent='Analyzing...';
   try{
-    const d=await apiFetch('/resume/analyze',{method:'POST',body:JSON.stringify({resume_text:text,target_role:role})});
+    const d=await window.API.resume.analyze(text, role);
     document.getElementById('raAts').textContent=d.ats_score+'%';
     document.getElementById('raKw').textContent=d.keyword_score+'%';
     document.getElementById('raImpact').textContent=d.impact_score+'%';
@@ -665,7 +608,12 @@ async function analyzeResume(){
     document.getElementById('raMKw').innerHTML=(d.missing_keywords||[]).map(k=>`<span class="ktag ktag-r">${k}</span>`).join('');
     document.getElementById('raSugg').innerHTML=(d.suggestions||[]).map(s=>`<div class="suggestion">- ${s}</div>`).join('');
     document.getElementById('raResults').classList.remove('hidden');
-    if(d.ats_score>ST.bestAts){ST.bestAts=d.ats_score;updateMetrics();}
+    if(d.ats_score>ST.bestAts){ST.bestAts=d.ats_score;saveST();updateMetrics();}
+    // Hindsight Reflection: Resume analysis
+    if (typeof window.addMemory === 'function') {
+      const memText = `Analyzed resume for "${role || 'General'}". ATS Score: ${d.ats_score}%. Missing skills: ${(d.missing_keywords || []).slice(0,3).join(', ')}.`;
+      window.addMemory(memText);
+    }
     showToast('Resume analyzed!');
   }catch(e){showToast('Analysis failed: '+e.message,'error');}
   btn.disabled=false;btnTxt.textContent='Analyze Again';
@@ -680,16 +628,22 @@ async function getQuestion(){
   document.getElementById('ilFeedback').classList.add('hidden');
   document.getElementById('ilAnswer').value='';
   document.getElementById('ilAnswer').classList.add('hidden');
-  document.getElementById('ilScoreBtn').classList.add('hidden');
   try{
-    const d=await apiFetch('/interview/question',{method:'POST',body:JSON.stringify({role,mode,difficulty:diff})});
+    const d=await window.API.interview.generateQuestion(role, mode, diff);
     curQ=d.question;
     document.getElementById('ilQLabel').textContent=mode.toUpperCase()+' - '+diff.toUpperCase();
-    document.getElementById('ilQText').textContent=d.question;
-    document.getElementById('ilTips').innerHTML=(d.tips||[]).map(t=>`<span class="tip">${t}</span>`).join('');
-    document.getElementById('ilQBox').classList.remove('hidden');
-    document.getElementById('ilAnswer').classList.remove('hidden');
-    document.getElementById('ilAnswer').focus();
+    if (!curQ || curQ.trim() === '') {
+      document.getElementById('ilQText').textContent="There's none. Please try different parameters.";
+      document.getElementById('ilAnswer').classList.add('hidden');
+      document.getElementById('ilTips').innerHTML='';
+      document.getElementById('ilQBox').classList.remove('hidden');
+    } else {
+      document.getElementById('ilQText').textContent=d.question;
+      document.getElementById('ilTips').innerHTML=(d.tips||[]).map(t=>`<span class="tip">${t}</span>`).join('');
+      document.getElementById('ilQBox').classList.remove('hidden');
+      document.getElementById('ilAnswer').classList.remove('hidden');
+      document.getElementById('ilAnswer').focus();
+    }
   }catch(e){showToast('Could not get question: '+e.message,'error');}
   btn.disabled=false;btnTxt.textContent='New Question';
 }
@@ -698,10 +652,9 @@ async function scoreAnswer(){
   const answer=document.getElementById('ilAnswer').value.trim(),mode=document.getElementById('ilMode').value;
   if(!curQ||!answer){showToast('Write your answer first','warn');return;}
   const btnTxt=document.getElementById('ilScoreTxt'),btn=document.getElementById('ilScoreBtn');
-  btnTxt.textContent='Scoring...';btn.disabled=true;
   try{
-    const d=await apiFetch('/interview/score',{method:'POST',body:JSON.stringify({question:curQ,answer,mode})});
-    const c=d.score>=75?'var(--green)':d.score>=50?'var(--gold)':'var(--coral)';
+    const d=await window.API.interview.scoreAnswer(curQ, answer, mode);
+    const c='#000';
     document.getElementById('ilFbScore').textContent=d.score;document.getElementById('ilFbScore').style.color=c;
     document.getElementById('ilFbGrade').textContent='Grade '+d.grade;
     let h='';
@@ -711,7 +664,12 @@ async function scoreAnswer(){
     if(d.model_answer_hint)h+=`<div class="fb-item">Hint: ${d.model_answer_hint}</div>`;
     document.getElementById('ilFbItems').innerHTML=h;
     document.getElementById('ilFeedback').classList.remove('hidden');
-    ST.interviews++;updateMetrics();showToast('Answer scored!');
+    ST.interviews++;saveST();updateMetrics();showToast('Answer scored!');
+    // Hindsight Reflection: Save this experience to long-term memory
+    if (typeof window.addMemory === 'function') {
+      const memText = `Faced ${mode} question: "${curQ}". Score: ${d.score}/100. Feedback: ${d.improvements?.[0] || 'Good performance'}.`;
+      window.addMemory(memText);
+    }
   }catch(e){showToast('Scoring failed: '+e.message,'error');}
   btnTxt.textContent='Score My Answer';btn.disabled=false;
 }
@@ -722,9 +680,8 @@ async function startQuiz(){
   const domain=document.getElementById('qlDomain').value,diff=document.getElementById('qlDiff').value,count=+document.getElementById('qlCount').value;
   const btn=document.getElementById('qlBtn'),btnTxt=document.getElementById('qlBtnTxt');
   btnTxt.textContent='Generating...';btn.disabled=true;
-  document.getElementById('qlResults').classList.add('hidden');document.getElementById('qlArena').classList.add('hidden');
   try{
-    const d=await apiFetch('/quiz/generate',{method:'POST',body:JSON.stringify({domain,difficulty:diff,count})});
+    const d=await window.API.quiz.generate(domain, diff, count);
     qqAll=d.questions||[];qqIdx=0;qqAns=[];
     if(!qqAll.length){showToast('No questions returned','warn');return;}
     document.getElementById('qlArena').classList.remove('hidden');
@@ -748,24 +705,23 @@ function renderQ(){
 function updTimer(){const el=document.getElementById('qlTimer');el.textContent=qqLeft+'s';el.classList.toggle('urgent',qqLeft<=10);}
 function pickOpt(idx){
   if(qqDone)return;qqDone=true;clearInterval(qqTimer);
-  const q=qqAll[qqIdx];qqAns.push(idx);ST.quizQs++;updateMetrics();
+  const q=qqAll[qqIdx];qqAns.push(idx);ST.quizQs++;saveST();updateMetrics();
   document.querySelectorAll('.ql-opt').forEach((b,i)=>{b.disabled=true;if(i===q.correct_index)b.classList.add('correct');else if(i===idx)b.classList.add('wrong');});
   const exp=document.getElementById('qlExp');exp.textContent='Explanation: '+(q.explanation||'N/A');exp.classList.remove('hidden');
   document.getElementById('qlNext').classList.remove('hidden');
 }
 function nextQ(){qqIdx++;renderQ();}
 async function finishQuiz(){
-  clearInterval(qqTimer);document.getElementById('qlArena').classList.add('hidden');document.getElementById('qlFill').style.width='100%';
   try{
-    const d=await apiFetch('/quiz/submit',{method:'POST',body:JSON.stringify({questions:qqAll,answers:qqAns})});
-    const c=d.score>=75?'var(--green)':d.score>=50?'var(--gold)':'var(--coral)';
+    const d=await window.API.quiz.submit(qqAll, qqAns);
+    const c='#000';
     document.getElementById('qlScore').textContent=d.score+'%';document.getElementById('qlScore').style.color=c;
     document.getElementById('qlSub').textContent=d.correct+' / '+d.total+' correct - Grade '+d.grade;
-    document.getElementById('qlFeedback').innerHTML='<div style="font-size:11px;font-weight:700;color:var(--dim);font-family:var(--ff-mono);text-transform:uppercase;margin-bottom:10px">AI Feedback</div>'+(d.feedback||'')+(d.weak_areas||[]).map(a=>`<div style="font-size:12px;color:var(--coral);margin-top:6px">Weak: ${a}</div>`).join('');
-    document.getElementById('qlRecos').innerHTML='<div style="font-size:11px;font-weight:700;color:var(--dim);font-family:var(--ff-mono);text-transform:uppercase;margin-bottom:10px">Recommendations</div>'+(d.recommendations||[]).map(r=>`<div style="font-size:13px;color:var(--muted);margin-bottom:8px;padding-left:12px;border-left:2px solid var(--gold)">${r}</div>`).join('');
+    document.getElementById('qlFeedback').innerHTML='<div style="font-size:11px;font-weight:700;color:var(--dim);font-family:var(--ff-mono);text-transform:uppercase;margin-bottom:10px">AI Feedback</div>'+(d.feedback||'')+(d.weak_areas||[]).map(a=>`<div style="font-size:12px;color:#000;opacity:0.6;margin-top:6px">Weak: ${a}</div>`).join('');
+    document.getElementById('qlRecos').innerHTML='<div style="font-size:11px;font-weight:700;color:var(--dim);font-family:var(--ff-mono);text-transform:uppercase;margin-bottom:10px">Recommendations</div>'+(d.recommendations||[]).map(r=>`<div style="font-size:13px;color:var(--muted);margin-bottom:8px;padding-left:12px;border-left:2px solid #000">${r}</div>`).join('');
     document.getElementById('qlResults').classList.remove('hidden');
     const domain=document.getElementById('qlDomain').value;
-    ST.scores[domain]=d.score;updateProgBars();
+    ST.scores[domain]=d.score;saveST();updateProgBars();
     showToast('Quiz done! '+d.score+'% Grade '+d.grade);
   }catch(e){showToast('Could not grade: '+e.message,'error');}
 }
@@ -774,18 +730,34 @@ async function finishQuiz(){
 async function searchJobs(){
   const role=document.getElementById('jobRole').value,loc=document.getElementById('jobLoc').value||'India';
   const grid=document.getElementById('jobsGrid');
-  grid.innerHTML='<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted)">Loading jobs...</div>';
+  grid.innerHTML='<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted)">Searching for updated listings...</div>';
+  
   try{
-    const [jd,td]=await Promise.all([apiFetch('/jobs/list?role='+encodeURIComponent(role)+'&location='+encodeURIComponent(loc)),apiFetch('/jobs/trends')]);
-    const jobs=jd.jobs||[];
-    if(!jobs.length){grid.innerHTML='<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted)">No jobs found. Try different search.</div>';return;}
-    grid.innerHTML=jobs.map(j=>`<div class="jcard"><div class="jco">${j.icon||''} ${j.company} - ${j.location}</div><div class="jti">${j.title}</div><div class="jsal">${j.salary||''}</div><div class="jskills">${(j.skills||[]).map(s=>`<span class="jsk">${s}</span>`).join('')}</div><div class="jme">${j.experience||''} - ${j.type||'Full Time'}</div></div>`).join('');
-    const tr=document.getElementById('jobsTrends');tr.classList.remove('hidden');
-    const colors=['cbadge-gold','cbadge-violet','cbadge-teal','cbadge-coral'];
-    document.getElementById('trendChips').innerHTML=(td.hot_roles||[]).map((r,i)=>`<span class="trend-chip cbadge ${colors[i%colors.length]}">${r}</span>`).join('')+(td.top_skills||[]).map(s=>`<span class="trend-chip cbadge cbadge-teal">${s}</span>`).join('');
-    document.getElementById('trendText').textContent=td.insight||'';
-    showToast('Found '+jobs.length+' jobs');
-  }catch(e){grid.innerHTML='<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--coral)">Error loading jobs. Check backend is running.</div>';}
+    // Try both, but don't let trends failure block jobs
+    const jd = await window.API.jobs.list(role, loc);
+    const jobs = jd.jobs || [];
+    
+    if(!jobs.length){
+      grid.innerHTML='<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted)">No jobs found in '+loc+'. Try a different role or location.</div>';
+    } else {
+      grid.innerHTML=jobs.map(j=>`<div class="jcard"><div class="jco">JOB - ${j.company} - ${j.location}</div><div class="jti">${j.title}</div><div class="jsal">${j.salary||'LPA Not Specified'}</div><div class="jskills">${(j.skills||[]).map(s=>`<span class="jsk">${s}</span>`).join('')}</div><div class="jme">${j.experience||'New Prep'} - ${j.type||'Full Time'}</div><a href="${j.url||'#'}" target="_blank" class="jlink">View Listing →</a></div>`).join('');
+      showToast('Found '+jobs.length+' matches');
+    }
+
+    try {
+      const td = await window.API.jobs.trends();
+      const tr = document.getElementById('jobsTrends');
+      if (tr && td) {
+        tr.classList.remove('hidden');
+        document.getElementById('trendChips').innerHTML=(td.hot_roles||[]).map(r=>`<span class="trend-chip cbadge cbadge-default">${r}</span>`).join('')+(td.top_skills||[]).map(s=>`<span class="trend-chip cbadge cbadge-default">${s}</span>`).join('');
+        document.getElementById('trendText').textContent=td.insight||'';
+      }
+    } catch(e) { console.warn('Trends failed:', e); }
+
+  } catch(e) {
+    grid.innerHTML=`<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--coral)"><strong>Connection Error</strong><br>${e.message}<br>Check if backend is running at ${window.API?.base||'local'}.</div>`;
+  }
+  ST.interviews++;saveST();updateMetrics();
 }
 
 // ── PROGRESS ──
@@ -797,7 +769,7 @@ function updateMetrics(){
 function updateProgBars(){
   const el=document.getElementById('progBars'),entries=Object.entries(ST.scores);
   if(!entries.length)return;
-  const cols=['var(--gold)','var(--violet)','var(--teal)','var(--green)','var(--coral)'];
+  const cols=['#000','#333','#666','#999','#ccc'];
   el.innerHTML=entries.map(([d,s],i)=>`<div class="pb-row"><div class="pb-hd"><span>${d}</span><span>${s}%</span></div><div class="pb-track"><div class="pb-fill" style="background:${cols[i%cols.length]};width:0" data-w="${s}%"></div></div></div>`).join('');
   setTimeout(()=>{el.querySelectorAll('.pb-fill').forEach(b=>b.style.width=b.dataset.w);},100);
 }
@@ -821,6 +793,7 @@ function updateProgBars(){
     <div id="loginForm">
       <div class="auth-field"><label>Email</label><input class="auth-input" id="loginEmail" type="email" placeholder="arjun@gmail.com" onkeydown="authKey(event)"/></div>
       <div class="auth-field"><label>Password</label><input class="auth-input" id="loginPass" type="password" placeholder="Your password" onkeydown="authKey(event)"/></div>
+      <div class="auth-field" style="flex-direction:row; align-items:center; gap:8px; margin-top:-8px; margin-bottom:14px;"><input type="checkbox" id="rememberMe" checked style="accent-color: #000;"/><label for="rememberMe" style="text-transform:none; letter-spacing:normal; font-weight:500; opacity:0.8; margin:0">Remember me for 30 days</label></div>
       <div class="auth-error" id="loginErr"></div>
       <button class="auth-submit" id="loginBtn" onclick="doLogin()"><span id="loginBtnTxt">Sign In</span></button>
       <div class="auth-footer">No account? <a onclick="switchTab('register')">Create one free</a></div>
@@ -837,18 +810,62 @@ function updateProgBars(){
   </div>
 </div>
 
-<script src="src/utils/api.js"></script>
-<script src="src/utils/ui.js"></script>
-<script src="src/components/skills.js"></script>
-<script src="src/components/interview.js"></script>
-<script src="src/components/jobs.js"></script>
-<script src="src/components/chat.js"></script>
-<script src="src/components/marquee.js"></script>
-<script src="src/components/learn.js"></script>
+<!-- ══ PROFILE MODAL ══ -->
+<div class="auth-overlay" id="profileOverlay">
+  <div class="auth-modal profile-modal" role="dialog" aria-modal="true">
+    <button class="auth-close" onclick="closeProfile()" aria-label="Close">&#x2715;</button>
+    
+    <div class="profile-header">
+      <div class="profile-avatar-big" id="profileAvatarBig">U</div>
+      <div class="profile-info">
+        <h3 id="profileName">User Name</h3>
+        <p id="profileRole">Aspiring Developer</p>
+      </div>
+    </div>
+    
+    <div class="profile-main">
+      <div class="profile-section-title">Career Pulse</div>
+      <div class="metrics-grid-3">
+        <div class="metric-cell"><span class="metric-num" id="metricAts" style="color:#000">0%</span><div class="metric-label">ATS Peak</div></div>
+        <div class="metric-cell"><span class="metric-num" id="metricInt" style="color:#000">0</span><div class="metric-label">Sessions</div></div>
+        <div class="metric-cell"><span class="metric-num" id="metricQs" style="color:#000">0</span><div class="metric-label">Answers</div></div>
+      </div>
+
+      <div class="profile-section-title">Domain Mastery</div>
+      <div class="prog-live" style="margin-top:10px">
+        <div id="progBars"><div style="font-size:13px;color:var(--muted)">Reviewing your progress...</div></div>
+      </div>
+
+      <div id="profileBookmarks" style="margin-bottom:24px;"></div>
+
+      <div class="profile-actions">
+         <button class="nav-cta" onclick="openEditProfile()" style="background:#000; color:#fff;">Edit Profile</button>
+         <button class="nav-cta" onclick="closeProfile()">Explore More</button>
+         <button class="auth-submit" style="background:var(--bg2); color:var(--text); border: 1px solid var(--border);" onclick="doLogout(); closeProfile();">Sign Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT PROFILE MODAL ══ -->
+<div class="auth-overlay" id="editProfileOverlay" style="z-index: 3100 !important;">
+  <div class="auth-modal profile-modal" role="dialog" style="max-width: 400px !important; padding:32px 24px !important; text-align:left; border-top:1px solid var(--border);">
+    <button class="auth-close" onclick="closeEditProfile()" aria-label="Close">&#x2715;</button>
+    <div style="font-size:22px; font-weight:700; color:#000; margin-bottom:20px; text-align:center; font-family:var(--ff-display); letter-spacing:-0.03em;">Edit Profile</div>
+    <div class="profile-edit-form">
+      <div class="profile-edit-field"><label>Full Name</label><input type="text" id="editName" class="profile-edit-input" placeholder="Your Name"></div>
+      <div class="profile-edit-field"><label>Role / Designation</label><input type="text" id="editRole" class="profile-edit-input" placeholder="Your Designation"></div>
+      <button class="sm-btn" onclick="saveProfileChanges()" style="width:100%; justify-content:center; background:#000; color:#fff; border:none; margin-top:16px;">
+        <span class="material-symbols-outlined" style="font-size:16px;">save</span> Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ══ AUTH ══════════════════════════════
-let authToken = sessionStorage.getItem('vm_token') || null;
-let authUser  = sessionStorage.getItem('vm_user')  || null;
+let authToken = localStorage.getItem('vm_token') || sessionStorage.getItem('vm_token') || null;
+let authUser  = localStorage.getItem('vm_user')  || sessionStorage.getItem('vm_user')  || null;
 
 function openAuth(tab='login'){
   document.getElementById('authOverlay').classList.add('open');
@@ -888,9 +905,8 @@ async function doLogin(){
   if(!email){document.getElementById('loginEmail').classList.add('err');showAuthError('loginErr','Email is required.');return;}
   if(!pass){document.getElementById('loginPass').classList.add('err');showAuthError('loginErr','Password is required.');return;}
   const btn=document.getElementById('loginBtn'),txt=document.getElementById('loginBtnTxt');
-  btn.disabled=true;txt.textContent='Signing in...';
   try{
-    const d=await apiFetch('/auth/login',{method:'POST',body:JSON.stringify({email,password:pass})});
+    const d=await window.API.auth.login(email, pass);
     onAuthSuccess(d);
   }catch(e){
     showAuthError('loginErr',e.message||'Invalid email or password.');
@@ -908,9 +924,8 @@ async function doRegister(){
   if(!email){document.getElementById('regEmail').classList.add('err');showAuthError('regErr','Email is required.');return;}
   if(pass.length<8){document.getElementById('regPass').classList.add('err');showAuthError('regErr','Password must be at least 8 characters.');return;}
   const btn=document.getElementById('regBtn'),txt=document.getElementById('regBtnTxt');
-  btn.disabled=true;txt.textContent='Creating account...';
   try{
-    const d=await apiFetch('/auth/register',{method:'POST',body:JSON.stringify({email,password:pass,name})});
+    const d=await window.API.auth.register(email, pass, name);
     onAuthSuccess(d);
   }catch(e){
     showAuthError('regErr',e.message||'Registration failed. Try a different email.');
@@ -922,8 +937,14 @@ async function doRegister(){
 function onAuthSuccess(data){
   authToken=data.access_token;
   authUser=data.name||'User';
-  sessionStorage.setItem('vm_token',authToken);
-  sessionStorage.setItem('vm_user',authUser);
+  const remember = document.getElementById('rememberMe')?.checked;
+  if (remember) {
+    localStorage.setItem('vm_token',authToken);
+    localStorage.setItem('vm_user',authUser);
+  } else {
+    sessionStorage.setItem('vm_token',authToken);
+    sessionStorage.setItem('vm_user',authUser);
+  }
   // Keep window.API in sync so all module calls send the auth header
   if(window.API) window.API.setAuthToken(authToken);
   closeAuth();
@@ -950,6 +971,7 @@ function updateNavForAuth(){
 function doLogout(){
   authToken=null;authUser=null;
   sessionStorage.removeItem('vm_token');sessionStorage.removeItem('vm_user');
+  localStorage.removeItem('vm_token');localStorage.removeItem('vm_user');
   if(window.API) window.API.setAuthToken(null);
   updateNavForAuth();
   lockGatedSections();
@@ -957,7 +979,8 @@ function doLogout(){
 }
 
 // ── Auth gating for Resume, Interview, Quiz, Jobs, Career ──
-const GATED=['resume','interview','quiz','career','jobs'];
+// ── Auth gating ──
+const GATED=['resume','interview','quiz','roadmap','jobs'];
 
 function lockGatedSections(){
   GATED.forEach(id=>{
@@ -984,8 +1007,51 @@ function unlockGatedSections(){
 
 // Init on load
 updateNavForAuth();
-if(!authToken)lockGatedSections();else unlockGatedSections();
+if(!authToken){
+  lockGatedSections();
+  setTimeout(()=>openAuth('login'), 1500);
+}else{
+  unlockGatedSections();
+}
 </script>
-<script src="src/main.js"></script>
+<script src="src/utils/api.js?v=2"></script>
+<script src="src/utils/bookmarks.js?v=2"></script>
+<script src="src/utils/ui.js?v=2"></script>
+<script src="src/components/skills.js?v=2"></script>
+<script src="src/components/interview.js?v=2"></script>
+<script src="src/components/jobs.js?v=2"></script>
+<script src="src/components/chat.js?v=2"></script>
+<script src="src/components/marquee.js?v=2"></script>
+<script src="src/components/learn.js?v=2"></script>
+<script src="src/main.js?v=2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  async function handlePdfUpload(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const btnTxt = document.getElementById('pdfUploadBtnTxt');
+    if (!btnTxt) return;
+    const originalText = btnTxt.textContent;
+    btnTxt.textContent = 'Extracting...';
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+      let fullText = '';
+      for(let i=1; i<=pdf.numPages; i++){
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        fullText += textContent.items.map(item => item.str).join(' ') + '\n';
+      }
+      document.getElementById('resumeText').value = fullText.trim();
+      btnTxt.textContent = 'Uploaded ✓';
+      setTimeout(()=>btnTxt.textContent=originalText, 3000);
+    } catch(err){
+      console.error(err);
+      btnTxt.textContent = 'Upload Failed';
+      setTimeout(()=>btnTxt.textContent=originalText, 3000);
+    }
+  }
+</script>
 </body>
 </html>

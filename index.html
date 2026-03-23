@@ -444,8 +444,13 @@ const ST = JSON.parse(localStorage.getItem('vm_stats')) || {interviews:0,quizQs:
 function saveST(){ localStorage.setItem('vm_stats', JSON.stringify(ST)); }
 
 function showToast(msg,type='success'){
-  // Disabled as per user request to remove popping messages
-  return;
+  const container = document.getElementById('toastContainer');
+  if(!container) return;
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  container.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 4000);
 }
 
 function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
@@ -872,14 +877,23 @@ function setAuthToken(token) { _authToken = token; }
 function getAuthToken() { return _authToken; }
 
 async function apiFetch(path, options = {}) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 15000);
   const headers = { 'Content-Type': 'application/json', ...options.headers };
   if (_authToken) headers['Authorization'] = 'Bearer ' + _authToken;
-  const res = await fetch(API_BASE + path, { ...options, headers });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
-    throw new Error(err.detail || 'HTTP ' + res.status);
+  try {
+    const res = await fetch(API_BASE + path, { ...options, headers, signal: controller.signal });
+    clearTimeout(id);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
+      throw new Error(err.detail || 'HTTP ' + res.status);
+    }
+    return res.json();
+  } catch (err) {
+    clearTimeout(id);
+    if (err.name === 'AbortError') throw new Error('Request timed out (15s). Please try again.');
+    throw err;
   }
-  return res.json();
 }
 
 const AuthAPI = {

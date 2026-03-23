@@ -32,11 +32,17 @@ def ai_chat(req: ChatRequest):
     user_query = req.messages[-1].content if req.messages else ""
     memories = recall_memories(user_query)
     
+    # Debug Logging
+    print(f"Hindsight Recall for '{user_query}': {len(memories)} items found.")
+    for i, m in enumerate(memories):
+        print(f"  [{i}] {m[:100]}...")
+
     # Inject memories into system prompt if found
     enhanced_system = req.system
     if memories:
-        enhanced_system += "\n\nRelevant Memories (Hindsight Recall):\n" + "\n".join(memories)
-        enhanced_system += "\n\nUse these memories to maintain context and continuity. If memories conflict with new info, prioritize new info but acknowledge the past."
+        enhanced_system += "\n\nCRITICAL CONTEXT: The following are relevant facts from the user's past activities (Resume, Interviews, Quizzes):\n"
+        enhanced_system += "\n".join([f"- {m}" for m in memories])
+        enhanced_system += "\n\nUse this context to personalize your response. If the user asks about their resume or past scores, refer specifically to the facts above."
 
     msgs = [{"role": m.role, "content": m.content} for m in req.messages]
     reply = chat_completion(

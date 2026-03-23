@@ -171,9 +171,15 @@
 .lj-bookmark-btn.active { background: #000; color: #fff; border-color: #000; }
 .lj-bookmark-btn:hover { border-color: #000; }
 
-.lj-resource-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
-.lj-resource-search { display: block; padding: 8px 16px; font-size: 11px; font-weight: 700; color: #000; background: rgba(0,0,0,0.03); border-top: 1px solid var(--border); text-align: center; text-decoration: none; transition: background 0.2s; }
-.lj-resource-search:hover { background: rgba(0,0,0,0.08); }
+.lj-resource-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px; display: flex; flex-direction: column; }
+.lj-resource-main { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.lj-resource-actions { display: flex; background: rgba(0,0,0,0.02); }
+.lj-res-link { flex: 1; padding: 10px; text-align: center; font-size: 11px; font-weight: 700; text-decoration: none; color: #000; border-right: 1px solid var(--border); transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.lj-res-link:last-child { border-right: none; }
+.lj-res-link:hover { background: rgba(0,0,0,0.06); }
+.lj-res-link.direct { color: var(--muted); }
+.lj-res-link.search { background: #000; color: #fff; }
+.lj-res-link.search:hover { background: #333; }
 
 .prog-live-bar { margin-bottom: 12px; }
 .plb-hd { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--dim); margin-bottom: 4px; text-transform: uppercase; }
@@ -197,7 +203,7 @@
   <div class="nav-right">
 
     <button class="nav-auth-btn" id="navAuthBtn" onclick="openAuth('login')">Sign In</button>
-    <div class="nav-user-pill" id="navUserPill" onclick="openProfile()"><div class="nav-avatar" id="navAvatarLetter">U</div><span class="nav-username" id="navUserName">User</span><button class="nav-logout" onclick="doLogout()">Sign out</button></div>
+    <div class="nav-user-pill" id="navUserPill" onclick="openProfile()"><div class="nav-avatar" id="navAvatarLetter">U</div><span class="nav-username" id="navUserName">User</span></div>
     <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -475,13 +481,8 @@ window.addMemory = function(text) {
 };
 
 function showToast(msg,type='success'){
-  const container = document.getElementById('toastContainer');
-  if(!container) return;
-  const t = document.createElement('div');
-  t.className = 'toast ' + type;
-  t.textContent = msg;
-  container.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 4000);
+  // Disabled per user request to remove "popping up notif on bottom right"
+  console.log(`[Toast Suppressed] ${type}: ${msg}`);
 }
 
 function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
@@ -1272,14 +1273,7 @@ document.querySelectorAll('.mmode-btn').forEach(btn => {
 });
 
 function showToast(msg, type) {
-  type = type || 'success';
-  const icons = { success: 'OK', error: 'ERR', info: 'INFO', warn: 'WARN' };
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.innerHTML = (icons[type] || 'OK') + ' ' + msg;
-  const container = document.getElementById('toastContainer');
-  if (container) container.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; t.style.transition = '0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+  // Disabled per user request
 }
 
 document.querySelectorAll('.feature-card').forEach(card => {
@@ -1548,19 +1542,24 @@ window.sendChat = sendChat;
     document.getElementById('ljModules').innerHTML=path.modules.map((m,i)=>`
 <div class="lj-module priority-${m.priority}" id="lj-mod-${i}">
   <div class="lj-module-header" onclick="ljToggleModule(${i})"><div class="lj-module-priority-dot"></div><div class="lj-module-info"><div class="lj-module-domain">${PRIORITY_LABELS[m.priority]||m.priority} · ${m.domain}</div><div class="lj-module-title">${m.title}</div><div class="lj-module-why">${m.why_this_now}</div></div><div class="lj-module-meta"><div class="lj-score-bar-wrap"><div class="lj-score-bar-label"><span>Score</span><span>${m.current_score}% → ${m.target_score}%</span></div><div class="lj-score-track"><div class="lj-score-fill" data-w="${m.current_score}%" style="width:0%"></div></div></div><div class="lj-weeks-badge">${m.estimated_weeks}w</div></div></div>
-  <div class="lj-module-body"><div class="lj-module-body-inner"><div class="lj-milestone">Milestone: ${m.milestone}</div><div class="lj-resources-list">${m.resources.map(r=>`
+  <div class="lj-module-body"><div class="lj-module-body-inner"><div class="lj-milestone">Milestone: ${m.milestone}</div><div class="lj-resources-list">${m.resources.map(r=>{
+    const isSuspect = !r.url || r.url.length < 15 || !r.url.startsWith('http');
+    return `
     <div class="lj-resource-card">
-      <a class="lj-resource type-${r.type}" href="${r.url||'#'}" target="_blank">
+      <div class="lj-resource-main">
         <div class="lj-resource-icon">${RESOURCE_ICONS[r.type]||''}</div>
         <div class="lj-resource-info">
           <div class="lj-resource-title">${r.title}</div>
           <div class="lj-resource-why">${r.why}</div>
           <div class="lj-resource-meta"><span class="lj-resource-tag">${r.type.toUpperCase()}</span><span class="lj-resource-tag">${r.duration}</span></div>
         </div>
-        <div class="lj-resource-arrow">>></div>
-      </a>
-      ${r.search_query ? `<a class="lj-resource-search" href="https://www.youtube.com/results?search_query=${encodeURIComponent(r.search_query)}" target="_blank">Search on YouTube ↗</a>` : ''}
-    </div>`).join('')}</div></div></div>
+      </div>
+      <div class="lj-resource-actions">
+        ${!isSuspect ? `<a class="lj-res-link direct" href="${r.url}" target="_blank">View Direct ↗</a>` : ''}
+        <a class="lj-res-link search" href="https://www.youtube.com/results?search_query=${encodeURIComponent(r.search_query || r.title)}" target="_blank">Search on YouTube 🔎</a>
+      </div>
+    </div>`;
+  }).join('')}</div></div></div>
 </div>`).join('');
     setTimeout(()=>document.querySelectorAll('.lj-score-fill').forEach(b=>b.style.width=b.dataset.w),200);
   }

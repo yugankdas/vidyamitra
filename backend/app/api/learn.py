@@ -107,7 +107,9 @@ Rules:
 - Modules with score 50-70 are "high" priority  
 - Modules with score > 70 are "medium" (polish)
 - If no quiz taken for a domain, estimate from the role requirements
-- For each module, recommend 2-3 REAL resources (actual YouTube channels/playlists or Coursera courses that exist)
+- Resources: Recommend 2-3 REAL, existing YouTube playlists/channels or Coursera courses.
+- VERIFY: URLs must be direct to the resource (e.g. youtube.com/playlist?list=...).
+- FALLBACK: For EVERY resource, provide a precise `search_query` (e.g. "freeCodeCamp React Full Course 2024").
 - Use Indian context where relevant
 
 Return ONLY valid JSON:

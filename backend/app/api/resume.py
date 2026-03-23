@@ -7,6 +7,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.groq_service import json_completion
 from app.utils import clean_json_str
+from app.services.memory_service import retain_memory
 
 router = APIRouter(prefix="/resume", tags=["resume"])
 
@@ -62,6 +63,12 @@ Return a JSON object with EXACTLY these fields:
         # Strip any accidental markdown
         clean = clean_json_str(raw)
         data = json.loads(clean)
-        return ATSResult(**data)
+        
+        # Hindsight: Retain the analysis result
+        res = ATSResult(**data)
+        role_label = f" (Target: {req.target_role})" if req.target_role else ""
+        retain_memory(f"Resume ATS Analysis{role_label}: Score {res.ats_score}%. Feedback: {res.overall_feedback}. Missing Keywords: {', '.join(res.missing_keywords[:5])}")
+        
+        return res
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {e}")

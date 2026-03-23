@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.groq_service import json_completion, chat_completion
 from app.utils import clean_json_str
+from app.services.memory_service import retain_memory
 
 router = APIRouter(prefix="/interview", tags=["interview"])
 
@@ -92,6 +93,11 @@ Return JSON:
     try:
         clean = clean_json_str(raw)
         data = json.loads(clean)
-        return ScoreResponse(**data)
+        
+        # Hindsight: Retain the score
+        score_res = ScoreResponse(**data)
+        retain_memory(f"Interview session for role '{req.mode}' (evaluating '{req.question}'): Scored {score_res.score}% ({score_res.grade}). Improvements recommended: {', '.join(score_res.improvements[:3])}")
+        
+        return score_res
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to parse: {e}")

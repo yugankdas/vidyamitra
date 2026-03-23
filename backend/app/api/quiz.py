@@ -8,6 +8,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.groq_service import json_completion
 from app.utils import clean_json_str
+from app.services.memory_service import retain_memory
 
 router = APIRouter(prefix="/quiz", tags=["quiz"])
 
@@ -127,10 +128,15 @@ Return JSON:
             "recommendations": ["Review the topics you missed", "Practice more questions"],
         }
 
-    return QuizResult(
+    res = QuizResult(
         score=score,
         correct=correct,
         total=total,
         grade=grade,
         **ai_data,
     )
+    
+    # Hindsight: Retain quiz performance
+    retain_memory(f"Quiz on topic '{req.questions[0].get('domain', 'general') if req.questions else 'unknown'}' completed: Score {res.score}% ({res.grade}). Feedback: {res.feedback}")
+    
+    return res

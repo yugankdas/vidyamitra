@@ -37,6 +37,8 @@ class Resource(BaseModel):
     title: str
     type: str          # "youtube" | "coursera" | "article" | "practice"
     url: str
+    is_verified: bool = False # AI confidence in URL existence
+    platform: str = "youtube" # youtube | coursera | web
     search_query: str = "" # Fallback search if URL is invalid
     duration: str      # e.g. "4h 30m" or "6 weeks"
     difficulty: str    # "beginner" | "intermediate" | "advanced"
@@ -109,7 +111,9 @@ Rules:
 - If no quiz taken for a domain, estimate from the role requirements
 - Resources: Recommend 2-3 REAL, existing YouTube playlists/channels or Coursera courses.
 - VERIFY: URLs must be direct to the resource (e.g. youtube.com/playlist?list=...).
-- FALLBACK: For EVERY resource, provide a precise `search_query` (e.g. "freeCodeCamp React Full Course 2024").
+- Confidence: Set `is_verified` to true ONLY if you are 100% sure the URL exists (base URLs are better than obscure deep links).
+- Platform: Specify if the resource is on "youtube" or "coursera".
+- FALLBACK: Provide a precise `search_query` for every resource.
 - Use Indian context where relevant
 
 Return ONLY valid JSON:
@@ -135,7 +139,9 @@ Return ONLY valid JSON:
           "title": "<resource title>",
           "type": "<youtube|coursera|article|practice>",
           "url": "<real URL>",
-          "search_query": "<high-intent search query for this specific resource>",
+          "is_verified": <true|false>,
+          "platform": "<youtube|coursera>",
+          "search_query": "<high-intent search query>",
           "duration": "<time estimate>",
           "difficulty": "<beginner|intermediate|advanced>",
           "why": "<why specifically for this user>"

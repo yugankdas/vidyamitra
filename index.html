@@ -185,6 +185,19 @@
 .plb-hd { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--dim); margin-bottom: 4px; text-transform: uppercase; }
 .plb-track { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
 .plb-fill { height: 100%; background: #000; border-radius: 4px; transition: width 1s ease; }
+
+/* Sign out confirmation */
+.confirm-modal { max-width: 320px !important; text-align: center; border-top: 1px solid var(--border); }
+.confirm-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; font-family:var(--ff-display); }
+.confirm-msg { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.4; }
+.confirm-btns { display: flex; gap: 8px; }
+.confirm-btns button { flex: 1; padding: 10px !important; font-size: 13px !important; justify-content:center !important; }
+
+/* Button Loading State */
+.btn-loading { position: relative; color: transparent !important; pointer-events: none; }
+.btn-loading::after { content: ""; position: absolute; width: 16px; height: 16px; top: 50%; left: 50%; margin: -8px 0 0 -8px; border: 2px solid rgba(0,0,0,0.1); border-top-color: #000; border-radius: 50%; animation: btn-spin 0.6s linear infinite; }
+.btn-loading.dark::after { border-color: rgba(255,255,255,0.2); border-top-color: #fff; }
+@keyframes btn-spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -442,7 +455,7 @@
         <div class="jobs-search">
           <input class="jobs-input" id="jobRole" placeholder="Role (e.g. Full Stack Developer)"/>
           <input class="jobs-input" id="jobLoc" placeholder="Location" value="India"/>
-          <button class="jobs-btn" onclick="searchJobs()">Search Jobs</button>
+          <button class="jobs-btn" id="jobSearchBtn" onclick="searchJobs()">Search Jobs</button>
         </div>
         <div class="jobs-grid" id="jobsGrid">
           <div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted);font-size:14px">Searching curated listings...</div>
@@ -635,7 +648,7 @@ async function analyzeResume(){
   const text=document.getElementById('resumeText').value.trim();
   const role=document.getElementById('resumeRole').value.trim();
   if(text.length<50){showToast('Paste more resume text (50+ chars)','warn');return;}
-  const btn=document.getElementById('raBtn'),btnTxt=document.getElementById('raBtnTxt');
+  setBtnLoading('raBtn', true, 'Analyzing Resume');
   try{
     const d=await window.API.resume.analyze(text, role);
     document.getElementById('raAts').textContent=d.ats_score+'%';
@@ -656,15 +669,14 @@ async function analyzeResume(){
     }
     showToast('Resume analyzed!');
   }catch(e){showToast('Analysis failed: '+e.message,'error');}
-  btn.disabled=false;btnTxt.textContent='Analyze Again';
+  setBtnLoading('raBtn', false);
 }
 
 // ── INTERVIEW ──
 let curQ=null;
 async function getQuestion(){
   const role=document.getElementById('ilRole').value||'SDE-2',mode=document.getElementById('ilMode').value,diff=document.getElementById('ilDiff').value;
-  const btn=document.getElementById('ilGetBtn'),btnTxt=document.getElementById('ilBtnTxt');
-  btn.disabled=true;btnTxt.textContent='Generating...';
+  setBtnLoading('ilGetBtn', true, 'Generating Question');
   document.getElementById('ilFeedback').classList.add('hidden');
   document.getElementById('ilAnswer').value='';
   document.getElementById('ilAnswer').classList.add('hidden');
@@ -685,13 +697,14 @@ async function getQuestion(){
       document.getElementById('ilAnswer').focus();
     }
   }catch(e){showToast('Could not get question: '+e.message,'error');}
-  btn.disabled=false;btnTxt.textContent='New Question';
+  setBtnLoading('ilGetBtn', false);
 }
 function ilTyped(){const v=document.getElementById('ilAnswer').value.trim();const btn=document.getElementById('ilScoreBtn');if(v.length>30)btn.classList.remove('hidden');else btn.classList.add('hidden');}
+
 async function scoreAnswer(){
   const answer=document.getElementById('ilAnswer').value.trim(),mode=document.getElementById('ilMode').value;
   if(!curQ||!answer){showToast('Write your answer first','warn');return;}
-  const btnTxt=document.getElementById('ilScoreTxt'),btn=document.getElementById('ilScoreBtn');
+  setBtnLoading('ilScoreBtn', true, 'Scoring Answer');
   try{
     const d=await window.API.interview.scoreAnswer(curQ, answer, mode);
     const c='#000';
@@ -709,21 +722,19 @@ async function scoreAnswer(){
     saveST();
     if(window.updateMetrics) updateMetrics();
     showToast('Answer scored!');
-    // Hindsight Reflection: Save this experience to long-term memory
     if (typeof window.addMemory === 'function') {
       const memText = `Faced ${mode} question: "${curQ}". Score: ${d.score}/100. Feedback: ${d.improvements?.[0] || 'Good performance'}.`;
       window.addMemory(memText);
     }
   }catch(e){showToast('Scoring failed: '+e.message,'error');}
-  btnTxt.textContent='Score My Answer';btn.disabled=false;
+  setBtnLoading('ilScoreBtn', false);
 }
 
 // ── QUIZ ──
 let qqAll=[],qqIdx=0,qqAns=[],qqTimer=null,qqLeft=30,qqDone=false;
 async function startQuiz(){
   const domain=document.getElementById('qlDomain').value,diff=document.getElementById('qlDiff').value,count=+document.getElementById('qlCount').value;
-  const btn=document.getElementById('qlBtn'),btnTxt=document.getElementById('qlBtnTxt');
-  btnTxt.textContent='Generating...';btn.disabled=true;
+  setBtnLoading('qlBtn', true, 'Starting Assessment');
   try{
     const d=await window.API.quiz.generate(domain, diff, count);
     qqAll=d.questions||[];qqIdx=0;qqAns=[];
@@ -731,7 +742,7 @@ async function startQuiz(){
     document.getElementById('qlArena').classList.remove('hidden');
     renderQ();showToast('Quiz started!');
   }catch(e){showToast('Quiz failed: '+e.message,'error');}
-  btnTxt.textContent='Restart Quiz';btn.disabled=false;
+  setBtnLoading('qlBtn', false);
 }
 function renderQ(){
   if(qqIdx>=qqAll.length){finishQuiz();return;}
@@ -782,7 +793,7 @@ async function searchJobs(){
   const role=document.getElementById('jobRole').value,loc=document.getElementById('jobLoc').value||'India';
   const grid=document.getElementById('jobsGrid');
   grid.innerHTML='<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--muted)">Searching for updated listings...</div>';
-  
+  setBtnLoading('jobSearchBtn', true, 'Searching');
   try{
     // Try both, but don't let trends failure block jobs
     const jd = await window.API.jobs.list(role, loc);
@@ -891,8 +902,20 @@ function updateProgBars(){
       <div class="profile-actions">
          <button class="nav-cta" onclick="openEditProfile()" style="background:#000; color:#fff;">Edit Profile</button>
          <button class="nav-cta" onclick="closeProfile()">Explore More</button>
-         <button class="auth-submit" style="background:var(--bg2); color:var(--text); border: 1px solid var(--border);" onclick="doLogout(); closeProfile();">Sign Out</button>
+         <button class="auth-submit" id="profLogoutBtn" style="background:var(--bg2); color:var(--text); border: 1px solid var(--border);" onclick="confirmLogout()">Sign Out</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIRM SIGN OUT MODAL ══ -->
+<div class="auth-overlay" id="confirmSignOutOverlay" style="z-index: 4000;">
+  <div class="auth-modal confirm-modal" style="padding: 24px;">
+    <div class="confirm-title">Sign Out?</div>
+    <div class="confirm-msg">Ready to log off? Your progress and roadmaps are safe in your profile.</div>
+    <div class="confirm-btns">
+      <button class="nav-cta" onclick="doLogout()" style="background:#000; color:#fff; border:none; width: 100%;">Yes, Sign Out</button>
+      <button class="nav-cta" onclick="closeConfirmSignOut()" style="background:var(--bg2); border:1px solid var(--border); width: 100%;">Cancel</button>
     </div>
   </div>
 </div>
@@ -1027,7 +1050,8 @@ async function doLogin(){
   const pass=document.getElementById('loginPass').value;
   if(!email){document.getElementById('loginEmail').classList.add('err');showAuthError('loginErr','Email is required.');return;}
   if(!pass){document.getElementById('loginPass').classList.add('err');showAuthError('loginErr','Password is required.');return;}
-  const btn=document.getElementById('loginBtn'),txt=document.getElementById('loginBtnTxt');
+  const btn=document.getElementById('loginBtn');
+  setBtnLoading('loginBtn', true, 'Signing in');
   try{
     const d=await window.API.auth.login(email, pass);
     onAuthSuccess(d);
@@ -1036,7 +1060,7 @@ async function doLogin(){
     document.getElementById('loginEmail').classList.add('err');
     document.getElementById('loginPass').classList.add('err');
   }
-  btn.disabled=false;txt.textContent='Sign In';
+  setBtnLoading('loginBtn', false);
 }
 
 async function doRegister(){
@@ -1046,7 +1070,8 @@ async function doRegister(){
   if(!name){document.getElementById('regName').classList.add('err');showAuthError('regErr','Name is required.');return;}
   if(!email){document.getElementById('regEmail').classList.add('err');showAuthError('regErr','Email is required.');return;}
   if(pass.length<8){document.getElementById('regPass').classList.add('err');showAuthError('regErr','Password must be at least 8 characters.');return;}
-  const btn=document.getElementById('regBtn'),txt=document.getElementById('regBtnTxt');
+  const btn=document.getElementById('regBtn');
+  setBtnLoading('regBtn', true, 'Creating account');
   try{
     const d=await window.API.auth.register(email, pass, name);
     onAuthSuccess(d);
@@ -1054,7 +1079,7 @@ async function doRegister(){
     showAuthError('regErr',e.message||'Registration failed. Try a different email.');
     document.getElementById('regEmail').classList.add('err');
   }
-  btn.disabled=false;txt.textContent='Create Account';
+  setBtnLoading('regBtn', false);
 }
 
 function onAuthSuccess(data){
@@ -1456,6 +1481,26 @@ function addTyping() {
 
 function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
+window.setBtnLoading = (id, loading, text) => {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  const span = btn.querySelector('span') || btn;
+  if (loading) {
+    btn.dataset.orig = span.innerHTML;
+    btn.classList.add('btn-loading');
+    if (btn.classList.contains('auth-submit') || btn.classList.contains('action-btn') || btn.classList.contains('sm-btn') || btn.classList.contains('jobs-btn')) btn.classList.add('dark');
+    span.innerHTML = (text || 'Loading') + '...';
+    btn.disabled = true;
+  } else {
+    btn.classList.remove('btn-loading');
+    btn.classList.remove('dark');
+    span.innerHTML = btn.dataset.orig || span.innerHTML;
+    btn.disabled = false;
+  }
+};
+window.confirmLogout = () => { document.getElementById('confirmSignOutOverlay').classList.add('open'); };
+window.closeConfirmSignOut = () => { document.getElementById('confirmSignOutOverlay').classList.remove('open'); };
+
 window.chatKey = chatKey;
 window.autoResize = autoResize;
 window.quickChat = quickChat;
@@ -1502,7 +1547,7 @@ window.sendChat = sendChat;
   <div class="lj-score-slider-wrap" id="ljSliderWrap"><label class="lj-scores-label" id="ljSliderLabel">Score —</label><input type="range" class="lj-slider" id="ljSlider" min="0" max="100" value="60" oninput="ljUpdateSlider(this.value)" onchange="ljSaveScore(this.value)" /><div class="lj-slider-labels"><span>0%</span><span>50%</span><span>100%</span></div></div>
   <button class="lj-generate-btn" id="ljGenerateBtn" onclick="ljGenerate()"><div class="spinner"></div><span class="btn-label">Generate Path</span></button>
 </div>
-<div class="lj-path" id="ljPath"><div class="lj-path-header" id="ljPathHeader"></div><div class="lj-motive" id="ljMotive"></div><div class="lj-modules" id="ljModules"></div><div class="lj-adapt-banner" id="ljAdaptBanner">New quiz score — re-adapt path? <button onclick="ljAdapt()">Adapt Now</button></div></div>`);
+<div class="lj-path" id="ljPath"><div class="lj-path-header" id="ljPathHeader"></div><div class="lj-motive" id="ljMotive"></div><div class="lj-modules" id="ljModules"></div><div class="lj-adapt-banner" id="ljAdaptBanner">New quiz score — re-adapt path? <button id="ljAdaptBtn" onclick="ljAdapt()">Adapt Now</button></div></div>`);
     // Register reveals
     document.querySelectorAll('.lj-setup.reveal').forEach(el => {
       if (window.revealObs) window.revealObs.observe(el);
@@ -1517,20 +1562,21 @@ window.sendChat = sendChat;
   window.ljSaveScore = (v) => { if(!window._activeDomain)return; quizScores[window._activeDomain]=parseInt(v); window._lastSavedDomain=window._activeDomain; if(currentPath)document.getElementById('ljAdaptBanner').classList.add('visible'); };
   window.ljGenerate = async () => {
     const role=document.getElementById('ljRole').value.trim(); if(!role){showToast('Enter target role','warn');return;}
-    const btn=document.getElementById('ljGenerateBtn'); btn.classList.add('loading'); btn.disabled=true;
+    setBtnLoading('ljGenerateBtn', true, 'Generating Path');
     try {
       const data=await window.API.learn.generate({target_role:role, quiz_scores:Object.entries(quizScores).map(([domain,score])=>({domain,score,difficulty:'medium'})), weekly_hours:parseInt(document.getElementById('ljHours').value)});
       currentPath=data; renderPath(data); document.getElementById('ljPath').classList.add('visible'); document.getElementById('ljPath').scrollIntoView({behavior:'smooth'}); showToast('Path generated!');
     } catch(e){showToast('Generation failed','error');}
-    btn.classList.remove('loading'); btn.disabled=false;
+    setBtnLoading('ljGenerateBtn', false);
   };
   window.ljAdapt = async () => {
-    const banner=document.getElementById('ljAdaptBanner'); banner.innerHTML='⏳ Adapting…';
+    setBtnLoading('ljAdaptBtn', true, 'Adapting');
     const dom=window._lastSavedDomain||window._activeDomain;
     try {
       const data=await window.API.learn.adapt({current_path:currentPath, new_quiz:{domain:dom, score:quizScores[dom]??60, difficulty:'medium'}});
-      currentPath=data; renderPath(data); banner.classList.remove('visible'); showToast('Path adapted!');
+      currentPath=data; renderPath(data); document.getElementById('ljAdaptBanner').classList.remove('visible'); showToast('Path adapted!');
     } catch(e){showToast('Adapt failed','error');}
+    setBtnLoading('ljAdaptBtn', false);
   };
   window.renderRoadmapPath = renderPath;
   function renderPath(path) {
@@ -1543,7 +1589,12 @@ window.sendChat = sendChat;
 <div class="lj-module priority-${m.priority}" id="lj-mod-${i}">
   <div class="lj-module-header" onclick="ljToggleModule(${i})"><div class="lj-module-priority-dot"></div><div class="lj-module-info"><div class="lj-module-domain">${PRIORITY_LABELS[m.priority]||m.priority} · ${m.domain}</div><div class="lj-module-title">${m.title}</div><div class="lj-module-why">${m.why_this_now}</div></div><div class="lj-module-meta"><div class="lj-score-bar-wrap"><div class="lj-score-bar-label"><span>Score</span><span>${m.current_score}% → ${m.target_score}%</span></div><div class="lj-score-track"><div class="lj-score-fill" data-w="${m.current_score}%" style="width:0%"></div></div></div><div class="lj-weeks-badge">${m.estimated_weeks}w</div></div></div>
   <div class="lj-module-body"><div class="lj-module-body-inner"><div class="lj-milestone">Milestone: ${m.milestone}</div><div class="lj-resources-list">${m.resources.map(r=>{
-    const isSuspect = !r.url || r.url.length < 15 || !r.url.startsWith('http');
+    const p = r.platform || 'youtube';
+    const label = p.charAt(0).toUpperCase() + p.slice(1);
+    const searchUrl = p === 'coursera' 
+      ? `https://www.coursera.org/search?query=${encodeURIComponent(r.search_query || r.title)}`
+      : `https://www.youtube.com/results?search_query=${encodeURIComponent(r.search_query || r.title)}`;
+    
     return `
     <div class="lj-resource-card">
       <div class="lj-resource-main">
@@ -1555,8 +1606,9 @@ window.sendChat = sendChat;
         </div>
       </div>
       <div class="lj-resource-actions">
-        ${!isSuspect ? `<a class="lj-res-link direct" href="${r.url}" target="_blank">View Direct ↗</a>` : ''}
-        <a class="lj-res-link search" href="https://www.youtube.com/results?search_query=${encodeURIComponent(r.search_query || r.title)}" target="_blank">Search on YouTube 🔎</a>
+        ${r.is_verified 
+          ? `<a class="lj-res-link direct" href="${r.url}" target="_blank">Open Resource ↗</a>`
+          : `<a class="lj-res-link search" href="${searchUrl}" target="_blank">Search on ${label} 🔎</a>`}
       </div>
     </div>`;
   }).join('')}</div></div></div>

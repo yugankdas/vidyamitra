@@ -114,23 +114,25 @@
   .jobs-grid { grid-template-columns: 1fr !important; }
   
   /* Section & Container Widths */
-  .section-wrap { padding: 80px 20px !important; }
+  .section-wrap { padding: 40px 20px !important; }
   .ra-wrap, .il-wrap, .ql-wrap { padding: 30px 20px !important; }
-  .auth-modal, .profile-content, .lj-container { width: 94% !important; padding: 24px 20px !important; margin: 10px !important; }
+  .auth-modal, .profile-content, .lj-container { width: 94% !important; padding: 24px 20px !important; margin: 10px auto !important; max-height: 90vh !important; overflow-y: auto !important; }
   
   /* Hero Refinement */
-  .hero { padding: 100px 20px 60px !important; }
-  .hero-title { font-size: 32px !important; line-height: 1.2 !important; }
-  .hero-subtitle { font-size: 18px !important; margin-bottom: 40px !important; }
+  .hero { padding: 80px 20px 40px !important; }
+  .hero-title { font-size: 28px !important; line-height: 1.2 !important; }
+  .hero-subtitle { font-size: 16px !important; margin-bottom: 30px !important; }
   
   /* Navigation & UI */
   .nav { padding: 0 20px !important; }
-  .nav-pills { display: none !important; } /* Hide pills on mobile, use hamburger or simple text */
-  .nav-right .nav-cta { padding: 8px 16px !important; font-size: 12px !important; }
-  
-  /* Sticky Pin Sections */
-  .pin-sticky { grid-template-columns: 1fr !important; height: auto !important; position: relative !important; top: 0 !important; }
-  .pin-visual-area { height: 300px !important; border-left: none !important; border-top: 1px solid var(--border) !important; }
+  .nav-pills { display: none !important; } 
+  .nav-right .nav-cta { padding: 8px 14px !important; font-size: 11px !important; }
+  .nav-user-pill { padding: 4px 8px 4px 4px !important; max-width: 140px !important; }
+  .nav-username { max-width: 60px !important; font-size: 11px !important; }
+
+  /* Modal Actions Fix (Edit Profile / Signout) */
+  .profile-actions, .confirm-btns { display: flex !important; flex-direction: column !important; gap: 10px !important; width: 100% !important; }
+  .profile-actions button, .confirm-btns button { width: 100% !important; margin: 0 !important; }
   
   /* Chat & Interview Bubbles */
   .cmsg-bubble { max-width: 90% !important; font-size: 14px !important; }

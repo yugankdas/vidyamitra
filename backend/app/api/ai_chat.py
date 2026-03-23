@@ -24,26 +24,41 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     reply: str
+    memories_found: list[str] = []
 
 
 @router.post("/chat", response_model=ChatResponse)
 def ai_chat(req: ChatRequest):
-    # Retrieve relevant memories
+    # 1. Multi-Stage Recall: Fetch broad context to ensure "no data missed"
     user_query = req.messages[-1].content if req.messages else ""
-    memories = recall_memories(user_query)
     
-    # Debug Logging
-    print(f"Hindsight Recall for '{user_query}': {len(memories)} items found.")
-    for i, m in enumerate(memories):
-        print(f"  [{i}] {m[:100]}...")
+    all_memories = []
+    # Broad sweeps for key data types
+    all_memories += recall_memories("user resume analysis skills experience")
+    all_memories += recall_memories("user interview performance feedback scores")
+    all_memories += recall_memories("user quiz results domain mastery")
+    # Specific sweep for the current question
+    if user_query:
+        all_memories += recall_memories(user_query)
+    
+    # Deduplicate while preserving order (approx)
+    seen = set()
+    memories = []
+    for m in all_memories:
+        m_stripped = m.strip()
+        if m_stripped and m_stripped not in seen:
+            memories.append(m_stripped)
+            seen.add(m_stripped)
 
-    # Inject memories into system prompt if found
+    # 2. Inject memories into system prompt if found
     enhanced_system = req.system
     if memories:
-        enhanced_system += "\n\nCRITICAL CONTEXT: The following are relevant facts from the user's past activities (Resume, Interviews, Quizzes):\n"
+        enhanced_system += "\n\n=== USER CAREER HISTORY & PERSONAL DATA (HINDSIGHT) ===\n"
+        enhanced_system += "You MUST use the following facts to personalize your answer. If the context below contains resume scores, interview feedback, or quiz results, refer to them explicitly.\n\n"
         enhanced_system += "\n".join([f"- {m}" for m in memories])
-        enhanced_system += "\n\nUse this context to personalize your response. If the user asks about their resume or past scores, refer specifically to the facts above."
+        enhanced_system += "\n\n=== END OF PERSONAL CONTEXT ===\n"
 
+    # 3. Chat Completion
     msgs = [{"role": m.role, "content": m.content} for m in req.messages]
     reply = chat_completion(
         messages=msgs,
@@ -51,8 +66,8 @@ def ai_chat(req: ChatRequest):
         max_tokens=req.max_tokens,
     )
     
-    # Retain the new interaction
+    # 4. Retain the new interaction
     if user_query:
         retain_memory(f"User: {user_query}\nAssistant: {reply}")
 
-    return ChatResponse(reply=reply)
+    return ChatResponse(reply=reply, memories_found=memories[:5])

@@ -6,7 +6,8 @@ GET  /learn/resources  → get curated YouTube/Coursera resources for a topic
 """
 import json
 import re
-import logging
+import httpx
+import asyncio
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from app.services.groq_service import json_completion
@@ -79,10 +80,51 @@ class ResourceRequest(BaseModel):
     count: int = 4
 
 
+# ── Link Verification Utility ────────────────────────
+async def verify_url(url: str) -> bool:
+    """True if URL returns 200 OK within 3 seconds."""
+    if not url or not url.startswith("http"):
+        return False
+    try:
+        async with httpx.AsyncClient(follow_redirects=True, timeout=3.0) as client:
+            # Mask user-agent to avoid simple bot blocks
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"}
+            r = await client.get(url, headers=headers)
+            # YouTube/Coursera might return 429 or 403 to bots, but usually 200 if valid
+            return r.status_code == 200
+    except Exception:
+        return False
+
+async def verify_modules_links(modules: list[Module]):
+    """Parallel verify all is_verified resources."""
+    tasks = []
+    resources_to_check = []
+    
+    for m in modules:
+        for r in m.resources:
+            if r.is_verified:
+                resources_to_check.append(r)
+                tasks.append(verify_url(r.url))
+                
+    if not tasks:
+        return
+        
+    results = await asyncio.gather(*tasks)
+    for r, ok in zip(resources_to_check, results):
+        if not ok:
+            logger.info(f"Link verification failed for: {r.url}. Downgrading to search fallback.")
+            r.is_verified = False
+
+
 # ── Routes ───────────────────────────────────────────
 
 @router.post("/generate", response_model=LearningPath)
-def generate_learning_path(req: LearningGenerateRequest):
+async def generate_learning_path(req: LearningGenerateRequest):
+    path = generate_learning_path_logic(req)
+    await verify_modules_links(path.modules)
+    return path
+
+def generate_learning_path_logic(req: LearningGenerateRequest):
     scores_text = ""
     if req.quiz_scores:
         scores_text = "Quiz scores: " + ", ".join(
@@ -112,6 +154,7 @@ Rules:
 - Resources: Recommend 2-3 REAL, existing YouTube playlists/channels or Coursera courses.
 - VERIFY: URLs must be direct to the resource (e.g. youtube.com/playlist?list=...).
 - Confidence: Set `is_verified` to true ONLY if you are 200% certain the URL exists. If there is ANY doubt (hallucination risk), set to false.
+- Evergreen focus: Prioritize stable, well-known channels (e.g. freeCodeCamp, Fireship, Corey Schafer, Traversy Media, Apna College, CodeWithHarry).
 - Platform: Specify if the resource is on "youtube" or "coursera".
 - FALLBACK: Provide a precise `search_query` for every resource.
 - Use Indian context where relevant
@@ -155,7 +198,7 @@ Include 3-5 modules total, ordered by priority. Keep it realistic and actionable
 """
 
     logger.info(f"Generating learning path for role: {req.target_role}")
-    raw = json_completion(prompt, max_tokens=2500) # Slightly reduced to avoid timeouts
+    raw = json_completion(prompt, max_tokens=2500)
     
     try:
         clean = clean_json_str(raw)
@@ -208,8 +251,13 @@ Include 3-5 modules total, ordered by priority. Keep it realistic and actionable
 
 
 @router.post("/adapt", response_model=LearningPath)
-def adapt_learning_path(req: AdaptRequest):
+async def adapt_learning_path(req: AdaptRequest):
     """Re-prioritize the existing path based on a new quiz result."""
+    path = await adapt_learning_path_logic(req)
+    await verify_modules_links(path.modules)
+    return path
+
+async def adapt_learning_path_logic(req: AdaptRequest):
     prompt = f"""
 A user just completed a quiz and their path needs adapting.
 
@@ -244,7 +292,7 @@ Return ONLY valid JSON with the same structure as the original path.
 
 
 @router.post("/resources", response_model=list[Resource])
-def get_resources(req: ResourceRequest):
+async def get_resources(req: ResourceRequest):
     """Get curated YouTube/Coursera resources for a specific topic."""
     prompt = f"""
 Recommend {req.count} real learning resources for: "{req.topic}" at {req.level} level.
@@ -272,6 +320,14 @@ Return ONLY a JSON array:
     try:
         clean = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
         data = json.loads(clean)
-        return [Resource(**r) for r in data]
+        resources = [Resource(**r) for r in data]
+        
+        # Verify resources too
+        tasks = [verify_url(r.url) for r in resources]
+        results = await asyncio.gather(*tasks)
+        for r, ok in zip(resources, results):
+            r.is_verified = ok
+            
+        return resources
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get resources: {e}")

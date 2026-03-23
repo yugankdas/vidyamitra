@@ -1438,15 +1438,9 @@ async function sendChat() {
   if (sendBtn) sendBtn.disabled = true;
   chatHistory.push({ role: 'user', content: text });
   
-  // Hindsight: Inject memories into prompt
-  let memories = '';
-  if (window.ST && window.ST.memories && window.ST.memories.length > 0) {
-    memories = '\n\nHindsight (User Progress): ' + window.ST.memories.slice(-8).join(' | ');
-  }
-  
   const typingId = addTyping();
   try {
-    const data = await window.API.chat.send(chatHistory, CHAT_SYSTEM + memories);
+    const data = await window.API.chat.send(chatHistory, CHAT_SYSTEM);
     const reply = data.reply || data.content || 'I had trouble responding. Please try again.';
     removeTyping(typingId);
     chatHistory.push({ role: 'assistant', content: reply });

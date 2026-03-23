@@ -16,6 +16,7 @@ from app.api.career import router as career_router
 from app.api.jobs import router as jobs_router
 from app.api.progress import router as progress_router
 from app.api.learn import router as learn_router
+from app.core.database import init_db
 
 app = FastAPI(
     title="VidyāMitra API",
@@ -26,13 +27,24 @@ app = FastAPI(
 )
 
 # ── CORS ────────────────────────────────
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://newvidyamitra.onrender.com",
+    "https://vidyamitra2026.netlify.app"
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Initialize database
+@app.on_event("startup")
+def startup_event():
+    init_db()
 
 # ── Routers ─────────────────────────────
 app.include_router(auth_router)

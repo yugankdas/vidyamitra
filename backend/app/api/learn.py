@@ -37,6 +37,7 @@ class Resource(BaseModel):
     title: str
     type: str          # "youtube" | "coursera" | "article" | "practice"
     url: str
+    search_query: str = "" # Fallback search if URL is invalid
     duration: str      # e.g. "4h 30m" or "6 weeks"
     difficulty: str    # "beginner" | "intermediate" | "advanced"
     why: str           # why this is recommended for this user
@@ -132,6 +133,7 @@ Return ONLY valid JSON:
           "title": "<resource title>",
           "type": "<youtube|coursera|article|practice>",
           "url": "<real URL>",
+          "search_query": "<high-intent search query for this specific resource>",
           "duration": "<time estimate>",
           "difficulty": "<beginner|intermediate|advanced>",
           "why": "<why specifically for this user>"
@@ -251,6 +253,7 @@ Return ONLY a JSON array:
     "title": "<resource title>",
     "type": "<youtube|coursera|article|practice>",
     "url": "<real URL>",
+    "search_query": "<high-intent search query for this specific resource>",
     "duration": "<time>",
     "difficulty": "<beginner|intermediate|advanced>",
     "why": "<why this resource is great for this topic>"

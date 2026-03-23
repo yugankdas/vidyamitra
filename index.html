@@ -159,6 +159,26 @@
 .gate-btn{background:#000;color:#fff;font-family:var(--ff-body);font-size:13px;font-weight:700;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;transition:all .2s}
 .gate-btn:hover{background:#333}
 
+
+/* Profile Bookmarks */
+.bookmark-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+.bookmark-item:hover { border-color: #000; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.bm-role { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.bm-meta { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Roadmap Enhancements */
+.lj-bookmark-btn { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; margin-left: 12px; }
+.lj-bookmark-btn.active { background: #000; color: #fff; border-color: #000; }
+.lj-bookmark-btn:hover { border-color: #000; }
+
+.lj-resource-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+.lj-resource-search { display: block; padding: 8px 16px; font-size: 11px; font-weight: 700; color: #000; background: rgba(0,0,0,0.03); border-top: 1px solid var(--border); text-align: center; text-decoration: none; transition: background 0.2s; }
+.lj-resource-search:hover { background: rgba(0,0,0,0.08); }
+
+.prog-live-bar { margin-bottom: 12px; }
+.plb-hd { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--dim); margin-bottom: 4px; text-transform: uppercase; }
+.plb-track { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.plb-fill { height: 100%; background: #000; border-radius: 4px; transition: width 1s ease; }
 </style>
 </head>
 <body>
@@ -440,8 +460,11 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const ST = JSON.parse(localStorage.getItem('vm_stats')) || {interviews:0,quizQs:0,bestAts:0,scores:{},memories:[]};
+const ST = JSON.parse(localStorage.getItem('vm_stats')) || {interviews:0,quizQs:0,bestAts:0,scores:{},memories:[],designation:"Aspiring Professional",bookmarks:[],sessions:0,totalSolved:0};
 if (!ST.memories) ST.memories = [];
+if (!ST.bookmarks) ST.bookmarks = [];
+if (ST.sessions === undefined) ST.sessions = ST.interviews || 0;
+if (ST.totalSolved === undefined) ST.totalSolved = ST.quizQs || 0;
 function saveST(){ localStorage.setItem('vm_stats', JSON.stringify(ST)); }
 window.ST = ST;
 window.addMemory = function(text) {
@@ -621,7 +644,10 @@ async function analyzeResume(){
     document.getElementById('raMKw').innerHTML=(d.missing_keywords||[]).map(k=>`<span class="ktag ktag-r">${k}</span>`).join('');
     document.getElementById('raSugg').innerHTML=(d.suggestions||[]).map(s=>`<div class="suggestion">- ${s}</div>`).join('');
     document.getElementById('raResults').classList.remove('hidden');
-    if(d.ats_score>ST.bestAts){ST.bestAts=d.ats_score;saveST();updateMetrics();}
+    if(d.ats_score>ST.bestAts){ST.bestAts=d.ats_score;}
+    ST.totalSolved++;
+    saveST();
+    if(window.updateMetrics) updateMetrics();
     // Hindsight Reflection: Resume analysis
     if (typeof window.addMemory === 'function') {
       const memText = `Analyzed resume for "${role || 'General'}". ATS Score: ${d.ats_score}%. Missing skills: ${(d.missing_keywords || []).slice(0,3).join(', ')}.`;
@@ -677,7 +703,11 @@ async function scoreAnswer(){
     if(d.model_answer_hint)h+=`<div class="fb-item">Hint: ${d.model_answer_hint}</div>`;
     document.getElementById('ilFbItems').innerHTML=h;
     document.getElementById('ilFeedback').classList.remove('hidden');
-    ST.interviews++;saveST();updateMetrics();showToast('Answer scored!');
+    ST.interviews++;
+    ST.totalSolved++;
+    saveST();
+    if(window.updateMetrics) updateMetrics();
+    showToast('Answer scored!');
     // Hindsight Reflection: Save this experience to long-term memory
     if (typeof window.addMemory === 'function') {
       const memText = `Faced ${mode} question: "${curQ}". Score: ${d.score}/100. Feedback: ${d.improvements?.[0] || 'Good performance'}.`;
@@ -734,7 +764,10 @@ async function finishQuiz(){
     document.getElementById('qlRecos').innerHTML='<div style="font-size:11px;font-weight:700;color:var(--dim);font-family:var(--ff-mono);text-transform:uppercase;margin-bottom:10px">Recommendations</div>'+(d.recommendations||[]).map(r=>`<div style="font-size:13px;color:var(--muted);margin-bottom:8px;padding-left:12px;border-left:2px solid #000">${r}</div>`).join('');
     document.getElementById('qlResults').classList.remove('hidden');
     const domain=document.getElementById('qlDomain').value;
-    ST.scores[domain]=d.score;saveST();updateProgBars();
+    ST.scores[domain]=d.score;
+    ST.totalSolved++;
+    saveST();
+    updateProgBars();
     // Hindsight: Quiz performance
     if (typeof window.addMemory === 'function') {
       window.addMemory(`Completed ${domain} Quiz. Score: ${d.score}%. Grade: ${d.grade}. Strong in ${d.strong_areas?.[0]||'noted areas'}, focus on ${d.weak_areas?.[0]||'missing gaps'}.`);
@@ -774,7 +807,6 @@ async function searchJobs(){
   } catch(e) {
     grid.innerHTML=`<div style="grid-column:1/-1;padding:28px;text-align:center;color:var(--coral)"><strong>Connection Error</strong><br>${e.message}<br>Check if backend is running at ${window.API?.base||'local'}.</div>`;
   }
-  ST.interviews++;saveST();updateMetrics();
 }
 
 // ── PROGRESS ──
@@ -1027,6 +1059,8 @@ async function doRegister(){
 function onAuthSuccess(data){
   authToken=data.access_token;
   authUser=data.name||'User';
+  ST.sessions++;
+  saveST();
   const remember = document.getElementById('rememberMe')?.checked;
   if (remember) {
     localStorage.setItem('vm_token',authToken);
@@ -1035,13 +1069,86 @@ function onAuthSuccess(data){
     sessionStorage.setItem('vm_token',authToken);
     sessionStorage.setItem('vm_user',authUser);
   }
-  // Keep window.API in sync so all module calls send the auth header
   if(window.API) window.API.setAuthToken(authToken);
   closeAuth();
   updateNavForAuth();
   unlockGatedSections();
   showToast('Welcome, '+authUser+'! Your journey begins.');
 }
+
+window.updateProgBars = function() {
+  const el = document.getElementById('progBars');
+  if(!el) return;
+  const domains = Object.entries(ST.scores || {});
+  if(!domains.length) { el.innerHTML = '<div style="font-size:12px;color:var(--muted)">No assessments taken yet.</div>'; return; }
+  el.innerHTML = domains.map(([d,s]) => `
+    <div class="prog-live-bar">
+      <div class="plb-hd"><span>${d}</span><span>${s}%</span></div>
+      <div class="plb-track"><div class="plb-fill" style="width:${s}%"></div></div>
+    </div>
+  `).join('');
+};
+
+window.openProfile = function() {
+  document.getElementById('profileOverlay').classList.add('open');
+  document.getElementById('profileName').textContent = authUser;
+  document.getElementById('profileRole').textContent = ST.designation || 'Aspiring Professional';
+  document.getElementById('profileAvatarBig').textContent = authUser[0].toUpperCase();
+  document.getElementById('metricAts').textContent = ST.bestAts + '%';
+  document.getElementById('metricInt').textContent = ST.sessions;
+  document.getElementById('metricQs').textContent = ST.totalSolved;
+  updateProgBars();
+  renderBookmarks();
+};
+window.closeProfile = () => document.getElementById('profileOverlay').classList.remove('open');
+window.openEditProfile = () => {
+  document.getElementById('editName').value = authUser;
+  document.getElementById('editRole').value = ST.designation;
+  document.getElementById('editProfileOverlay').classList.add('open');
+};
+window.closeEditProfile = () => document.getElementById('editProfileOverlay').classList.remove('open');
+window.saveProfileChanges = () => {
+  const newName = document.getElementById('editName').value.trim();
+  const newRole = document.getElementById('editRole').value.trim();
+  if(!newName) return showToast('Name is required','warn');
+  authUser = newName;
+  ST.designation = newRole;
+  localStorage.setItem('vm_user', authUser);
+  saveST();
+  updateNavForAuth();
+  document.getElementById('profileName').textContent = authUser;
+  document.getElementById('profileRole').textContent = ST.designation;
+  closeEditProfile();
+  showToast('Profile updated!');
+};
+function renderBookmarks() {
+  const el = document.getElementById('profileBookmarks');
+  if(!ST.bookmarks.length) { el.innerHTML = '<div style="font-size:12px;color:var(--muted)">No bookmarked roadmaps yet.</div>'; return; }
+  el.innerHTML = '<div class="profile-section-title">Saved Roadmaps</div>' + ST.bookmarks.map((b,i) => `
+    <div class="bookmark-item" onclick="loadBookmark(${i})">
+      <div class="bm-info">
+        <div class="bm-role">${b.target_role}</div>
+        <div class="bm-meta">${b.overall_readiness}% Ready · ${b.total_weeks} Weeks</div>
+      </div>
+      <span class="material-symbols-outlined">chevron_right</span>
+    </div>
+  `).join('');
+}
+window.loadBookmark = (i) => {
+  const b = ST.bookmarks[i];
+  if(window.renderRoadmapPath) {
+    window.renderRoadmapPath(b);
+    showPage('roadmap');
+    closeProfile();
+  }
+};
+
+window.updateMetrics = function() {
+  updateNavForAuth();
+  if(document.getElementById('profileOverlay').classList.contains('open')) {
+    openProfile();
+  }
+};
 
 function updateNavForAuth(){
   const pill=document.getElementById('navUserPill');
@@ -1431,19 +1538,46 @@ window.sendChat = sendChat;
       currentPath=data; renderPath(data); banner.classList.remove('visible'); showToast('Path adapted!');
     } catch(e){showToast('Adapt failed','error');}
   };
+  window.renderRoadmapPath = renderPath;
   function renderPath(path) {
     const header=document.getElementById('ljPathHeader'), pct=path.overall_readiness, circ=188, off=circ-(circ*pct/100);
-    header.innerHTML=`<div class="lj-readiness"><div class="lj-readiness-ring"><svg width="72" height="72"><circle class="ring-bg" cx="36" cy="36" r="30"/><circle class="ring-fill" id="ljRingFill" cx="36" cy="36" r="30" style="stroke-dashoffset:${circ}"/></svg><div class="ring-text">${pct}%</div></div><div class="lj-readiness-info"><div class="lj-readiness-label">Overall Readiness</div><div class="lj-readiness-role">${path.target_role}</div><div class="lj-readiness-weeks">~${path.total_weeks} weeks</div></div></div><div class="lj-next-action"><div class="lj-next-action-label">Next Action</div><div class="lj-next-action-text">${path.next_action}</div></div>`;
+    const isBookmarked = ST.bookmarks.some(b => b.target_role === path.target_role && b.total_weeks === path.total_weeks);
+    header.innerHTML=`<div class="lj-readiness"><div class="lj-readiness-ring"><svg width="72" height="72"><circle class="ring-bg" cx="36" cy="36" r="30"/><circle class="ring-fill" id="ljRingFill" cx="36" cy="36" r="30" style="stroke-dashoffset:${circ}"/></svg><div class="ring-text">${pct}%</div></div><div class="lj-readiness-info"><div class="lj-readiness-label">Overall Readiness</div><div class="lj-readiness-role">${path.target_role}</div><div class="lj-readiness-weeks">~${path.total_weeks} weeks</div></div></div><div class="lj-next-action"><div class="lj-next-action-label">Next Action</div><div class="lj-next-action-text">${path.next_action}</div><button class="lj-bookmark-btn ${isBookmarked?'active':''}" onclick="ljToggleBookmark()"><span class="material-symbols-outlined">${isBookmarked?'bookmark':'bookmark_add'}</span></button></div>`;
     setTimeout(()=>document.getElementById('ljRingFill').style.strokeDashoffset=off,100);
     document.getElementById('ljMotive').textContent=`"${path.motivational_note}"`;
     document.getElementById('ljModules').innerHTML=path.modules.map((m,i)=>`
 <div class="lj-module priority-${m.priority}" id="lj-mod-${i}">
   <div class="lj-module-header" onclick="ljToggleModule(${i})"><div class="lj-module-priority-dot"></div><div class="lj-module-info"><div class="lj-module-domain">${PRIORITY_LABELS[m.priority]||m.priority} · ${m.domain}</div><div class="lj-module-title">${m.title}</div><div class="lj-module-why">${m.why_this_now}</div></div><div class="lj-module-meta"><div class="lj-score-bar-wrap"><div class="lj-score-bar-label"><span>Score</span><span>${m.current_score}% → ${m.target_score}%</span></div><div class="lj-score-track"><div class="lj-score-fill" data-w="${m.current_score}%" style="width:0%"></div></div></div><div class="lj-weeks-badge">${m.estimated_weeks}w</div></div></div>
-  <div class="lj-module-body"><div class="lj-module-body-inner"><div class="lj-milestone">Milestone: ${m.milestone}</div><div class="lj-resources-list">${m.resources.map(r=>`<a class="lj-resource type-${r.type}" href="${r.url||'#'}" target="_blank"><div class="lj-resource-icon">${RESOURCE_ICONS[r.type]||''}</div><div class="lj-resource-info"><div class="lj-resource-title">${r.title}</div><div class="lj-resource-why">${r.why}</div><div class="lj-resource-meta"><span class="lj-resource-tag">${r.type.toUpperCase()}</span><span class="lj-resource-tag">${r.duration}</span></div></div><div class="lj-resource-arrow">>></div></a>`).join('')}</div></div></div>
+  <div class="lj-module-body"><div class="lj-module-body-inner"><div class="lj-milestone">Milestone: ${m.milestone}</div><div class="lj-resources-list">${m.resources.map(r=>`
+    <div class="lj-resource-card">
+      <a class="lj-resource type-${r.type}" href="${r.url||'#'}" target="_blank">
+        <div class="lj-resource-icon">${RESOURCE_ICONS[r.type]||''}</div>
+        <div class="lj-resource-info">
+          <div class="lj-resource-title">${r.title}</div>
+          <div class="lj-resource-why">${r.why}</div>
+          <div class="lj-resource-meta"><span class="lj-resource-tag">${r.type.toUpperCase()}</span><span class="lj-resource-tag">${r.duration}</span></div>
+        </div>
+        <div class="lj-resource-arrow">>></div>
+      </a>
+      ${r.search_query ? `<a class="lj-resource-search" href="https://www.youtube.com/results?search_query=${encodeURIComponent(r.search_query)}" target="_blank">Search on YouTube ↗</a>` : ''}
+    </div>`).join('')}</div></div></div>
 </div>`).join('');
     setTimeout(()=>document.querySelectorAll('.lj-score-fill').forEach(b=>b.style.width=b.dataset.w),200);
   }
   window.ljToggleModule=(i)=>{ const el=document.getElementById('lj-mod-'+i); const open=el.classList.contains('expanded'); document.querySelectorAll('.lj-module.expanded').forEach(m=>m.classList.remove('expanded')); if(!open)el.classList.add('expanded'); };
+  window.ljToggleBookmark = () => {
+    if(!currentPath) return;
+    const idx = ST.bookmarks.findIndex(b => b.target_role === currentPath.target_role && b.total_weeks === currentPath.total_weeks);
+    if(idx > -1) {
+      ST.bookmarks.splice(idx, 1);
+      showToast('Removed from bookmarks','info');
+    } else {
+      ST.bookmarks.push(currentPath);
+      showToast('Roadmap bookmarked!');
+    }
+    saveST();
+    renderPath(currentPath);
+  };
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', injectUI); else injectUI();
 })();
 </script>

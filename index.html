@@ -106,10 +106,39 @@
 .spin{display:inline-block;animation:spn .7s linear infinite}
 @keyframes spn{to{transform:rotate(360deg)}}
 .split-col-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-@media(max-width:900px){
-  .fld-row,.score-grid,.kw-grid,.setup-row,.ql-rg,.jobs-search{grid-template-columns:1fr}
-  .jobs-grid{grid-template-columns:1fr}
-  .split-col-grid{grid-template-columns:1fr !important; gap:32px !important;}
+@media(max-width: 768px){
+  /* Grid Stacking */
+  .fld-row, .score-grid, .kw-grid, .setup-row, .ql-rg, .jobs-search, .metrics-grid-3, .feature-grid-3, .feature-grid-2, .tech-grid, .split-col-grid { 
+    grid-template-columns: 1fr !important; gap: 16px !important; 
+  }
+  .jobs-grid { grid-template-columns: 1fr !important; }
+  
+  /* Section & Container Widths */
+  .section-wrap { padding: 80px 20px !important; }
+  .ra-wrap, .il-wrap, .ql-wrap { padding: 30px 20px !important; }
+  .auth-modal, .profile-content, .lj-container { width: 94% !important; padding: 24px 20px !important; margin: 10px !important; }
+  
+  /* Hero Refinement */
+  .hero { padding: 100px 20px 60px !important; }
+  .hero-title { font-size: 32px !important; line-height: 1.2 !important; }
+  .hero-subtitle { font-size: 18px !important; margin-bottom: 40px !important; }
+  
+  /* Navigation & UI */
+  .nav { padding: 0 20px !important; }
+  .nav-pills { display: none !important; } /* Hide pills on mobile, use hamburger or simple text */
+  .nav-right .nav-cta { padding: 8px 16px !important; font-size: 12px !important; }
+  
+  /* Sticky Pin Sections */
+  .pin-sticky { grid-template-columns: 1fr !important; height: auto !important; position: relative !important; top: 0 !important; }
+  .pin-visual-area { height: 300px !important; border-left: none !important; border-top: 1px solid var(--border) !important; }
+  
+  /* Chat & Interview Bubbles */
+  .cmsg-bubble { max-width: 90% !important; font-size: 14px !important; }
+  .chat-container { height: calc(100vh - 140px) !important; }
+  
+  /* Footer */
+  footer { flex-direction: column !important; text-align: center !important; gap: 20px !important; padding: 40px 20px !important; }
+  .footer-links { justify-content: center !important; flex-wrap: wrap !important; }
 }
 
 /* ══ AUTH MODAL ══ */

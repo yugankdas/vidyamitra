@@ -3,16 +3,16 @@ Progress API — track user progress across features.
 GET /progress
 POST /progress
 """
+import json
 from fastapi import APIRouter, Request
 from pydantic import BaseModel
 from jose import jwt, JWTError
 from app.core.config import settings
+from app.core.database import get_db
 
 router = APIRouter(prefix="/progress", tags=["progress"])
 
-# In-memory progress store  { user_id: ProgressData }
-# In production use a database
-_progress_store: dict[str, dict] = {}
+# Storage is now backed by SQLite
 
 DEFAULT_PROGRESS = {
     "ats_score": 0,
@@ -64,24 +64,57 @@ def _get_user_id(request: Request) -> str:
 @router.get("", response_model=ProgressData)
 def get_progress(request: Request):
     uid = _get_user_id(request)
-    data = _progress_store.get(uid, dict(DEFAULT_PROGRESS))
-    return ProgressData(**data)
+    if uid == "anonymous":
+        return ProgressData(**DEFAULT_PROGRESS)
+    
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT progress_json FROM user_progress WHERE email = ?", (uid,))
+    row = cursor.fetchone()
+    conn.close()
+    
+    if row:
+        return ProgressData(**json.loads(row["progress_json"]))
+    return ProgressData(**DEFAULT_PROGRESS)
 
 
 @router.post("", response_model=ProgressData)
 def update_progress(request: Request, update: ProgressUpdate):
     uid = _get_user_id(request)
-    if uid not in _progress_store:
-        _progress_store[uid] = dict(DEFAULT_PROGRESS)
+    if uid == "anonymous":
+        return ProgressData(**DEFAULT_PROGRESS)
 
-    store = _progress_store[uid]
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    # Get existing
+    cursor.execute("SELECT progress_json FROM user_progress WHERE email = ?", (uid,))
+    row = cursor.fetchone()
+    
+    if row:
+        store = json.loads(row["progress_json"])
+    else:
+        store = dict(DEFAULT_PROGRESS)
 
-    # Increment numeric fields
+    # Increment or update
     if isinstance(update.value, int) and update.field in store and isinstance(store[update.field], int):
         store[update.field] += update.value
     elif isinstance(update.value, dict) and update.field in store and isinstance(store[update.field], dict):
         store[update.field].update(update.value)
     else:
         store[update.field] = update.value
+
+    # Save back
+    progress_json = json.dumps(store)
+    cursor.execute("""
+        INSERT INTO user_progress (email, progress_json, updated_at) 
+        VALUES (?, ?, CURRENT_TIMESTAMP)
+        ON CONFLICT(email) DO UPDATE SET 
+            progress_json = excluded.progress_json,
+            updated_at = CURRENT_TIMESTAMP
+    """, (uid, progress_json))
+    
+    conn.commit()
+    conn.close()
 
     return ProgressData(**store)

@@ -18,7 +18,12 @@ def init_db():
             name TEXT NOT NULL,
             hashed_password BLOB NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
+        );
+        CREATE TABLE IF NOT EXISTS user_progress (
+            email TEXT PRIMARY KEY,
+            progress_json TEXT NOT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
     """)
     conn.commit()
     conn.close()

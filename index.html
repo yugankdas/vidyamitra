@@ -915,7 +915,7 @@ function updateProgBars(){
     <div class="confirm-msg">Ready to log off? Your progress and roadmaps are safe in your profile.</div>
     <div class="confirm-btns">
       <button class="nav-cta" onclick="doLogout()" style="background:#000; color:#fff; border:none; width: 100%;">Yes, Sign Out</button>
-      <button class="nav-cta" onclick="closeConfirmSignOut()" style="background:var(--bg2); border:1px solid var(--border); width: 100%;">Cancel</button>
+      <button class="nav-cta" onclick="closeConfirmSignOut()" style="background:#fff; color:#000; border:1px solid var(--border); width: 100%;">Cancel</button>
     </div>
   </div>
 </div>
@@ -1198,6 +1198,8 @@ function doLogout(){
   if(window.API) window.API.setAuthToken(null);
   updateNavForAuth();
   lockGatedSections();
+  if(window.closeProfile) window.closeProfile();
+  if(window.closeConfirmSignOut) window.closeConfirmSignOut();
   showToast('Signed out. See you soon!','info');
 }
 
@@ -1582,7 +1584,7 @@ window.sendChat = sendChat;
   function renderPath(path) {
     const header=document.getElementById('ljPathHeader'), pct=path.overall_readiness, circ=188, off=circ-(circ*pct/100);
     const isBookmarked = ST.bookmarks.some(b => b.target_role === path.target_role && b.total_weeks === path.total_weeks);
-    header.innerHTML=`<div class="lj-readiness"><div class="lj-readiness-ring"><svg width="72" height="72"><circle class="ring-bg" cx="36" cy="36" r="30"/><circle class="ring-fill" id="ljRingFill" cx="36" cy="36" r="30" style="stroke-dashoffset:${circ}"/></svg><div class="ring-text">${pct}%</div></div><div class="lj-readiness-info"><div class="lj-readiness-label">Overall Readiness</div><div class="lj-readiness-role">${path.target_role}</div><div class="lj-readiness-weeks">~${path.total_weeks} weeks</div></div></div><div class="lj-next-action"><div class="lj-next-action-label">Next Action</div><div class="lj-next-action-text">${path.next_action}</div><button class="lj-bookmark-btn ${isBookmarked?'active':''}" onclick="ljToggleBookmark()"><span class="material-symbols-outlined">${isBookmarked?'bookmark':'bookmark_add'}</span></button></div>`;
+    header.innerHTML=`<div class="lj-readiness"><div class="lj-readiness-ring"><svg width="72" height="72"><circle class="ring-bg" cx="36" cy="36" r="30"/><circle class="ring-fill" id="ljRingFill" cx="36" cy="36" r="30" style="stroke-dashoffset:${circ}"/></svg><div class="ring-text">${pct}%</div></div><div class="lj-readiness-info"><div class="lj-readiness-label">Overall Readiness</div><div class="lj-readiness-role">${path.target_role}</div><div class="lj-readiness-weeks">~${path.total_weeks} weeks</div><button class="lj-bookmark-btn ${isBookmarked?'active':''}" style="margin: 8px 0 0 0;" onclick="ljToggleBookmark()"><span class="material-symbols-outlined">${isBookmarked?'bookmark':'bookmark_add'}</span></button></div></div><div class="lj-next-action"><div class="lj-next-action-label">Next Action</div><div class="lj-next-action-text">${path.next_action}</div></div>`;
     setTimeout(()=>document.getElementById('ljRingFill').style.strokeDashoffset=off,100);
     document.getElementById('ljMotive').textContent=`"${path.motivational_note}"`;
     document.getElementById('ljModules').innerHTML=path.modules.map((m,i)=>`

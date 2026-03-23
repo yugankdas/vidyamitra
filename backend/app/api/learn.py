@@ -111,7 +111,7 @@ Rules:
 - If no quiz taken for a domain, estimate from the role requirements
 - Resources: Recommend 2-3 REAL, existing YouTube playlists/channels or Coursera courses.
 - VERIFY: URLs must be direct to the resource (e.g. youtube.com/playlist?list=...).
-- Confidence: Set `is_verified` to true ONLY if you are 100% sure the URL exists (base URLs are better than obscure deep links).
+- Confidence: Set `is_verified` to true ONLY if you are 200% certain the URL exists. If there is ANY doubt (hallucination risk), set to false.
 - Platform: Specify if the resource is on "youtube" or "coursera".
 - FALLBACK: Provide a precise `search_query` for every resource.
 - Use Indian context where relevant

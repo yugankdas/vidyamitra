@@ -24,8 +24,8 @@
   --green: #000000;
   --glow: rgba(0,0,0,0.03);
   
-  --ff-display: 'Inter', 'Outfit', sans-serif;
-  --ff-body: 'Inter', 'Outfit', sans-serif;
+  --ff-display: 'Outfit', 'Inter', sans-serif;
+  --ff-body: 'Outfit', 'Inter', sans-serif;
   --ff-mono: 'JetBrains Mono', monospace;
 }
 

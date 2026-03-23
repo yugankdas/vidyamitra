@@ -1106,7 +1106,7 @@ window.updateProgBars = function() {
   const el = document.getElementById('progBars');
   if(!el) return;
   const domains = Object.entries(ST.scores || {});
-  if(!domains.length) { el.innerHTML = '<div style="font-size:12px;color:var(--muted)">No assessments taken yet.</div>'; return; }
+  if(!domains.length) { el.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:20px 0;">No assessments taken yet.</div>'; return; }
   el.innerHTML = domains.map(([d,s]) => `
     <div class="prog-live-bar">
       <div class="plb-hd"><span>${d}</span><span>${s}%</span></div>
@@ -1149,8 +1149,9 @@ window.saveProfileChanges = () => {
 };
 function renderBookmarks() {
   const el = document.getElementById('profileBookmarks');
-  if(!ST.bookmarks.length) { el.innerHTML = '<div style="font-size:12px;color:var(--muted)">No bookmarked roadmaps yet.</div>'; return; }
-  el.innerHTML = '<div class="profile-section-title">Saved Roadmaps</div>' + ST.bookmarks.map((b,i) => `
+  const heading = '<div class="profile-section-title">Saved Roadmaps</div>';
+  if(!ST.bookmarks.length) { el.innerHTML = heading + '<div style="font-size:12px;color:var(--muted);text-align:center;padding:20px 0;">No bookmarked roadmaps yet.</div>'; return; }
+  el.innerHTML = heading + ST.bookmarks.map((b,i) => `
     <div class="bookmark-item" onclick="loadBookmark(${i})">
       <div class="bm-info">
         <div class="bm-role">${b.target_role}</div>
@@ -1604,7 +1605,7 @@ window.sendChat = sendChat;
       <div class="lj-resource-actions">
         ${r.is_verified 
           ? `<a class="lj-res-link direct" href="${r.url}" target="_blank">Open Resource ↗</a>`
-          : `<a class="lj-res-link search" href="${searchUrl}" target="_blank">Search on ${label} 🔎</a>`}
+          : `<a class="lj-res-link search" href="${searchUrl}" target="_blank">Search on ${label}</a>`}
       </div>
     </div>`;
   }).join('')}</div></div></div>

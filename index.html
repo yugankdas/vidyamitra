@@ -1344,6 +1344,89 @@ window.sendChat = sendChat;
 
 <script>
 // ═══════════════════════════════════════
+//  LEARNING JOURNEY — INLINED
+// ═══════════════════════════════════════
+(function () {
+  let currentPath = null;
+  const quizScores = {};
+  const DOMAINS = [
+    { key: 'React / Frontend' }, { key: 'Node.js / Backend' }, { key: 'System Design' },
+    { key: 'DevOps / Cloud' }, { key: 'Machine Learning' }, { key: 'DSA' },
+    { key: 'Python' }, { key: 'Databases / SQL' },
+  ];
+  const RESOURCE_ICONS = {
+    youtube:  '<span class="material-symbols-outlined">smart_display</span>',
+    coursera: '<span class="material-symbols-outlined">school</span>',
+    article:  '<span class="material-symbols-outlined">menu_book</span>',
+    practice: '<span class="material-symbols-outlined">code</span>',
+  };
+  const PRIORITY_LABELS = { critical: 'CRITICAL', high: 'HIGH', medium: 'POLISH' };
+
+  function injectUI() {
+    const careerSection = document.getElementById('career');
+    if (!careerSection) return;
+    const container = careerSection.querySelector('.section-wrap');
+    if (!container) return;
+    container.insertAdjacentHTML('beforeend', `
+<div class="lj-setup reveal" id="ljSetup" style="margin-top:64px;">
+  <div class="lj-setup-title">Your AI Learning Journey</div>
+  <div class="lj-setup-sub">Target role and quiz scores help Groq AI build a personalized path with YouTube & Coursera resources.</div>
+  <div class="lj-form-row">
+    <div class="lj-field"><label>Target Role</label><input class="lj-input" id="ljRole" placeholder="e.g. Senior Full Stack Developer" /></div>
+    <div class="lj-field"><label>Hours / week</label>
+      <select class="lj-select" id="ljHours"><option value="5">5 hrs</option><option value="10" selected>10 hrs</option><option value="15">15 hrs</option><option value="20">20+ hrs</option></select>
+    </div>
+  </div>
+  <div class="lj-scores-label">Add quiz scores (AI adapts if you do)</div>
+  <div class="lj-score-chips" id="ljScoreChips">${DOMAINS.map(d=>`<div class="lj-score-chip" data-domain="${d.key}" onclick="ljToggleDomain(this)"><span>${d.key}</span><span class="chip-score" id="chip-score-${d.key.replace(/\s+/g,'-')}">—</span></div>`).join('')}</div>
+  <div class="lj-score-slider-wrap" id="ljSliderWrap"><label class="lj-scores-label" id="ljSliderLabel">Score —</label><input type="range" class="lj-slider" id="ljSlider" min="0" max="100" value="60" oninput="ljUpdateSlider(this.value)" onchange="ljSaveScore(this.value)" /><div class="lj-slider-labels"><span>0%</span><span>50%</span><span>100%</span></div></div>
+  <button class="lj-generate-btn" id="ljGenerateBtn" onclick="ljGenerate()"><div class="spinner"></div><span class="btn-label">Generate Path</span></button>
+</div>
+<div class="lj-path" id="ljPath"><div class="lj-path-header" id="ljPathHeader"></div><div class="lj-motive" id="ljMotive"></div><div class="lj-modules" id="ljModules"></div><div class="lj-adapt-banner" id="ljAdaptBanner">New quiz score — re-adapt path? <button onclick="ljAdapt()">Adapt Now</button></div></div>`);
+  }
+  window.ljToggleDomain = (chip) => {
+    const d=chip.dataset.domain; document.querySelectorAll('.lj-score-chip').forEach(c=>c.classList.remove('active')); chip.classList.add('active');
+    document.getElementById('ljSliderLabel').textContent=`Score: ${d}`; document.getElementById('ljSlider').value=quizScores[d]??60;
+    document.getElementById('ljSliderWrap').classList.add('visible'); window._activeDomain=d; ljUpdateSlider(document.getElementById('ljSlider').value);
+  };
+  window.ljUpdateSlider = (v) => { if(!window._activeDomain)return; document.getElementById('ljSliderLabel').textContent=`Score for ${window._activeDomain}: ${v}%`; const sk=window._activeDomain.replace(/\s+/g,'-'); const cs=document.getElementById('chip-score-'+sk); if(cs)cs.textContent=v+'%'; };
+  window.ljSaveScore = (v) => { if(!window._activeDomain)return; quizScores[window._activeDomain]=parseInt(v); window._lastSavedDomain=window._activeDomain; if(currentPath)document.getElementById('ljAdaptBanner').classList.add('visible'); };
+  window.ljGenerate = async () => {
+    const role=document.getElementById('ljRole').value.trim(); if(!role){showToast('Enter target role','warn');return;}
+    const btn=document.getElementById('ljGenerateBtn'); btn.classList.add('loading'); btn.disabled=true;
+    try {
+      const data=await window.API.learn.generate({target_role:role, quiz_scores:Object.entries(quizScores).map(([domain,score])=>({domain,score,difficulty:'medium'})), weekly_hours:parseInt(document.getElementById('ljHours').value)});
+      currentPath=data; renderPath(data); document.getElementById('ljPath').classList.add('visible'); document.getElementById('ljPath').scrollIntoView({behavior:'smooth'}); showToast('Path generated!');
+    } catch(e){showToast('Generation failed','error');}
+    btn.classList.remove('loading'); btn.disabled=false;
+  };
+  window.ljAdapt = async () => {
+    const banner=document.getElementById('ljAdaptBanner'); banner.innerHTML='⏳ Adapting…';
+    const dom=window._lastSavedDomain||window._activeDomain;
+    try {
+      const data=await window.API.learn.adapt({current_path:currentPath, new_quiz:{domain:dom, score:quizScores[dom]??60, difficulty:'medium'}});
+      currentPath=data; renderPath(data); banner.classList.remove('visible'); showToast('Path adapted!');
+    } catch(e){showToast('Adapt failed','error');}
+  };
+  function renderPath(path) {
+    const header=document.getElementById('ljPathHeader'), pct=path.overall_readiness, circ=188, off=circ-(circ*pct/100);
+    header.innerHTML=`<div class="lj-readiness"><div class="lj-readiness-ring"><svg width="72" height="72"><circle class="ring-bg" cx="36" cy="36" r="30"/><circle class="ring-fill" id="ljRingFill" cx="36" cy="36" r="30" style="stroke-dashoffset:${circ}"/></svg><div class="ring-text">${pct}%</div></div><div class="lj-readiness-info"><div class="lj-readiness-label">Overall Readiness</div><div class="lj-readiness-role">${path.target_role}</div><div class="lj-readiness-weeks">~${path.total_weeks} weeks</div></div></div><div class="lj-next-action"><div class="lj-next-action-label">Next Action</div><div class="lj-next-action-text">${path.next_action}</div></div>`;
+    setTimeout(()=>document.getElementById('ljRingFill').style.strokeDashoffset=off,100);
+    document.getElementById('ljMotive').textContent=`"${path.motivational_note}"`;
+    document.getElementById('ljModules').innerHTML=path.modules.map((m,i)=>`
+<div class="lj-module priority-${m.priority}" id="lj-mod-${i}">
+  <div class="lj-module-header" onclick="ljToggleModule(${i})"><div class="lj-module-priority-dot"></div><div class="lj-module-info"><div class="lj-module-domain">${PRIORITY_LABELS[m.priority]||m.priority} · ${m.domain}</div><div class="lj-module-title">${m.title}</div><div class="lj-module-why">${m.why_this_now}</div></div><div class="lj-module-meta"><div class="lj-score-bar-wrap"><div class="lj-score-bar-label"><span>Score</span><span>${m.current_score}% → ${m.target_score}%</span></div><div class="lj-score-track"><div class="lj-score-fill" data-w="${m.current_score}%" style="width:0%"></div></div></div><div class="lj-weeks-badge">${m.estimated_weeks}w</div></div></div>
+  <div class="lj-module-body"><div class="lj-module-body-inner"><div class="lj-milestone">Milestone: ${m.milestone}</div><div class="lj-resources-list">${m.resources.map(r=>`<a class="lj-resource type-${r.type}" href="${r.url||'#'}" target="_blank"><div class="lj-resource-icon">${RESOURCE_ICONS[r.type]||''}</div><div class="lj-resource-info"><div class="lj-resource-title">${r.title}</div><div class="lj-resource-why">${r.why}</div><div class="lj-resource-meta"><span class="lj-resource-tag">${r.type.toUpperCase()}</span><span class="lj-resource-tag">${r.duration}</span></div></div><div class="lj-resource-arrow">>></div></a>`).join('')}</div></div></div>
+</div>`).join('');
+    setTimeout(()=>document.querySelectorAll('.lj-score-fill').forEach(b=>b.style.width=b.dataset.w),200);
+  }
+  window.ljToggleModule=(i)=>{ const el=document.getElementById('lj-mod-'+i); const open=el.classList.contains('expanded'); document.querySelectorAll('.lj-module.expanded').forEach(m=>m.classList.remove('expanded')); if(!open)el.classList.add('expanded'); };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', injectUI); else injectUI();
+})();
+</script>
+
+<script>
+// ═══════════════════════════════════════
 //  MARQUEE + MAIN — INLINED
 // ═══════════════════════════════════════
 document.querySelectorAll('.marquee-card').forEach(card => {

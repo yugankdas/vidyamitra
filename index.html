@@ -127,8 +127,8 @@
   .nav { padding: 0 20px !important; }
   .nav-pills { display: none !important; } 
   .nav-right .nav-cta { padding: 8px 14px !important; font-size: 11px !important; }
-  /* User pill should ONLY be flex/visible if JS handles it, don't force it here */
-  .nav-user-pill { padding: 4px 8px 4px 4px !important; max-width: 140px !important; }
+  /* Ensure nav elements don't sprawl */
+  .nav-user-pill { padding: 4px 8px 4px 4px !important; max-width: 140px !important; pointer-events: all !important; position: relative; z-index: 810; }
   .nav-username { max-width: 60px !important; font-size: 11px !important; }
 
   /* Modal Actions Fix (Edit Profile / Signout) */
@@ -150,9 +150,9 @@
 }
 
 /* ══ AUTH MODAL ══ */
-.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
-.auth-overlay.open{opacity:1;visibility:visible}
-.auth-modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:48px 44px;width:100%;max-width:420px;position:relative;overflow:visible;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s,visibility .3s}
+.auth-overlay.open{opacity:1;visibility:visible;pointer-events:all}
+.auth-modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:48px 44px;width:100%;max-width:420px;position:relative;overflow:visible;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.16,1,.3,1);pointer-events:all !important}
 .auth-overlay.open .auth-modal{transform:none}
 .auth-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:#000}
 .auth-close{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--dim);font-size:20px;cursor:pointer;line-height:1;transition:color .2s}

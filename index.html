@@ -862,7 +862,70 @@ function updateProgBars(){
   </div>
 </div>
 
-<script src="/js/api.js"></script>
+<script>
+// ═══════════════════════════════════════
+//  CENTRAL API CLIENT — INLINED
+// ═══════════════════════════════════════
+const API_BASE = 'https://newvidyamitra.onrender.com';
+let _authToken = null;
+function setAuthToken(token) { _authToken = token; }
+function getAuthToken() { return _authToken; }
+
+async function apiFetch(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  if (_authToken) headers['Authorization'] = 'Bearer ' + _authToken;
+  const res = await fetch(API_BASE + path, { ...options, headers });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
+    throw new Error(err.detail || 'HTTP ' + res.status);
+  }
+  return res.json();
+}
+
+const AuthAPI = {
+  register: (email, password, name) => apiFetch('/auth/register', { method: 'POST', body: JSON.stringify({ email, password, name }) }),
+  login: (email, password) => apiFetch('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+};
+const ChatAPI = {
+  send: (messages, system) => apiFetch('/ai/chat', { method: 'POST', body: JSON.stringify({ messages, system }) }),
+};
+const ResumeAPI = {
+  analyze: (resumeText, targetRole) => apiFetch('/resume/analyze', { method: 'POST', body: JSON.stringify({ resume_text: resumeText, target_role: targetRole || '' }) }),
+};
+const InterviewAPI = {
+  generateQuestion: (role, mode) => apiFetch('/interview/question', { method: 'POST', body: JSON.stringify({ role, mode: mode || 'behavioral' }) }),
+  scoreAnswer: (question, answer, mode) => apiFetch('/interview/score', { method: 'POST', body: JSON.stringify({ question, answer, mode: mode || 'behavioral' }) }),
+};
+const QuizAPI = {
+  generate: (domain, difficulty, count) => apiFetch('/quiz/generate', { method: 'POST', body: JSON.stringify({ domain, difficulty: difficulty || 'medium', count: count || 8 }) }),
+  submit: (questions, answers) => apiFetch('/quiz/submit', { method: 'POST', body: JSON.stringify({ questions, answers }) }),
+};
+const CareerAPI = {
+  plan: (resumeText, targetRole, quizScores) => apiFetch('/career/plan', { method: 'POST', body: JSON.stringify({ resume_text: resumeText, target_role: targetRole, quiz_scores: quizScores || {} }) }),
+  skillGap: (currentSkills, targetRole) => apiFetch('/career/skill-gap', { method: 'POST', body: JSON.stringify({ current_skills: currentSkills, target_role: targetRole }) }),
+};
+const JobsAPI = {
+  list: (role, location) => apiFetch('/jobs/list?role=' + encodeURIComponent(role || '') + '&location=' + encodeURIComponent(location || 'India')),
+  trends: () => apiFetch('/jobs/trends'),
+};
+const LearnAPI = {
+  generate: (body) => apiFetch('/learn/generate', { method: 'POST', body: JSON.stringify(body) }),
+  adapt: (body) => apiFetch('/learn/adapt', { method: 'POST', body: JSON.stringify(body) }),
+  resources: (topic, level, count) => apiFetch('/learn/resources', { method: 'POST', body: JSON.stringify({ topic, level: level || 'intermediate', count: count || 4 }) }),
+};
+const ProgressAPI = {
+  get: () => apiFetch('/progress'),
+  update: (data) => apiFetch('/progress', { method: 'POST', body: JSON.stringify(data) }),
+};
+
+window.API = {
+  base: API_BASE, setAuthToken, getAuthToken,
+  auth: AuthAPI, chat: ChatAPI, resume: ResumeAPI,
+  interview: InterviewAPI, quiz: QuizAPI, career: CareerAPI,
+  jobs: JobsAPI, learn: LearnAPI, progress: ProgressAPI,
+};
+console.log('[VidyaMitra] API client loaded');
+</script>
 <script>
 // ══ AUTH ══════════════════════════════
 let authToken = localStorage.getItem('vm_token') || sessionStorage.getItem('vm_token') || null;
@@ -1016,14 +1079,275 @@ if(!authToken){
 }
 </script>
 
-<script src="/js/ui.js"></script>
-<script src="/js/skills.js"></script>
-<script src="/js/interview.js"></script>
-<script src="/js/jobs.js"></script>
-<script src="/js/chat.js"></script>
-<script src="/js/marquee.js"></script>
-<script src="/js/learn.js"></script>
-<script src="/js/main.js"></script>
+<script>
+// ═══════════════════════════════════════
+//  UI UTILITIES — INLINED
+// ═══════════════════════════════════════
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('mainNav');
+  if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target, 10);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1800;
+  const start = performance.now();
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(eased * target);
+    el.textContent = current + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+    else el.textContent = target + suffix;
+  }
+  requestAnimationFrame(update);
+}
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); counterObs.unobserve(e.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
+
+setTimeout(() => {
+  document.querySelectorAll('.hero-title .word').forEach((word, i) => {
+    word.style.animation = 'wordReveal 0.7s ' + (0.4 + i * 0.12) + 's cubic-bezier(0.16,1,0.3,1) forwards';
+  });
+}, 100);
+
+document.querySelectorAll('.acc-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const item = header.closest('.acc-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.acc-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+document.querySelectorAll('.mmode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.closest('.mint-mode').querySelectorAll('.mmode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+function showToast(msg, type) {
+  type = type || 'success';
+  const icons = { success: 'OK', error: 'ERR', info: 'INFO', warn: 'WARN' };
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = (icons[type] || 'OK') + ' ' + msg;
+  const container = document.getElementById('toastContainer');
+  if (container) container.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = '0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+document.querySelectorAll('.feature-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = 'perspective(800px) rotateX(' + (-y * 4) + 'deg) rotateY(' + (x * 4) + 'deg) translateZ(4px)';
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; card.style.transition = 'transform 0.4s ease'; });
+  card.addEventListener('mouseenter', () => { card.style.transition = 'none'; });
+});
+
+window.scrollToSection = scrollToSection;
+window.showToast = showToast;
+</script>
+
+<script>
+// ═══════════════════════════════════════
+//  SKILLS BAR — INLINED
+// ═══════════════════════════════════════
+const skillObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('[data-width]').forEach(bar => { setTimeout(() => { bar.style.width = bar.dataset.width; }, 100); });
+      skillObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.bar-animate-group, #progress .reveal').forEach(el => skillObs.observe(el));
+</script>
+
+<script>
+// ═══════════════════════════════════════
+//  INTERVIEW — INLINED
+// ═══════════════════════════════════════
+function activatePin(n) {
+  for (let i = 1; i <= 3; i++) {
+    const item = document.getElementById('pin-' + i);
+    const panel = document.getElementById('panel-' + i);
+    if (item) item.classList.toggle('active', i === n);
+    if (panel) panel.classList.toggle('active', i === n);
+  }
+  if (n === 3) drawInterviewChart();
+}
+const pinSection = document.querySelector('.pin-section');
+if (pinSection) {
+  window.addEventListener('scroll', () => {
+    const rect = pinSection.getBoundingClientRect();
+    const sectionH = pinSection.offsetHeight;
+    const viewH = window.innerHeight;
+    const scrolled = -rect.top;
+    const total = sectionH - viewH;
+    if (scrolled < 0 || scrolled > total) return;
+    const progress = scrolled / total;
+    let panel = 1;
+    if (progress > 0.66) panel = 3;
+    else if (progress > 0.33) panel = 2;
+    activatePin(panel);
+  });
+}
+function drawInterviewChart() {
+  const canvas = document.getElementById('interviewChart');
+  if (!canvas || canvas.dataset.drawn) return;
+  canvas.dataset.drawn = 'true';
+  const ctx = canvas.getContext('2d');
+  const data = [52, 61, 58, 70, 78, 74, 84];
+  const labels = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7'];
+  const W = 260, H = 140;
+  const pad = { t: 10, r: 10, b: 24, l: 26 };
+  const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
+  const min = 40, max = 100;
+  const xp = i => pad.l + (i / (data.length - 1)) * cW;
+  const yp = v => pad.t + cH - ((v - min) / (max - min)) * cH;
+  ctx.clearRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(0,0,0,0.05)'; ctx.lineWidth = 1;
+  [0.25, 0.5, 0.75, 1].forEach(t => { ctx.beginPath(); ctx.moveTo(pad.l, pad.t + cH * (1 - t)); ctx.lineTo(W - pad.r, pad.t + cH * (1 - t)); ctx.stroke(); });
+  const grad = ctx.createLinearGradient(0, pad.t, 0, H);
+  grad.addColorStop(0, 'rgba(0,0,0,0.1)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.beginPath(); ctx.moveTo(xp(0), yp(data[0]));
+  for (let i = 1; i < data.length; i++) { const cx = (xp(i - 1) + xp(i)) / 2; ctx.bezierCurveTo(cx, yp(data[i - 1]), cx, yp(data[i]), xp(i), yp(data[i])); }
+  ctx.lineTo(xp(data.length - 1), H - pad.b); ctx.lineTo(xp(0), H - pad.b); ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(xp(0), yp(data[0]));
+  for (let i = 1; i < data.length; i++) { const cx = (xp(i - 1) + xp(i)) / 2; ctx.bezierCurveTo(cx, yp(data[i - 1]), cx, yp(data[i]), xp(i), yp(data[i])); }
+  ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.stroke();
+  data.forEach((v, i) => { ctx.beginPath(); ctx.arc(xp(i), yp(v), 3.5, 0, Math.PI * 2); ctx.fillStyle = '#000'; ctx.fill(); });
+  ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.font = '10px Outfit, sans-serif'; ctx.textAlign = 'center';
+  labels.forEach((l, i) => ctx.fillText(l, xp(i), H - pad.b + 14));
+}
+window.activatePin = activatePin;
+window.drawInterviewChart = drawInterviewChart;
+activatePin(1);
+</script>
+
+<script>
+// ═══════════════════════════════════════
+//  JOBS — INLINED
+// ═══════════════════════════════════════
+async function loadJobs(role, location) {
+  role = role || ''; location = location || 'India';
+  const container = document.getElementById('jobsGrid');
+  if (!container) return;
+  container.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:20px;">Loading jobs…</div>';
+  try {
+    const data = await window.API.jobs.list(role, location);
+    const jobs = data.jobs || [];
+    if (jobs.length === 0) { container.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:20px;">No jobs found. Try a different role.</div>'; return; }
+    container.innerHTML = jobs.map(job => '<div class="feature-card"><div class="fc-icon">' + (job.icon||'') + '</div><div class="fc-eyebrow">' + (job.location||'India') + ' · ' + (job.type||'Full Time') + '</div><div class="fc-title">' + job.title + '</div><div class="fc-desc">' + (job.salary||'') + ' · ' + (job.experience||'') + ' · ' + (job.skills||[]).join(', ') + '</div>' + (job.url ? '<a href="' + job.url + '" target="_blank" class="fc-link">View Job →</a>' : '') + '</div>').join('');
+  } catch(err) { container.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:20px;">Could not load jobs. Backend may be offline.</div>'; }
+}
+</script>
+
+<script>
+// ═══════════════════════════════════════
+//  AI CHAT — INLINED
+// ═══════════════════════════════════════
+const CHAT_SYSTEM = 'You are VidyaMitra, an expert AI career advisor for Indian tech students and professionals. Deep expertise in: ATS resume optimization for Indian companies (Swiggy, Razorpay, Zomato, Flipkart, FAANG India), Skill gap analysis for Backend, Frontend, ML, DevOps, Full Stack roles, Career planning with actionable roadmaps, Mock interview coaching using STAR method and technical prep, Salary benchmarks for Bengaluru, Mumbai, Delhi, Pune, Hyderabad, Learning resources (Coursera, YouTube, LeetCode, System Design Primer). Be concise (3-4 sentences), practical, and encouraging. Use **bold** for key terms. Indian context when relevant. Strictly no emojis. Always respond in plain text.';
+let chatHistory = [];
+
+function chatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
+function autoResize(el) { el.style.height = '0px'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+function quickChat(btn) { const text = btn.textContent.replace(/^[^\s]+\s/, ''); const input = document.getElementById('chatInput'); if (input) { input.value = text; sendChat(); } }
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSendBtn');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  addMsg(text, 'user');
+  input.value = '';
+  autoResize(input);
+  const quickBtns = document.getElementById('chatQuickBtns');
+  if (quickBtns) quickBtns.style.display = 'none';
+  if (sendBtn) sendBtn.disabled = true;
+  chatHistory.push({ role: 'user', content: text });
+  const typingId = addTyping();
+  try {
+    const data = await window.API.chat.send(chatHistory, CHAT_SYSTEM);
+    const reply = data.reply || data.content || 'I had trouble responding. Please try again.';
+    removeTyping(typingId);
+    chatHistory.push({ role: 'assistant', content: reply });
+    addMsg(reply, 'ai');
+  } catch (err) {
+    removeTyping(typingId);
+    addMsg('Could not reach VidyaMitra backend. Please try again in a moment.', 'ai');
+    console.error('Chat error:', err);
+  }
+  if (sendBtn) sendBtn.disabled = false;
+}
+
+function addMsg(text, role) {
+  const msgs = document.getElementById('chatMessages');
+  if (!msgs) return;
+  const div = document.createElement('div');
+  div.className = 'cmsg ' + role;
+  const fmt = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+  div.innerHTML = '<div class="cmsg-av ' + role + '">' + (role === 'ai' ? 'V' : 'U') + '</div><div class="cmsg-bubble ' + role + '">' + fmt + '</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const id = 'ty' + Date.now();
+  const div = document.createElement('div');
+  div.className = 'cmsg'; div.id = id;
+  div.innerHTML = '<div class="cmsg-av ai">V</div><div class="cmsg-bubble ai"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return id;
+}
+
+function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
+
+window.chatKey = chatKey;
+window.autoResize = autoResize;
+window.quickChat = quickChat;
+window.sendChat = sendChat;
+</script>
+
+<script>
+// ═══════════════════════════════════════
+//  MARQUEE + MAIN — INLINED
+// ═══════════════════════════════════════
+document.querySelectorAll('.marquee-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const cmd = card.querySelector('.mcard-cmd')?.textContent || '';
+    const text = card.querySelector('.mcard-text')?.textContent || '';
+    const input = document.getElementById('chatInput');
+    if (input) { input.value = cmd + ' — ' + text; scrollToSection('agent'); setTimeout(() => sendChat(), 300); }
+  });
+});
+
+// Restore auth token
+(function(){
+  const token = sessionStorage.getItem('vm_token') || localStorage.getItem('vm_token');
+  if (token && window.API) window.API.setAuthToken(token);
+  console.log('[VidyaMitra] Initialised');
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';

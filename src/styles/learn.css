@@ -61,13 +61,13 @@
   cursor: pointer; transition: all 0.2s;
 }
 .lj-score-chip:hover { border-color: var(--gold); color: var(--gold); }
-.lj-score-chip.active { border-color: var(--gold); background: rgba(232,184,75,0.1); color: var(--gold); }
+.lj-score-chip.active { border-color: var(--gold); background: rgba(0,0,0,0.1); color: var(--gold); }
 .lj-score-chip .chip-score {
   font-family: var(--ff-mono); font-size: 11px;
   padding: 2px 7px; border-radius: 5px;
   background: var(--border);
 }
-.lj-score-chip.active .chip-score { background: rgba(232,184,75,0.2); }
+.lj-score-chip.active .chip-score { background: rgba(0,0,0,0.2); }
 
 .lj-score-slider-wrap { display: none; margin-top: 12px; }
 .lj-score-slider-wrap.visible { display: block; }
@@ -84,7 +84,7 @@
   letter-spacing: 0.02em; transition: all 0.25s;
   display: flex; align-items: center; justify-content: center; gap: 10px;
 }
-.lj-generate-btn:hover { background: var(--gold2); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(232,184,75,0.35); }
+.lj-generate-btn:hover { background: var(--gold2); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
 .lj-generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 .lj-generate-btn .spinner {
   width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2);
@@ -139,7 +139,7 @@
   font-size: 13px; color: var(--muted);
 }
 .lj-next-action {
-  background: rgba(232,184,75,0.08); border: 1px solid rgba(232,184,75,0.2);
+  background: rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.2);
   border-radius: 12px; padding: 16px 20px; max-width: 340px;
 }
 .lj-next-action-label {
@@ -225,7 +225,7 @@
 .lj-module-body-inner { padding: 24px; }
 
 .lj-milestone {
-  background: rgba(93,219,146,0.07); border: 1px solid rgba(93,219,146,0.2);
+  background: rgba(0,0,0,0.07); border: 1px solid rgba(0,0,0,0.2);
   border-radius: 10px; padding: 12px 16px;
   font-size: 13px; color: var(--green); font-weight: 600;
   margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
@@ -245,16 +245,16 @@
   text-decoration: none; transition: all 0.2s;
   cursor: pointer;
 }
-.lj-resource:hover { border-color: var(--gold); background: rgba(232,184,75,0.05); }
+.lj-resource:hover { border-color: var(--gold); background: rgba(0,0,0,0.05); }
 
 .lj-resource-icon {
   width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center; font-size: 16px;
 }
-.type-youtube  .lj-resource-icon { background: rgba(255,107,107,0.12); }
-.type-coursera .lj-resource-icon { background: rgba(155,127,245,0.12); }
-.type-article  .lj-resource-icon { background: rgba(62,212,196,0.12); }
-.type-practice .lj-resource-icon { background: rgba(93,219,146,0.12); }
+.type-youtube  .lj-resource-icon { background: rgba(0,0,0,0.12); }
+.type-coursera .lj-resource-icon { background: rgba(0,0,0,0.12); }
+.type-article  .lj-resource-icon { background: rgba(0,0,0,0.12); }
+.type-practice .lj-resource-icon { background: rgba(0,0,0,0.12); }
 
 .lj-resource-info { flex: 1; min-width: 0; }
 .lj-resource-title {
@@ -281,7 +281,7 @@
 /* Adapt alert */
 .lj-adapt-banner {
   display: none; align-items: center; gap: 14px;
-  background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.25);
+  background: rgba(0,0,0,0.07); border: 1px solid rgba(0,0,0,0.25);
   border-radius: 12px; padding: 16px 20px; margin-top: 24px;
   font-size: 13px; color: var(--text);
 }

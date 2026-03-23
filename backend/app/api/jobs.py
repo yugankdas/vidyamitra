@@ -7,8 +7,8 @@ import json
 import re
 from fastapi import APIRouter
 from pydantic import BaseModel
-from app.services.groq_service import json_completion
 from app.utils import clean_json_str
+from app.services.memory_service import retain_memory, recall_memories
 import httpx
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
@@ -80,6 +80,8 @@ async def list_jobs(role: str = "", location: str = "India"):
                         url=r.get("redirect_url", "")
                     ))
                 if jobs:
+                    # Hindsight: Retain Search
+                    retain_memory(f"User searched for jobs: {role} in {location}. Found {len(jobs)} results.")
                     return JobsResponse(jobs=jobs, total=len(jobs))
         except Exception:
             pass
@@ -89,6 +91,8 @@ async def list_jobs(role: str = "", location: str = "India"):
 Generate 6 realistic tech job listings{f' for the role: {role}' if role else ''} in {location}.
 Focus on Indian tech companies (Swiggy, Razorpay, Zomato, Flipkart, CRED, PhonePe, etc.) 
 and FAANG India offices.
+
+{f"Relevant User Interests (Hindsight Recall): {', '.join(recall_memories('job preferences'))}" if recall_memories('job preferences') else ""}
 
 CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
 

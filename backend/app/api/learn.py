@@ -12,6 +12,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from app.services.groq_service import json_completion
 from app.utils import clean_json_str
+from app.services.memory_service import retain_memory, recall_memories
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -135,6 +136,12 @@ def generate_learning_path_logic(req: LearningGenerateRequest):
 
     skills_text = f"Current skills: {', '.join(req.current_skills)}" if req.current_skills else ""
 
+    # Hindsight: Personalize with recalled context
+    memories = recall_memories(f"resume skills and experience for {req.target_role}")
+    memory_context = ""
+    if memories:
+        memory_context = "\n\nAdditional User Context (Hindsight Recall):\n" + "\n".join(memories)
+
     prompt = f"""
 You are an expert career coach for Indian tech professionals.
 Build an adaptive AI learning path.
@@ -142,6 +149,7 @@ Build an adaptive AI learning path.
 Target Role: {req.target_role}
 {scores_text}
 {skills_text}
+{memory_context}
 Available time: {req.weekly_hours} hours/week
 
 CRITICAL: DO NOT USE ANY EMOJIS IN ANY FIELD.
@@ -242,9 +250,13 @@ Include 3-5 modules total, ordered by priority. Keep it realistic and actionable
             total_weeks=data.get("total_weeks", sum(m.estimated_weeks for m in modules)),
             adapted_from_scores=bool(req.quiz_scores),
             modules=modules,
-            next_action=data.get("next_action", "Start with the first module"),
             motivational_note=data.get("motivational_note", "You're on the right path!"),
         )
+        
+        # Hindsight: Retain the focus
+        retain_memory(f"Generated a {res.total_weeks}-week roadmap for {req.target_role}. Readiness: {res.overall_readiness}%. Modules: {', '.join(m.title for m in res.modules[:3])}")
+        
+        return res
     except Exception as e:
         logger.error(f"Learning Path Generation Error: {str(e)}\nRaw Response: {raw}")
         raise HTTPException(status_code=500, detail=f"Failed to generate learning path. The AI response was invalid or incomplete.")

@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException
 from app.utils import clean_json_str
 from pydantic import BaseModel
 from app.services.groq_service import json_completion
+from app.services.memory_service import retain_memory, recall_memories
 
 router = APIRouter(prefix="/career", tags=["career"])
 
@@ -59,6 +60,8 @@ Target Role: {req.target_role}
 Resume Summary: {req.resume_text[:1500]}
 Quiz Scores: {json.dumps(req.quiz_scores)}
 
+{f"Additional Career Context (Hindsight Recall): {', '.join(recall_memories('career history'))}" if recall_memories('career history') else ""}
+
 Return JSON:
 {{
   "readiness_score": <0-100>,
@@ -88,6 +91,9 @@ Include only first 4 weeks in weekly_plan for brevity.
             key_milestones=data.get("key_milestones", []),
             top_resources=data.get("top_resources", []),
         )
+        # Hindsight: Retain plan
+        retain_memory(f"Created a {req.timeline_weeks}-week career plan for {req.target_role}.")
+        return res
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to parse plan: {e}")
 

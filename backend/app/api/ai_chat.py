@@ -3,7 +3,7 @@ AI Chat endpoint — POST /ai/chat
 Proxies the conversation to Groq LLM.
 """
 import os
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 from pydantic import BaseModel
 from app.services.memory_service import retain_memory, recall_memories
 from app.services.groq_service import chat_completion
@@ -31,7 +31,7 @@ class DebugResponse(BaseModel):
 
 
 @router.post("/chat", response_model=ChatResponse)
-def ai_chat(req: ChatRequest):
+def ai_chat(req: ChatRequest, background_tasks: BackgroundTasks):
     # 1. Multi-Stage Recall: Fetch broad context to ensure "no data missed"
     user_query = req.messages[-1].content if req.messages else ""
     
@@ -77,9 +77,9 @@ def ai_chat(req: ChatRequest):
     visible_prefix = f"[Hindsight Active: {len(memories)} memories recalled] " if memories else "[Hindsight: No relevant records found] "
     reply = visible_prefix + reply
 
-    # 5. Retain the new interaction
+    # 5. Retain the new interaction (BACKGROUNDED to prevent timeout)
     if user_query:
-        retain_memory(f"User: {user_query}\nAssistant: {reply}")
+        background_tasks.add_task(retain_memory, f"User: {user_query}\nAssistant: {reply}")
 
     return ChatResponse(reply=reply, memories_found=memories[:10])
 

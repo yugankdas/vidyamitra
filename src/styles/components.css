@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════
    MARQUEE
 ═══════════════════════════════════════ */
-.marquee-wrap { overflow: hidden; position: relative; margin: 0 -48px; }
+.marquee-wrap { overflow: hidden; position: relative; margin: 0 -24px; }
 .marquee-wrap::before, .marquee-wrap::after {
   content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 10; pointer-events: none;
 }

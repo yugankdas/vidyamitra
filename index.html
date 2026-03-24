@@ -272,7 +272,7 @@
   <a class="mobile-menu-link" onclick="showPage('roadmap')" data-page="roadmap">Roadmap</a>
   <a class="mobile-menu-link" onclick="showPage('jobs')" data-page="jobs">Jobs</a>
   <div class="mobile-menu-divider"></div>
-  <button class="mobile-menu-auth" id="mobileAuthBtn" onclick="openAuth('login');toggleMobileMenu()">Sign In</button>
+  <button class="mobile-menu-auth" id="mobileAuthBtn" onclick="toggleMobileMenu(); setTimeout(() => openAuth('login'), 50)">Sign In</button>
 </div>
 <!-- PAGE: HOME -->
 <div id="page-home" class="page-view active">
@@ -517,20 +517,6 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const ST = JSON.parse(localStorage.getItem('vm_stats')) || {interviews:0,quizQs:0,bestAts:0,scores:{},memories:[],designation:"Aspiring Professional",bookmarks:[],sessions:0,totalSolved:0};
-if (!ST.memories) ST.memories = [];
-if (!ST.bookmarks) ST.bookmarks = [];
-if (ST.sessions === undefined) ST.sessions = ST.interviews || 0;
-if (ST.totalSolved === undefined) ST.totalSolved = ST.quizQs || 0;
-function saveST(){ localStorage.setItem('vm_stats', JSON.stringify(ST)); }
-window.ST = ST;
-window.addMemory = function(text) {
-  if (!ST.memories) ST.memories = [];
-  ST.memories.push(`[${new Date().toLocaleDateString()}] ${text}`);
-  if (ST.memories.length > 50) ST.memories.shift();
-  saveST();
-};
-
 function showToast(msg,type='success'){
   // Disabled per user request to remove "popping up notif on bottom right"
   console.log(`[Toast Suppressed] ${type}: ${msg}`);
@@ -1060,6 +1046,78 @@ window.API = {
   jobs: JobsAPI, learn: LearnAPI, progress: ProgressAPI,
 };
 console.log('[VidyaMitra] API client loaded');
+
+// ── PROGRESS SYNC LOGIC (Moved here for dependency safety) ──
+const ST = JSON.parse(localStorage.getItem('vm_stats')) || {interviews:0,quizQs:0,bestAts:0,scores:{},memories:[],designation:"Aspiring Professional",bookmarks:[],sessions:0,totalSolved:0};
+if (!ST.memories) ST.memories = [];
+if (!ST.bookmarks) ST.bookmarks = [];
+if (ST.sessions === undefined) ST.sessions = ST.interviews || 0;
+if (ST.totalSolved === undefined) ST.totalSolved = ST.quizQs || 0;
+
+function saveST(){ 
+  localStorage.setItem('vm_stats', JSON.stringify(ST)); 
+  if (getAuthToken()) {
+    // Background sync to DB
+    syncWithBackend();
+  }
+}
+window.ST = ST;
+
+async function syncWithBackend() {
+  if (!getAuthToken()) return;
+  try {
+    // Map ST to backend ProgressData
+    const data = {
+      ats_score: ST.bestAts,
+      interviews_done: ST.interviews,
+      total_solved: ST.totalSolved,
+      best_ats: ST.bestAts,
+      designation: ST.designation,
+      memories: ST.memories,
+      bookmarks: ST.bookmarks,
+      scores: ST.scores,
+      sessions_count: ST.sessions
+    };
+    // Fetch latest from DB to merge
+    const remote = await window.API.progress.get();
+    // Simple merge: take max sessions/scores
+    ST.sessions = Math.max(ST.sessions, remote.sessions_count || 0);
+    ST.totalSolved = Math.max(ST.totalSolved, remote.total_solved || 0);
+    ST.bestAts = Math.max(ST.bestAts, remote.best_ats || 0);
+    if (remote.designation && remote.designation !== "Aspiring Professional") ST.designation = remote.designation;
+    if (remote.memories?.length > ST.memories.length) ST.memories = remote.memories;
+    if (remote.bookmarks?.length > ST.bookmarks.length) ST.bookmarks = remote.bookmarks;
+    ST.scores = { ...ST.scores, ...remote.scores };
+
+    // Push back merged state
+    await window.API.progress.update({ field: 'all', value: {
+      ats_score: ST.bestAts,
+      interviews_done: ST.interviews,
+      total_solved: ST.totalSolved,
+      best_ats: ST.bestAts,
+      designation: ST.designation,
+      memories: ST.memories,
+      bookmarks: ST.bookmarks,
+      scores: ST.scores,
+      sessions_count: ST.sessions
+    }});
+    
+    localStorage.setItem('vm_stats', JSON.stringify(ST));
+    if (window.updateMetrics) updateMetrics();
+    if (window.updateProgBars) updateProgBars();
+  } catch (e) {
+    console.error('[Sync] Failed:', e);
+  }
+}
+
+window.addMemory = function(text) {
+  if (!ST.memories) ST.memories = [];
+  ST.memories.push(`[${new Date().toLocaleDateString()}] ${text}`);
+  if (ST.memories.length > 50) ST.memories.shift();
+  saveST();
+};
+window.saveST = saveST;
+window.syncWithBackend = syncWithBackend;
 </script>
 <script>
 // ══ AUTH ══════════════════════════════
@@ -1152,6 +1210,7 @@ function onAuthSuccess(data){
   closeAuth();
   updateNavForAuth();
   unlockGatedSections();
+  syncWithBackend(); // Sync progress from DB on login
   showToast('Welcome, '+authUser+'! Your journey begins.');
 }
 
@@ -1241,7 +1300,7 @@ function updateNavForAuth(){
   }else{
     if(pill)pill.classList.remove('visible');
     if(btn)btn.style.display='';
-    if(mobileBtn){mobileBtn.textContent='Sign In';mobileBtn.style.opacity='1';mobileBtn.onclick=()=>{openAuth('login');toggleMobileMenu();};}
+    if(mobileBtn){mobileBtn.textContent='Sign In';mobileBtn.style.opacity='1';mobileBtn.onclick=()=>{toggleMobileMenu(); setTimeout(()=>openAuth('login'), 50);};}
   }
 }
 
@@ -1699,7 +1758,10 @@ document.querySelectorAll('.marquee-card').forEach(card => {
 // Restore auth token
 (function(){
   const token = sessionStorage.getItem('vm_token') || localStorage.getItem('vm_token');
-  if (token && window.API) window.API.setAuthToken(token);
+  if (token && window.API) {
+    window.API.setAuthToken(token);
+    syncWithBackend(); // Sync on startup if already logged in
+  }
   console.log('[VidyaMitra] Initialised');
 })();
 </script>

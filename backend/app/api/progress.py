@@ -26,7 +26,13 @@ DEFAULT_PROGRESS = {
         "DevOps": 0,
         "ML / AI": 0,
     },
-    "sessions": [],
+    "sessions_count": 0,
+    "total_solved": 0,
+    "best_ats": 0,
+    "designation": "Aspiring Professional",
+    "memories": [],
+    "bookmarks": [],
+    "scores": {},
 }
 
 
@@ -36,12 +42,18 @@ class ProgressData(BaseModel):
     interviews_done: int = 0
     quiz_scores: dict = {}
     skill_bars: dict = {}
-    sessions: list = []
+    sessions_count: int = 0
+    total_solved: int = 0
+    best_ats: int = 0
+    designation: str = "Aspiring Professional"
+    memories: list = []
+    bookmarks: list = []
+    scores: dict = {}
 
 
 class ProgressUpdate(BaseModel):
     field: str
-    value: int | dict | list | str
+    value: int | dict | list | str | None
 
 
 def _get_user_id(request: Request) -> str:
@@ -97,7 +109,9 @@ def update_progress(request: Request, update: ProgressUpdate):
         store = dict(DEFAULT_PROGRESS)
 
     # Increment or update
-    if isinstance(update.value, int) and update.field in store and isinstance(store[update.field], int):
+    if update.field == "all" and isinstance(update.value, dict):
+        store.update(update.value)
+    elif isinstance(update.value, int) and update.field in store and isinstance(store[update.field], int):
         store[update.field] += update.value
     elif isinstance(update.value, dict) and update.field in store and isinstance(store[update.field], dict):
         store[update.field].update(update.value)

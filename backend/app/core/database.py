@@ -4,12 +4,17 @@ import os
 import sys
 from app.core.config import settings
 
+from fastapi import HTTPException
+
 def get_db():
     url = settings.database_url
     if not url:
-        raise RuntimeError("DATABASE_URL is not set. Please add it to your environment variables.")
-    conn = psycopg2.connect(url)
-    return conn
+        raise HTTPException(status_code=500, detail="DATABASE_URL is not set. Please configure it in your environment.")
+    try:
+        conn = psycopg2.connect(url)
+        return conn
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database connection failed. Please check your DATABASE_URL. Error: {str(e)}")
 
 def get_db_cursor(conn):
     return conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)

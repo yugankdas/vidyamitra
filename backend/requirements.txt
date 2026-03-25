@@ -11,3 +11,4 @@ python-dotenv
 httpx
 hindsight-all
 email-validator
+psycopg2-binary

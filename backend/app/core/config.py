@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     groq_api_key: str = ""
     groq_model: str = "llama-3.3-70b-versatile"
 
+    # Database
+    database_url: str = ""
+
     # Adzuna (Job API)
     adzuna_app_id: str = ""
     adzuna_app_key: str = ""

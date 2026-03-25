@@ -10,7 +10,7 @@ from jose import jwt
 import bcrypt
 from email_validator import validate_email, EmailNotValidError
 from app.core.config import settings
-from app.core.database import get_db
+from app.core.database import get_db, get_db_cursor
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -58,14 +58,14 @@ def register(req: RegisterRequest):
 
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+    cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
     if cursor.fetchone():
         conn.close()
         raise HTTPException(status_code=400, detail="Email already registered in our records")
 
     hashed_password = _hash_password(req.password)
     name = req.name or email.split("@")[0]
-    cursor.execute("INSERT INTO users (email, name, hashed_password) VALUES (?, ?, ?)", (email, name, hashed_password))
+    cursor.execute("INSERT INTO users (email, name, hashed_password) VALUES (%s, %s, %s)", (email, name, hashed_password))
     conn.commit()
     conn.close()
 
@@ -82,8 +82,8 @@ def login(req: LoginRequest):
         email = req.email.strip().lower()
 
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT name, hashed_password FROM users WHERE email = ?", (email,))
+    cursor = get_db_cursor(conn)
+    cursor.execute("SELECT name, hashed_password FROM users WHERE email = %s", (email,))
     user = cursor.fetchone()
     conn.close()
 
@@ -93,7 +93,7 @@ def login(req: LoginRequest):
             detail="No account found with this email address",
         )
 
-    if not _verify_password(req.password, user["hashed_password"]):
+    if not _verify_password(req.password, bytes(user["hashed_password"])):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect password",

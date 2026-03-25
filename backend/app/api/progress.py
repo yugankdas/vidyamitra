@@ -8,7 +8,7 @@ from fastapi import APIRouter, Request
 from pydantic import BaseModel
 from jose import jwt, JWTError
 from app.core.config import settings
-from app.core.database import get_db
+from app.core.database import get_db, get_db_cursor
 
 router = APIRouter(prefix="/progress", tags=["progress"])
 
@@ -80,8 +80,8 @@ def get_progress(request: Request):
         return ProgressData(**DEFAULT_PROGRESS)
     
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT progress_json FROM user_progress WHERE email = ?", (uid,))
+    cursor = get_db_cursor(conn)
+    cursor.execute("SELECT progress_json FROM user_progress WHERE email = %s", (uid,))
     row = cursor.fetchone()
     conn.close()
     
@@ -97,10 +97,10 @@ def update_progress(request: Request, update: ProgressUpdate):
         return ProgressData(**DEFAULT_PROGRESS)
 
     conn = get_db()
-    cursor = conn.cursor()
+    cursor = get_db_cursor(conn)
     
     # Get existing
-    cursor.execute("SELECT progress_json FROM user_progress WHERE email = ?", (uid,))
+    cursor.execute("SELECT progress_json FROM user_progress WHERE email = %s", (uid,))
     row = cursor.fetchone()
     
     if row:
@@ -122,9 +122,9 @@ def update_progress(request: Request, update: ProgressUpdate):
     progress_json = json.dumps(store)
     cursor.execute("""
         INSERT INTO user_progress (email, progress_json, updated_at) 
-        VALUES (?, ?, CURRENT_TIMESTAMP)
+        VALUES (%s, %s, CURRENT_TIMESTAMP)
         ON CONFLICT(email) DO UPDATE SET 
-            progress_json = excluded.progress_json,
+            progress_json = EXCLUDED.progress_json,
             updated_at = CURRENT_TIMESTAMP
     """, (uid, progress_json))
     

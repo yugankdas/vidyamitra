@@ -9,6 +9,5 @@ passlib[bcrypt]
 python-multipart
 python-dotenv
 httpx
-hindsight-all
 email-validator
 psycopg2-binary

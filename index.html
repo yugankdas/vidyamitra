@@ -133,7 +133,7 @@
   .nav-username { max-width: 60px !important; font-size: 11px !important; }
 
   /* Modal Actions Fix (Edit Profile / Signout) */
-  .profile-actions, .confirm-btns { display: flex !important; visibility: visible !important; opacity: 1 !important; flex-direction: column !important; gap: 10px !important; width: 100% !important; margin-top: 20px !important; }
+  .profile-actions, .confirm-btns { display: flex !important; flex-direction: column !important; gap: 10px !important; width: 100% !important; margin-top: 20px !important; }
   .profile-actions button, .confirm-btns button { width: 100% !important; margin: 0 !important; display: flex !important; align-items: center; justify-content: center; }
   
   /* Chat UI Fix - Send Button Off Center */
@@ -236,6 +236,13 @@
 .btn-loading::after { content: ""; position: absolute; width: 16px; height: 16px; top: 50%; left: 50%; margin: -8px 0 0 -8px; border: 2px solid rgba(0,0,0,0.1); border-top-color: #000; border-radius: 50%; animation: btn-spin 0.6s linear infinite; }
 .btn-loading.dark::after { border-color: rgba(255,255,255,0.2); border-top-color: #fff; }
 @keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* Password Input Enhancements */
+.password-input-wrap { position: relative; display: flex; align-items: center; }
+.password-input-wrap .auth-input { padding-right: 48px; }
+.password-toggle { position: absolute; right: 12px; background: transparent; border: none; padding: 4px; display: flex; align-items: center; justify-content: center; color: var(--dim); cursor: pointer; transition: color 0.2s; outline: none; }
+.password-toggle:hover { color: var(--text); }
+.password-toggle svg { width: 18px; height: 18px; stroke-width: 2; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -881,7 +888,8 @@ function updateProgBars(){
         <div class="password-input-wrap">
           <input class="auth-input" id="loginPass" type="password" placeholder="Your password" onkeydown="authKey(event)"/>
           <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPass')" aria-label="Toggle password visibility">
-            <span class="material-symbols-outlined">visibility</span>
+            <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <svg class="eye-closed" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
           </button>
         </div>
       </div>
@@ -898,7 +906,8 @@ function updateProgBars(){
         <div class="password-input-wrap">
           <input class="auth-input" id="regPass" type="password" placeholder="Min. 8 characters" onkeydown="authKey(event)"/>
           <button type="button" class="password-toggle" onclick="togglePasswordVisibility('regPass')" aria-label="Toggle password visibility">
-            <span class="material-symbols-outlined">visibility</span>
+            <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <svg class="eye-closed" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
           </button>
         </div>
       </div>
@@ -1149,13 +1158,16 @@ function openAuth(tab='login'){
 function togglePasswordVisibility(id){
   const el = document.getElementById(id);
   const btn = el.nextElementSibling;
-  const icon = btn.querySelector('.material-symbols-outlined');
+  const eyeOpen = btn.querySelector('.eye-open');
+  const eyeClosed = btn.querySelector('.eye-closed');
   if(el.type === 'password'){
     el.type = 'text';
-    icon.textContent = 'visibility_off';
+    if(eyeOpen) eyeOpen.style.display = 'none';
+    if(eyeClosed) eyeClosed.style.display = 'block';
   } else {
     el.type = 'password';
-    icon.textContent = 'visibility';
+    if(eyeOpen) eyeOpen.style.display = 'block';
+    if(eyeClosed) eyeClosed.style.display = 'none';
   }
 }
 function closeAuth(){document.getElementById('authOverlay').classList.remove('open');}
@@ -1373,7 +1385,7 @@ function unlockGatedSections(){
 updateNavForAuth();
 if(!authToken){
   lockGatedSections();
-  setTimeout(()=>openAuth('login'), 1500);
+  setTimeout(()=>openAuth('login'), 50000);
 }else{
   unlockGatedSections();
 }

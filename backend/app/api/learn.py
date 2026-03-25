@@ -6,6 +6,7 @@ GET  /learn/resources  → get curated YouTube/Coursera resources for a topic
 """
 import json
 import re
+import logging
 import httpx
 import asyncio
 from fastapi import APIRouter, HTTPException

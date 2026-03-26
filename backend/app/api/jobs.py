@@ -9,6 +9,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from app.utils import clean_json_str
 from app.services.memory_service import retain_memory, recall_memories
+from app.services.groq_service import json_completion
 import httpx
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])

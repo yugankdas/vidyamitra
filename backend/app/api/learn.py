@@ -249,6 +249,7 @@ Include 3-5 modules total, ordered by priority. Keep it realistic and actionable
             total_weeks=data.get("total_weeks", sum(m.estimated_weeks for m in modules)),
             adapted_from_scores=bool(req.quiz_scores),
             modules=modules,
+            next_action=data.get("next_action", "Start with the first module and stay consistent."),
             motivational_note=data.get("motivational_note", "You're on the right path!"),
         )
         

@@ -114,8 +114,8 @@ Return JSON:
   ]
 }}
 """
-    raw = json_completion(prompt, max_tokens=1500)
     try:
+        raw = json_completion(prompt, max_tokens=1500)
         clean = clean_json_str(raw)
         data = json.loads(clean)
         jobs = [Job(**j) for j in data.get("jobs", [])]
@@ -149,8 +149,8 @@ Return JSON:
   "insight": "<2-sentence market insight>"
 }
 """
-    raw = json_completion(prompt, max_tokens=600)
     try:
+        raw = json_completion(prompt, max_tokens=600)
         clean = clean_json_str(raw)
         data = json.loads(clean)
         return TrendsResponse(**data)

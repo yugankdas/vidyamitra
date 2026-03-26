@@ -79,8 +79,8 @@ Return JSON:
 
 Include only first 4 weeks in weekly_plan for brevity.
 """
-    raw = json_completion(prompt, max_tokens=2000)
     try:
+        raw = json_completion(prompt, max_tokens=2000)
         clean = clean_json_str(raw)
         data = json.loads(clean)
         res = CareerPlanResponse(
@@ -115,8 +115,8 @@ Return JSON:
   "estimated_weeks": <integer weeks to close gap>
 }}
 """
-    raw = json_completion(prompt, max_tokens=800)
     try:
+        raw = json_completion(prompt, max_tokens=800)
         clean = clean_json_str(raw)
         data = json.loads(clean)
         return SkillGapResponse(target_role=req.target_role, **data)

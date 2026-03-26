@@ -206,10 +206,8 @@ Return ONLY valid JSON:
 Include 3-5 modules total, ordered by priority. Keep it realistic and actionable.
 """
 
-    logger.info(f"Generating learning path for role: {req.target_role}")
-    raw = json_completion(prompt, max_tokens=2500)
-    
     try:
+        raw = json_completion(prompt, max_tokens=2500)
         clean = clean_json_str(raw)
         data = json.loads(clean)
         
@@ -286,8 +284,8 @@ Keep the same JSON structure as before.
 
 Return ONLY valid JSON with the same structure as the original path.
 """
-    raw = json_completion(prompt, max_tokens=3000)
     try:
+        raw = json_completion(prompt, max_tokens=3000)
         clean = clean_json_str(raw)
         data = json.loads(clean)
         modules = [Module(**m) for m in data["modules"]]
@@ -329,8 +327,8 @@ Return ONLY a JSON array:
   }}
 ]
 """
-    raw = json_completion(prompt, max_tokens=1000)
     try:
+        raw = json_completion(prompt, max_tokens=1000)
         clean = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
         data = json.loads(clean)
         resources = [Resource(**r) for r in data]

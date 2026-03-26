@@ -245,7 +245,7 @@ Include 3-5 modules total, ordered by priority. Keep it realistic and actionable
         if not modules:
              raise ValueError("No valid modules could be parsed from AI response")
 
-        return LearningPath(
+        res = LearningPath(
             target_role=req.target_role,
             overall_readiness=data.get("overall_readiness", 40),
             total_weeks=data.get("total_weeks", sum(m.estimated_weeks for m in modules)),

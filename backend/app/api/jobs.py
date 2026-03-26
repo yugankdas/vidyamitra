@@ -124,9 +124,9 @@ Return JSON:
         # Fallback static data
         return JobsResponse(
             jobs=[
-                Job(title="Senior SDE", company="Razorpay", location="Bengaluru", salary="₹28–38 LPA", experience="4–6 YOE", skills=["React", "Node.js", "PostgreSQL"], icon="🏢", url="https://www.linkedin.com/jobs/search/?keywords=Razorpay+SDE"),
-                Job(title="ML Engineer", company="Swiggy", location="Bengaluru", salary="₹22–32 LPA", experience="3–5 YOE", skills=["Python", "TensorFlow", "Spark"], icon="🚀", url="https://www.linkedin.com/jobs/search/?keywords=Swiggy+ML"),
-                Job(title="Backend SDE", company="CRED", location="Mumbai", salary="₹18–26 LPA", experience="2–4 YOE", skills=["Go", "Kafka", "Redis"], icon="💳", url="https://www.linkedin.com/jobs/search/?keywords=CRED+Backend"),
+                Job(title="Senior SDE", company="Razorpay", location="Bengaluru", salary="₹28–38 LPA", experience="4–6 YOE", skills=["React", "Node.js", "PostgreSQL"], url="https://www.linkedin.com/jobs/search/?keywords=Razorpay+SDE"),
+                Job(title="ML Engineer", company="Swiggy", location="Bengaluru", salary="₹22–32 LPA", experience="3–5 YOE", skills=["Python", "TensorFlow", "Spark"], url="https://www.linkedin.com/jobs/search/?keywords=Swiggy+ML"),
+                Job(title="Backend SDE", company="CRED", location="Mumbai", salary="₹18–26 LPA", experience="2–4 YOE", skills=["Go", "Kafka", "Redis"], url="https://www.linkedin.com/jobs/search/?keywords=CRED+Backend"),
             ],
             total=3,
         )

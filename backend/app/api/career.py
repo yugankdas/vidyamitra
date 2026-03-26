@@ -83,7 +83,7 @@ Include only first 4 weeks in weekly_plan for brevity.
     try:
         clean = clean_json_str(raw)
         data = json.loads(clean)
-        return CareerPlanResponse(
+        res = CareerPlanResponse(
             target_role=req.target_role,
             timeline_weeks=req.timeline_weeks,
             weekly_plan=[WeekPlan(**w) for w in data.get("weekly_plan", [])],
